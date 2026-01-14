@@ -2,15 +2,24 @@ import { createClient } from '@/lib/supabase/server';
 import UserMenu from './UserMenu';
 
 export default async function MainNav() {
-  // Fetch site name from Supabase
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('site_settings')
-    .select('value')
-    .eq('key', 'site_name')
-    .single();
-  
-  const siteName = data?.value || 'shoez.mn';
+  let siteName = 'shoez.mn';
+
+  // Fetch site name from Supabase - handle build-time gracefully
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'site_name')
+      .single();
+    
+    if (data?.value) {
+      siteName = data.value;
+    }
+  } catch (error) {
+    // During build time or if env vars missing, use default
+    console.log('Using default site name (build time or env vars missing)');
+  }
 
   return (
     <div className="bg-white border-b border-gray-200">
