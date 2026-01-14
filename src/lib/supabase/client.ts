@@ -7,18 +7,18 @@ export function createClient() {
 
   // During build or if env vars missing, return mock client
   if (!supabaseUrl || !supabaseKey) {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       // Server-side during build - return mock
       return createBrowserClient(
-        'https://placeholder.supabase.co',
-        'placeholder-key'
+        "https://placeholder.supabase.co",
+        "placeholder-key"
       );
     }
     // Client-side - this is a real error
-    console.error('Missing Supabase environment variables');
+    console.error("Missing Supabase environment variables");
     return createBrowserClient(
-      'https://placeholder.supabase.co',
-      'placeholder-key'
+      "https://placeholder.supabase.co",
+      "placeholder-key"
     );
   }
 

@@ -6,7 +6,7 @@ import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { Product } from "@/data/mockProducts";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Home() {
@@ -21,7 +21,7 @@ export default async function Home() {
       .order("created_at", { ascending: false });
     dbProducts = result.data;
   } catch (error) {
-    console.log('Products fetch failed during build:', error);
+    console.log("Products fetch failed during build:", error);
     dbProducts = [];
   }
 
