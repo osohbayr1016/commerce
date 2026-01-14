@@ -6,11 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "git push origin main && echo '\n✅ Code pushed! Cloudflare will auto-deploy.\nCheck: https://dash.cloudflare.com/pages'",
-    "deploy:vercel": "vercel --prod",
+    "deploy": "git add -A && git commit -m 'Deploy update' && git push origin main",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
-    "build:production": "npm run type-check && next build",
     "preview": "npm run build && npm run start"
   },
   "dependencies": {
