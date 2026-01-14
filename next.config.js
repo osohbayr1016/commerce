@@ -18,9 +18,6 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
-  // Output configuration for deployment
-  output: 'standalone',
-
   // Environment variables
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
