@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "npm run build && git add -A && git commit -m 'Deploy: $(date +%Y-%m-%d-%H%M)' && git push origin main",
+    "deploy": "echo 'Build complete - Cloudflare will deploy automatically'",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "preview": "npm run build && npm run start"
