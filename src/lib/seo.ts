@@ -9,13 +9,13 @@ interface SEOProps {
 }
 
 export function generateSEO({
-  title = "shoez.mn | Зөвхөн бүсгүйчүүдэд",
-  description = "Эмэгтэйчүүдэд зориулсан гутал, цүнх болон бусад нэмэлт хэрэгслүүд. Өндөр чанартай брэнд бүтээгдэхүүн.",
+  title = "E-Commerce",
+  description = "E-Commerce website",
   image = "/og-image.jpg",
   url,
   type = "website",
 }: SEOProps = {}): Metadata {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shoez.mn";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
 
@@ -35,12 +35,12 @@ export function generateSEO({
       "брэнд",
       "fashion",
     ],
-    authors: [{ name: "shoez.mn" }],
+    authors: [{ name: "E-Commerce" }],
     openGraph: {
       title,
       description,
       url: fullUrl,
-      siteName: "shoez.mn",
+      siteName: "E-Commerce",
       images: [
         {
           url: fullImage,

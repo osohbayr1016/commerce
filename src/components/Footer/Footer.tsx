@@ -2,9 +2,9 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           <div>
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-5">SHOEZ.MN</h3>
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-5">E-Commerce</h3>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-gray-700 hover:text-gray-900 text-base">
@@ -24,27 +24,6 @@ export default function Footer() {
               <li>
                 <a href="#" className="text-gray-700 hover:text-gray-900 text-base">
                   Хамтран ажиллах
-                </a>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-5">Тусламж</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-base">
-                  Сайт ашиглах заавар
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-base">
-                  Онлайн лизингийн тусламж
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-700 hover:text-gray-900 text-base">
-                  Төлбөр буцаах хүсэлт илгээх
                 </a>
               </li>
             </ul>
@@ -75,7 +54,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="tel:99675746" className="text-gray-600 hover:text-gray-900" aria-label="telephone">
+                <a href="tel:99119911" className="text-gray-600 hover:text-gray-900" aria-label="telephone">
                   <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
@@ -87,17 +66,14 @@ export default function Footer() {
           <div>
             <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">Хаяг</h3>
             <p className="text-base text-gray-700 mb-6 leading-relaxed">
-              1. Улаанбаатар Их Дэлгүүрийн 5 давхарт BUGATTI<br/>
-              2. Максмолл худалдааны төвийн 2 давхарт ShoeGallery<br/>
-              3. Имарт Хан-Уул салбарын 1 давхарт ShoeGallery<br/>
-              4. Имарт Баянгол (10-р хороолол) салбарын 3 давхарт SH
+              Somewhere in world
             </p>
             <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3 mt-6">Холбоо барих</h3>
-            <a href="tel:99675746" className="text-gray-700 hover:text-gray-900 block mb-2 text-base">
-              Утас: 99675746
+            <a href="tel:99119911" className="text-gray-700 hover:text-gray-900 block mb-2 text-base">
+              Утас: 99119911
             </a>
-            <a href="mailto:order@shoez.mn" className="text-gray-700 hover:text-gray-900 block text-base">
-              И-мэйл: order@shoez.mn
+            <a href="mailto:NotBad@gmail.com" className="text-gray-700 hover:text-gray-900 block text-base">
+              И-мэйл: NotBad@gmail.com
             </a>
           </div>
         </div>

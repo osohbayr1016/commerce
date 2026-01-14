@@ -72,36 +72,51 @@ export default function CategoriesPage() {
     setMessage("");
 
     try {
+      // Base data without show_in_header
+      const baseData = {
+        name: formData.name,
+        name_en: formData.name_en,
+        name_mn: formData.name_mn,
+        slug: formData.slug,
+        is_active: formData.is_active,
+        display_order: formData.display_order,
+      };
+
       if (editing) {
-        // Update existing category
-        const { error } = await supabase
+        // Update existing category - try with show_in_header first, fallback without it
+        let updateData: any = { ...baseData };
+        if (formData.show_in_header !== undefined) {
+          updateData.show_in_header = formData.show_in_header;
+        }
+        
+        let { error } = await supabase
           .from("categories")
-          .update({
-            name: formData.name,
-            name_en: formData.name_en,
-            name_mn: formData.name_mn,
-            slug: formData.slug,
-            is_active: formData.is_active,
-            display_order: formData.display_order,
-            show_in_header: formData.show_in_header,
-          })
+          .update(updateData)
           .eq("id", editing);
+
+        // If error is about missing column, retry without show_in_header
+        if (error && (error.message?.includes("show_in_header") || error.message?.includes("Could not find") || (error.message?.includes("column") && error.message?.includes("does not exist")))) {
+          ({ error } = await supabase
+            .from("categories")
+            .update(baseData)
+            .eq("id", editing));
+        }
 
         if (error) throw error;
         setMessage("Ангилал амжилттай шинэчлэгдлээ!");
       } else {
-        // Create new category
-        const { error } = await supabase.from("categories").insert([
-          {
-            name: formData.name,
-            name_en: formData.name_en,
-            name_mn: formData.name_mn,
-            slug: formData.slug,
-            is_active: formData.is_active,
-            display_order: formData.display_order,
-            show_in_header: formData.show_in_header,
-          },
-        ]);
+        // Create new category - try with show_in_header first, fallback without it
+        let insertData: any = { ...baseData };
+        if (formData.show_in_header !== undefined) {
+          insertData.show_in_header = formData.show_in_header;
+        }
+        
+        let { error } = await supabase.from("categories").insert([insertData]);
+
+        // If error is about missing column, retry without show_in_header
+        if (error && (error.message?.includes("show_in_header") || error.message?.includes("Could not find") || (error.message?.includes("column") && error.message?.includes("does not exist")))) {
+          ({ error } = await supabase.from("categories").insert([baseData]));
+        }
 
         if (error) throw error;
         setMessage("Ангилал амжилттай нэмэгдлээ!");
