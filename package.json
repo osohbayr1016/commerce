@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "deploy": "next build",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "build:production": "npm run type-check && next build",
