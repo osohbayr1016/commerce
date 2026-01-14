@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "deploy": "git push origin main && echo '\n✅ Code pushed! Cloudflare will auto-deploy.\nCheck: https://dash.cloudflare.com/pages'",
+    "deploy:vercel": "vercel --prod",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "build:production": "npm run type-check && next build",
