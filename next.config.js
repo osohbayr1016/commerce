@@ -18,6 +18,9 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
+  // Cloudflare Pages compatibility
+  trailingSlash: false,
+  
   // Environment variables
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
