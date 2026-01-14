@@ -1,0 +1,156 @@
+================================
+HOW TO FIX LOGIN ISSUES
+================================
+
+STEP 1: RUN THE FIX SQL
+-----------------------
+1. Open Supabase Dashboard
+2. Go to SQL Editor
+3. Copy and paste FIX_AUTH.sql
+4. Click "Run"
+5. Wait for success message
+
+This will:
+✅ Add email and phone_number columns to profiles
+✅ Create indexes for fast lookups
+✅ Update trigger to capture user data
+✅ Sync existing users
+
+STEP 2: CHECK YOUR DATA
+-----------------------
+Run this query in SQL Editor:
+
+SELECT 
+  id,
+  email,
+  phone_number,
+  full_name,
+  role
+FROM public.profiles;
+
+You should see:
+- email column with values
+- phone_number column with values
+
+If columns are empty, see STEP 3.
+
+STEP 3: CHECK AUTH USERS
+-----------------------
+Run this query:
+
+SELECT 
+  id,
+  email,
+  phone,
+  created_at
+FROM auth.users;
+
+This shows all registered users in Supabase Auth.
+
+STEP 4: TEST LOGIN
+-----------------------
+Try logging in with:
+
+OPTION 1: Use EMAIL
+- Enter your email address
+- Enter your password
+- Click login
+
+OPTION 2: Use PHONE
+- Enter phone number (like 99999999)
+- Enter your password
+- Click login
+
+STEP 5: CHECK BROWSER CONSOLE
+-----------------------
+1. Open browser DevTools (F12)
+2. Go to Console tab
+3. Try logging in
+4. Look for messages:
+   - "Login with email: ..."
+   - "Profile lookup result: ..."
+   - "Login successful!"
+
+If you see errors, they will show the exact problem.
+
+COMMON ISSUES & FIXES
+-----------------------
+
+ISSUE: "Утасны дугаараар бүртгэл олдсонгүй"
+FIX: The phone number isn't in profiles table
+    - Use email to login instead
+    - Or update profile manually (see STEP 6)
+
+ISSUE: "Бүртгэлийн мэдээлэл дутуу байна"
+FIX: Profile exists but email is NULL
+    - Run FIX_AUTH.sql to sync data
+    - Or update manually (see STEP 6)
+
+ISSUE: Password is wrong
+FIX: 
+    - Make sure you remember your password
+    - If forgotten, create a new account
+    - Or use "Forgot password" (when implemented)
+
+STEP 6: MANUAL FIX (if needed)
+-----------------------
+If a specific user needs fixing:
+
+1. Find user ID from auth.users:
+   SELECT id, email FROM auth.users WHERE email = 'your@email.com';
+
+2. Update their profile:
+   UPDATE public.profiles 
+   SET 
+     email = 'your@email.com',
+     phone_number = '99999999'
+   WHERE id = 'user-id-from-step-1';
+
+3. Try logging in again
+
+STEP 7: CREATE NEW ACCOUNT
+-----------------------
+If nothing works, create a fresh account:
+
+1. Go to /auth/signup
+2. Enter:
+   - Name
+   - Email
+   - Phone number
+   - Password
+3. Click "Бүртгүүлэх"
+4. You'll be auto-logged in
+
+The new account will have all data properly saved.
+
+STEP 8: MAKE YOURSELF ADMIN (if needed)
+-----------------------
+Run in SQL Editor:
+
+UPDATE public.profiles 
+SET role = 'admin' 
+WHERE email = 'your@email.com';
+
+Then login and access /admin
+
+================================
+QUICK TEST CHECKLIST
+================================
+
+□ Ran FIX_AUTH.sql
+□ Checked profiles table has email and phone_number
+□ Verified my user exists in auth.users
+□ Tried logging in with email
+□ Tried logging in with phone
+□ Checked browser console for errors
+□ Created new account if needed
+□ Made myself admin if needed
+
+================================
+STILL NOT WORKING?
+================================
+
+Check browser console and share:
+1. The exact error message
+2. What identifier you're using (email or phone)
+3. Result of: SELECT * FROM profiles WHERE email = 'your@email.com';
