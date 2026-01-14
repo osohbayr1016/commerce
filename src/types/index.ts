@@ -40,8 +40,8 @@ export interface Profile {
   role: 'user' | 'admin';
   xp: number;
   tier_level: number;
-  email?: string;
-  phone_number?: string;
+  email: string | null;
+  phone_number: string | null;
   created_at?: string;
   updated_at?: string;
 }
