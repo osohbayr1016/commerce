@@ -156,7 +156,7 @@ export default function RecentlyViewed() {
               className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition"
             >
               {/* Product Image */}
-              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
                 {item.products.images && item.products.images.length > 0 ? (
                   <img
                     src={item.products.images[0]}
@@ -193,7 +193,7 @@ export default function RecentlyViewed() {
               </div>
 
               {/* Viewed Time */}
-              <div className="text-right flex-shrink-0">
+              <div className="text-right ">
                 <p className="text-xs text-gray-500">
                   {formatDate(item.viewed_at)}
                 </p>

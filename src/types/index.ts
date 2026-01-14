@@ -7,6 +7,7 @@ export interface Category {
   name_mn?: string;
   display_order?: number;
   is_active?: boolean;
+  show_in_header?: boolean;
   created_at?: string;
   updated_at?: string;
 }

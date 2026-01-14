@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import OrderHistory from "@/components/Profile/OrderHistory";
@@ -11,15 +12,18 @@ type TabType = "orders" | "wishlist";
 export default function ProfilePage() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabType>("orders");
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get("tab") as TabType;
-    if (tab && ["orders", "wishlist"].includes(tab)) {
-      setActiveTab(tab);
+  // Initialize state from URL params directly
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab") as TabType;
+      if (tab && ["orders", "wishlist"].includes(tab)) {
+        return tab;
+      }
     }
-  }, []);
+    return "orders";
+  });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -51,22 +55,26 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-white mb-6">
+        <h1 className="text-3xl font-bold text-black mb-6">
           Хэрэглэгийн мэдээлэл
         </h1>
 
         {/* User Info Card */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">User info</h2>
-          
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            User info
+          </h2>
+
           <div className="flex items-start justify-between">
             {/* Left: Avatar and basic info */}
             <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+              <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden">
                 {profile.avatar_url ? (
-                  <img
+                  <Image
                     src={profile.avatar_url}
                     alt={profile.full_name || "User"}
+                    width={80}
+                    height={80}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -82,28 +90,22 @@ export default function ProfilePage() {
                 <p className="text-sm text-gray-500">
                   Имэйл: {user.email || "user@example.com"}
                 </p>
-                <p className="text-sm text-gray-500">
-                  uett: gray {profile.tier_level * 50}
-                </p>
               </div>
             </div>
 
             {/* Right: Stats */}
             <div className="text-right space-y-1">
               <p className="text-sm text-gray-600">
-                <span className="text-blue-600 font-medium">Түвшин:</span>{" "}
-                <span className="text-blue-600">
-                  Жил Name ({profile.tier_level || 1} ({profile.tier_level * 10 || 10}))
+                <span className="font-medium">
+                  Түвшин = {profile.tier_level || 2}
                 </span>
               </p>
               <p className="text-sm text-gray-600">
-                <span className="font-medium">Тивлэл = {profile.tier_level || 2}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium">Tier Name:</span> {profile.xp || 1000} XP
+                <span className="font-medium">Цуглуулсан оноо:</span>{" "}
+                {profile.xp || 1000} XP
               </p>
               <p className="text-sm font-semibold text-green-600">
-                Хямдрал: хеат 1 {getDiscountPercent()}%
+                Хямдрал: 1 {getDiscountPercent()}%
               </p>
             </div>
           </div>

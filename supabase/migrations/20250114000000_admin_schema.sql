@@ -12,7 +12,7 @@ create policy "Settings: admin write" on public.site_settings for all to authent
 
 -- Insert default site settings
 insert into public.site_settings (key, value) values
-  ('site_name', 'shoez.mn'),
+  ('site_name', 'E-Commerce'),
   ('site_description', 'Women''s shoes and bags')
 on conflict (key) do nothing;
 

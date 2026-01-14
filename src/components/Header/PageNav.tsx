@@ -9,7 +9,7 @@ export default function PageNav() {
             </svg>
           </button>
           <h1 className="text-xl md:text-2xl font-semibold text-gray-900 flex-1 text-center">
-            Зөвхөн бүсгүйчүүдэд
+            E-Commerce
           </h1>
           <div className="w-10"></div>
         </div>

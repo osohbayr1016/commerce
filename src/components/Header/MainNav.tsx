@@ -1,24 +1,30 @@
 import { createClient } from '@/lib/supabase/server';
 import UserMenu from './UserMenu';
+import { Category } from '@/types';
 
 export default async function MainNav() {
-  let siteName = 'shoez.mn';
+  const siteName = 'E-Commerce';
+  let headerCategories: Category[] = [];
 
-  // Fetch site name from Supabase - handle build-time gracefully
+  // Fetch categories from Supabase - handle build-time gracefully
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', 'site_name')
-      .single();
+
+    // Fetch categories that should show in header
+    const { data: categoriesData } = await supabase
+      .from('categories')
+      .select('id, name, slug, name_en, name_mn, show_in_header')
+      .eq('is_active', true)
+      .eq('show_in_header', true)
+      .order('display_order', { ascending: true })
+      .limit(6);
     
-    if (data?.value) {
-      siteName = data.value;
+    if (categoriesData) {
+      headerCategories = categoriesData as Category[];
     }
   } catch (error) {
-    // During build time or if env vars missing, use default
-    console.log('Using default site name (build time or env vars missing)');
+    // During build time or if env vars missing, use defaults
+    console.log('Using defaults (build time or env vars missing)');
   }
 
   return (
@@ -26,18 +32,32 @@ export default async function MainNav() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 md:py-4">
           <div className="flex items-center gap-4 md:gap-6 text-base md:text-lg">
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-              Эмэгтэй
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-              Эрэгтэй
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium hidden md:inline">
-              USA захиалга
-            </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium hidden md:inline">
-              Хобби
-            </a>
+            {headerCategories.length > 0 ? (
+              headerCategories.map((category, index) => {
+                const displayName = category.name_mn || category.name_en || category.name;
+                const isHiddenOnMobile = index >= 2; // Hide 3rd+ items on mobile
+                
+                return (
+                  <a
+                    key={category.id}
+                    href={`/categories/${category.slug}`}
+                    className={`text-gray-700 hover:text-gray-900 font-medium ${isHiddenOnMobile ? 'hidden md:inline' : ''}`}
+                  >
+                    {displayName}
+                  </a>
+                );
+              })
+            ) : (
+              // Fallback if no categories
+              <>
+                <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
+                  Эмэгтэй
+                </a>
+                <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
+                  Эрэгтэй
+                </a>
+              </>
+            )}
           </div>
           
           <div className="flex-1 flex justify-center">
@@ -62,27 +82,6 @@ export default async function MainNav() {
             <UserMenu />
           </div>
         </div>
-        
-        <nav className="flex items-center justify-center gap-5 md:gap-8 py-4 border-t border-gray-200 text-base md:text-lg">
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-            Цүнх
-          </a>
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-            Гутал
-          </a>
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-            Брэндүүд
-          </a>
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium hidden md:inline">
-            Сэтгүүл
-          </a>
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium hidden lg:inline">
-            Get the Look
-          </a>
-          <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-            Хямдралтай %
-          </a>
-        </nav>
       </div>
     </div>
   );

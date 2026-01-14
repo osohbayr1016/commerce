@@ -15,6 +15,7 @@ export default function CategoriesPage() {
     slug: "",
     is_active: true,
     display_order: 0,
+    show_in_header: false,
   });
   const [message, setMessage] = useState("");
 
@@ -48,6 +49,7 @@ export default function CategoriesPage() {
       slug: "",
       is_active: true,
       display_order: 0,
+      show_in_header: false,
     });
     setEditing(null);
   }
@@ -61,6 +63,7 @@ export default function CategoriesPage() {
       slug: category.slug,
       is_active: category.is_active ?? true,
       display_order: category.display_order || 0,
+      show_in_header: category.show_in_header ?? false,
     });
   }
 
@@ -80,6 +83,7 @@ export default function CategoriesPage() {
             slug: formData.slug,
             is_active: formData.is_active,
             display_order: formData.display_order,
+            show_in_header: formData.show_in_header,
           })
           .eq("id", editing);
 
@@ -95,6 +99,7 @@ export default function CategoriesPage() {
             slug: formData.slug,
             is_active: formData.is_active,
             display_order: formData.display_order,
+            show_in_header: formData.show_in_header,
           },
         ]);
 
@@ -244,6 +249,20 @@ export default function CategoriesPage() {
                 </label>
               </div>
 
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.show_in_header}
+                  onChange={(e) =>
+                    setFormData({ ...formData, show_in_header: e.target.checked })
+                  }
+                  className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-400"
+                />
+                <label className="ml-2 text-sm font-medium text-black">
+                  Толгойн цэсэнд харуулах
+                </label>
+              </div>
+
               <div className="flex gap-2">
                 <button
                   type="submit"
@@ -314,15 +333,22 @@ export default function CategoriesPage() {
                       {category.slug}
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                          category.is_active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {category.is_active ? "Идэвхитэй" : "Идэвхгүй"}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span
+                          className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                            category.is_active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {category.is_active ? "Идэвхитэй" : "Идэвхгүй"}
+                        </span>
+                        {category.show_in_header && (
+                          <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            Толгойн цэс
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-right text-sm space-x-2">
                       <button

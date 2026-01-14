@@ -89,7 +89,7 @@ export default function DebugAuthPage() {
             🔍 Authentication Debugger
           </h1>
           <p className="text-gray-600 mb-6">
-            Run diagnostics to find out why login isn't working
+            Run diagnostics to find out why login isn&apos;t working
           </p>
 
           <button
