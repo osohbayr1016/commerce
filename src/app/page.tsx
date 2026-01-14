@@ -6,14 +6,24 @@ import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { Product } from "@/data/mockProducts";
 
-export default async function Home() {
-  const supabase = await createClient();
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-  // Fetch all products from Supabase
-  const { data: dbProducts } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
+export default async function Home() {
+  let dbProducts = null;
+
+  // Fetch all products from Supabase - handle build time gracefully
+  try {
+    const supabase = await createClient();
+    const result = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+    dbProducts = result.data;
+  } catch (error) {
+    console.log('Products fetch failed during build:', error);
+    dbProducts = [];
+  }
 
   // Convert database products to Product interface
   const products: Product[] = (dbProducts || []).map((p) => ({

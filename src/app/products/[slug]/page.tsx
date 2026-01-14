@@ -8,6 +8,8 @@ import { createClient } from '@/lib/supabase/server';
 import { ProductDetail } from '@/data/mockProductDetail';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 interface ProductPageProps {
   params: Promise<{
     slug: string;
