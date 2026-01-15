@@ -53,6 +53,14 @@ export interface Order {
   total_amount: number;
   status: 'pending' | 'confirmed' | 'delivered' | 'cancelled';
   earned_xp: number;
+  full_name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  city?: string | null;
+  district?: string | null;
+  zip?: string | null;
+  note?: string | null;
   created_at: string;
 }
 

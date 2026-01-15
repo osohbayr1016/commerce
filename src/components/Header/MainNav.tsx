@@ -1,88 +1,116 @@
-import { createClient } from '@/lib/supabase/server';
-import UserMenu from './UserMenu';
-import { Category } from '@/types';
+import { createClient } from "@/lib/supabase/server";
+import UserMenu from "./UserMenu";
+import { Category } from "@/types";
 
 export default async function MainNav() {
-  const siteName = 'E-Commerce';
+  const siteName = "E-Commerce";
   let headerCategories: Category[] = [];
 
   // Fetch categories from Supabase - handle build-time gracefully
   try {
     const supabase = await createClient();
 
-    // Fetch categories that should show in header
     const { data: categoriesData } = await supabase
-      .from('categories')
-      .select('id, name, slug, name_en, name_mn, show_in_header')
-      .eq('is_active', true)
-      .eq('show_in_header', true)
-      .order('display_order', { ascending: true })
+      .from("categories")
+      .select("id, name, slug, name_en, name_mn")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true })
       .limit(6);
-    
+
     if (categoriesData) {
       headerCategories = categoriesData as Category[];
     }
   } catch (error) {
-    // During build time or if env vars missing, use defaults
-    console.log('Using defaults (build time or env vars missing)');
+    console.log("Using defaults (build time or env vars missing)");
   }
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-3 md:py-4">
-          <div className="flex items-center gap-4 md:gap-6 text-base md:text-lg">
-            {headerCategories.length > 0 ? (
-              headerCategories.map((category, index) => {
-                const displayName = category.name_mn || category.name_en || category.name;
-                const isHiddenOnMobile = index >= 2; // Hide 3rd+ items on mobile
-                
-                return (
-                  <a
-                    key={category.id}
-                    href={`/categories/${category.slug}`}
-                    className={`text-gray-700 hover:text-gray-900 font-medium ${isHiddenOnMobile ? 'hidden md:inline' : ''}`}
-                  >
-                    {displayName}
-                  </a>
-                );
-              })
-            ) : (
-              // Fallback if no categories
-              <>
-                <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-                  Эмэгтэй
-                </a>
-                <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">
-                  Эрэгтэй
-                </a>
-              </>
-            )}
-          </div>
-          
+        <div className="flex items-center justify-between py-4">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
+            <a href="/" className="hover:text-gray-900">
+              Нүүр
+            </a>
+            <a href="/categories" className="hover:text-gray-900">
+              Ангилал
+            </a>
+            <a href="/sale" className="hover:text-gray-900">
+              Хямдрал
+            </a>
+            <a href="/profile" className="hover:text-gray-900">
+              Профайл
+            </a>
+          </nav>
+
           <div className="flex-1 flex justify-center">
-            <a href="/" className="text-2xl md:text-3xl font-semibold text-gray-900">
+            <a href="/" className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900">
               {siteName}
             </a>
           </div>
-          
+
           <div className="flex items-center gap-3 md:gap-4">
-            <div className="relative hidden sm:block">
-              <input
-                type="text"
-                placeholder="Хайлт..."
-                className="pl-4 pr-10 py-2 border border-gray-300 rounded-md text-sm md:text-base w-36 md:w-48 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              />
-              <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
+            <a
+              href="/search"
+              className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"
+              aria-label="search"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </a>
+            <a
+              href="/cart"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"
+              aria-label="cart"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H6.4M7 13l-1.6 8H19M7 13l.4-2M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+              </svg>
+            </a>
             <UserMenu />
           </div>
         </div>
+
+        <div className="pb-4 flex items-center gap-3 overflow-x-auto text-sm">
+          <span className="text-gray-500 font-medium whitespace-nowrap">Ангилал</span>
+          {headerCategories.length > 0 ? (
+            headerCategories.map((category) => {
+              const displayName = category.name_mn || category.name_en || category.name;
+              return (
+                <a
+                  key={category.id}
+                  href={`/categories/${category.slug}`}
+                  className="px-3 py-1 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 whitespace-nowrap"
+                >
+                  {displayName}
+                </a>
+              );
+            })
+          ) : (
+            <>
+              <a
+                href="#"
+                className="px-3 py-1 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 whitespace-nowrap"
+              >
+                Бүгд
+              </a>
+              <a
+                href="#"
+                className="px-3 py-1 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 whitespace-nowrap"
+              >
+                Америк захиалга
+              </a>
+              <a
+                href="#"
+                className="px-3 py-1 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 whitespace-nowrap"
+              >
+                Монгол дахь бэлэн бараа
+              </a>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 }

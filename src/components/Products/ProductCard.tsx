@@ -1,5 +1,6 @@
 import { Product } from '@/data/mockProducts';
 import { generateSlug } from '@/lib/utils';
+import AddToCartButton from './AddToCartButton';
 
 interface ProductCardProps {
   product: Product;
@@ -22,10 +23,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         </div>
         <div className="mb-4">
-          <div
-            className="w-full aspect-square rounded border border-gray-200 bg-gray-50"
-            style={{ backgroundColor: product.imageColor }}
-          />
+          {product.images && product.images.length > 0 && product.images[0]?.startsWith('http') ? (
+            <img
+              src={product.images[0]}
+              alt={product.nameEn || product.nameMn || ''}
+              className="w-full aspect-square rounded border border-gray-200 object-cover"
+            />
+          ) : (
+            <div
+              className="w-full aspect-square rounded border border-gray-200 bg-gray-50"
+              style={{ backgroundColor: product.imageColor }}
+            />
+          )}
         </div>
         <div>
           <h3 className="text-sm md:text-base font-medium text-gray-900 mb-2 line-clamp-2 leading-snug">
@@ -47,6 +56,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
       </a>
+      <div className="pt-3">
+        <AddToCartButton product={product} slug={slug} />
+      </div>
     </div>
   );
 }

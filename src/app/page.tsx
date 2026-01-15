@@ -1,5 +1,4 @@
 import MainNav from "@/components/Header/MainNav";
-import PageNav from "@/components/Header/PageNav";
 import HeroBanner from "@/components/Hero/HeroBanner";
 import ProductSection from "@/components/Products/ProductSection";
 import Footer from "@/components/Footer/Footer";
@@ -45,7 +44,6 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <MainNav />
-      <PageNav />
       <HeroBanner />
       <main className="flex-1 bg-white">
         {boots.length > 0 && <ProductSection products={boots} />}

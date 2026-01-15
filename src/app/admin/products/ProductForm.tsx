@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Product, Category, getErrorMessage } from '@/types';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 export default function ProductForm({ product }: { product?: Product }) {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ export default function ProductForm({ product }: { product?: Product }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [images, setImages] = useState<string[]>(product?.images || []);
   const router = useRouter();
   const supabase = createClient();
 
@@ -85,6 +87,7 @@ export default function ProductForm({ product }: { product?: Product }) {
         brand_color: formData.brand_color,
         image_color: formData.image_color,
         has_financing: formData.has_financing,
+        images: images,
       };
 
       if (product?.id) {
@@ -120,6 +123,11 @@ export default function ProductForm({ product }: { product?: Product }) {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
+        <h2 className="text-xl font-bold text-black mb-4">Зураг</h2>
+        <ImageUploader images={images} onImagesChange={setImages} />
+      </div>
+
       <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
         <h2 className="text-xl font-bold text-black mb-4">Үндсэн мэдээлэл</h2>
         

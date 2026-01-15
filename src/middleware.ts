@@ -41,6 +41,15 @@ export async function middleware(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  const authRequiredPaths = ["/cart", "/checkout", "/profile"];
+  if (authRequiredPaths.some((path) => request.nextUrl.pathname.startsWith(path))) {
+    if (!session) {
+      const redirectUrl = new URL("/auth/login", request.url);
+      redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!session) {
@@ -65,5 +74,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ["/admin/:path*", "/cart", "/checkout", "/profile"],
 };
