@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import MainNavClient from "@/components/Header/MainNavClient";
 import Footer from "@/components/Footer/Footer";
@@ -10,15 +10,13 @@ import CheckoutForm, {
   CheckoutFormValues,
 } from "@/components/Checkout/CheckoutForm";
 import CheckoutSummary from "@/components/Checkout/CheckoutSummary";
+import PromoCodeInput from "@/components/Checkout/PromoCodeInput";
 
 const emptyForm: CheckoutFormValues = {
   fullName: "",
   phone: "",
   email: "",
   address: "",
-  city: "",
-  district: "",
-  zip: "",
   note: "",
 };
 
@@ -26,6 +24,9 @@ export default function CheckoutPage() {
   const { user, profile, loading } = useAuth();
   const { items, subtotal, clearCart } = useCart();
   const router = useRouter();
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoCodeId, setPromoCodeId] = useState("");
+  
   const defaultValues = useMemo(
     () => ({
       ...emptyForm,
@@ -35,6 +36,8 @@ export default function CheckoutPage() {
     }),
     [profile, user]
   );
+
+  const finalTotal = subtotal - promoDiscount;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -73,8 +76,20 @@ export default function CheckoutPage() {
                   onSuccess={handleSuccess}
                 />
               </div>
-              <div className="lg:col-span-1 order-1 lg:order-2">
-                <CheckoutSummary items={items} subtotal={subtotal} />
+              <div className="lg:col-span-1 order-1 lg:order-2 space-y-4">
+                <PromoCodeInput
+                  orderAmount={subtotal}
+                  onApply={(discountAmt, id) => {
+                    setPromoDiscount(discountAmt);
+                    setPromoCodeId(id);
+                  }}
+                />
+                <CheckoutSummary
+                  items={items}
+                  subtotal={subtotal}
+                  discount={promoDiscount}
+                  total={finalTotal}
+                />
               </div>
             </div>
           )}

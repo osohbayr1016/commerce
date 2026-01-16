@@ -13,7 +13,7 @@ export default function DebugAuthPage() {
     setResults("Running diagnostics...\n\n");
 
     try {
-      // Check current user
+      
       const { data: { session } } = await supabase.auth.getSession();
       setResults((prev) => prev + `✓ Current session: ${session ? 'Logged in' : 'Not logged in'}\n`);
       if (session) {
@@ -21,11 +21,11 @@ export default function DebugAuthPage() {
         setResults((prev) => prev + `  Email: ${session.user.email}\n\n`);
       }
 
-      // Check profiles table structure
+      
       const { data: columns, error: colError } = await supabase
         .rpc('get_profile_columns' as never);
       
-      // Check if profiles table has email column
+      
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
         .select('id, email, phone_number, full_name, role')
@@ -43,14 +43,14 @@ export default function DebugAuthPage() {
         setResults((prev) => prev + `✓ Profiles table structure is correct\n\n`);
       }
 
-      // Check auth users count
+      
       const { count: usersCount } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
 
       setResults((prev) => prev + `📊 Total users in database: ${usersCount}\n\n`);
 
-      // Test profile lookup by phone
+      
       setResults((prev) => prev + `Testing phone lookup:\n`);
       const { data: testProfile, error: testError } = await supabase
         .from('profiles')

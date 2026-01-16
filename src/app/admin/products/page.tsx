@@ -1,18 +1,32 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import DeleteProductButton from './DeleteProductButton';
+import AdminPagination from './AdminPagination';
 
-export default async function ProductsPage() {
+interface ProductsPageProps {
+  searchParams?: Promise<{
+    page?: string;
+  }>;
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const supabase = await createClient();
+  const params = await searchParams;
   
-  const { data: products, error } = await supabase
+  const page = parseInt(params?.page || "1");
+  const limit = 20;
+  const offset = (page - 1) * limit;
+  
+  const { data: products, error, count } = await supabase
     .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (error) {
-    console.error('Error fetching products:', error);
   }
+  
+  const totalPages = Math.ceil((count || 0) / limit);
 
   return (
     <div className="p-8">
@@ -92,6 +106,7 @@ export default async function ProductsPage() {
               ))}
             </tbody>
           </table>
+          <AdminPagination currentPage={page} totalPages={totalPages} basePath="/admin/products" />
         </div>
       ) : (
         <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">

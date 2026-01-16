@@ -13,7 +13,7 @@ export interface Product {
 }
 
 export const mockProducts: Product[] = [
-  // Boots
+  
   {
     id: '1',
     brand: 'Sasha Fabiani',
@@ -110,7 +110,7 @@ export const mockProducts: Product[] = [
     brandColor: '#F5F5F5',
     imageColor: '#FAFAFA',
   },
-  // Bags
+  
   {
     id: '9',
     brand: 'CINDY C ERIC',

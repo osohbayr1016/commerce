@@ -35,7 +35,6 @@ export default function SettingsPage() {
         if (setting.key === 'site_description') setSiteDescription(setting.value);
       });
     } catch (error) {
-      console.error('Error fetching settings:', error);
     } finally {
       setLoading(false);
     }
@@ -63,7 +62,6 @@ export default function SettingsPage() {
       setMessage('Тохиргоо амжилттай хадгалагдлаа!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      console.error('Error saving settings:', error);
       setMessage('Алдаа гарлаа. Дахин оролдоно уу.');
     } finally {
       setSaving(false);

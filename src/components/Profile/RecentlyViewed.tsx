@@ -37,7 +37,7 @@ export default function RecentlyViewed() {
 
       if (error) throw error;
 
-      // Remove duplicates (keep most recent view)
+      
       const uniqueProducts = data?.filter(
         (item, index, self) =>
           index === self.findIndex((t) => t.product_id === item.product_id)
@@ -45,7 +45,6 @@ export default function RecentlyViewed() {
 
       setViewedProducts(uniqueProducts || []);
     } catch (error) {
-      console.error("Error fetching viewed products:", error);
     } finally {
       setLoading(false);
     }
@@ -69,7 +68,6 @@ export default function RecentlyViewed() {
       if (error) throw error;
       setViewedProducts([]);
     } catch (error) {
-      console.error("Error clearing history:", error);
     }
   };
 

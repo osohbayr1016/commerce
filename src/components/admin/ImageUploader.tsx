@@ -42,7 +42,6 @@ export default function ImageUploader({
 
         if (!response.ok) {
           const error = await response.json();
-          console.error('Upload failed:', error);
           const errorMessage = error.details 
             ? `${error.error}: ${Array.isArray(error.details) ? error.details.join(', ') : error.details}`
             : error.error || 'Upload failed';
@@ -54,7 +53,6 @@ export default function ImageUploader({
         onImagesChange([...images, ...newImageUrls]);
         setUploadProgress(100);
       } catch (error) {
-        console.error('Upload error:', error);
         alert(error instanceof Error ? error.message : 'Upload failed');
       } finally {
         setUploading(false);

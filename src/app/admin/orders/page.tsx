@@ -9,7 +9,6 @@ export default async function OrdersPage() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching orders:', error);
   }
 
   return (

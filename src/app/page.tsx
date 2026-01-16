@@ -2,42 +2,59 @@ import MainNav from "@/components/Header/MainNav";
 import HeroBanner from "@/components/Hero/HeroBanner";
 import ProductSection from "@/components/Products/ProductSection";
 import Footer from "@/components/Footer/Footer";
-import { createClient } from "@/lib/supabase/server";
+import ProductFilters from "@/components/Products/ProductFilters";
+import ProductSort from "@/components/Products/ProductSort";
+import PaginationClient from "@/components/ui/PaginationClient";
+import {
+  getProductsWithFilters,
+  getUniqueBrands,
+  getAvailableSizes,
+  getPriceRange,
+  type SortOption,
+} from "@/lib/products";
 import { Product } from "@/data/mockProducts";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
-export default async function Home() {
-  let dbProducts = null;
+interface HomeProps {
+  searchParams?: Promise<{
+    brands?: string;
+    sizes?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    inStock?: string;
+    sort?: string;
+    page?: string;
+  }>;
+}
 
-  // Fetch all products from Supabase - handle build time gracefully
-  try {
-    const supabase = await createClient();
-    const result = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
-    dbProducts = result.data;
-  } catch (error) {
-    console.log("Products fetch failed during build:", error);
-    dbProducts = [];
-  }
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  
+  const page = parseInt(params?.page || "1");
+  const limit = 24;
+  const offset = (page - 1) * limit;
+  
+  const filters = {
+    brands: params?.brands?.split(",").filter(Boolean),
+    sizes: params?.sizes?.split(",").map(Number).filter(Boolean),
+    minPrice: params?.minPrice ? Number(params.minPrice) : undefined,
+    maxPrice: params?.maxPrice ? Number(params.maxPrice) : undefined,
+    inStockOnly: params?.inStock === "true",
+  };
 
-  // Convert database products to Product interface
-  const products: Product[] = (dbProducts || []).map((p) => ({
-    id: p.id,
-    brand: p.brand || "",
-    nameEn: p.name_en || p.title || "",
-    nameMn: p.name_mn || "",
-    category: p.subcategory?.toLowerCase().includes("цүнх") ? "bag" : "boots",
-    price: p.price || 0,
-    originalPrice: p.original_price || p.price || 0,
-    discount: p.discount,
-    brandColor: p.brand_color || "#F5F5F5",
-    imageColor: p.image_color || "#FAFAFA",
-    images: p.images || [],
-  }));
+  const sort = (params?.sort as SortOption) || "newest";
+
+  const [productsResult, brands, sizes, priceRange] = await Promise.all([
+    getProductsWithFilters(filters, sort, limit, offset),
+    getUniqueBrands(),
+    getAvailableSizes(),
+    getPriceRange(),
+  ]);
+
+  const products: Product[] = (productsResult.data || []) as Product[];
+  const totalCount = productsResult.count || 0;
+  const totalPages = Math.ceil(totalCount / limit);
 
   const boots = products.filter((p) => p.category === "boots");
   const bags = products.filter((p) => p.category === "bag");
@@ -47,19 +64,33 @@ export default async function Home() {
       <MainNav />
       <HeroBanner />
       <main className="flex-1 bg-white">
-        {boots.length > 0 && <ProductSection products={boots} />}
-        {boots.length > 0 && bags.length > 0 && (
-          <div className="border-t border-gray-200"></div>
-        )}
-        {bags.length > 0 && <ProductSection products={bags} />}
-        {products.length === 0 && (
-          <div className="py-20 text-center">
-            <p className="text-gray-600 text-lg">Бүтээгдэхүүн байхгүй байна</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Админ самбар руу очиж бүтээгдэхүүн нэмнэ үү
-            </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <ProductFilters
+              brands={brands}
+              availableSizes={sizes}
+              minPrice={priceRange.min}
+              maxPrice={priceRange.max}
+            />
+            <ProductSort />
           </div>
-        )}
+          {boots.length > 0 && <ProductSection products={boots} />}
+          {boots.length > 0 && bags.length > 0 && (
+            <div className="border-t border-gray-200 my-8"></div>
+          )}
+          {bags.length > 0 && <ProductSection products={bags} />}
+          {products.length === 0 && (
+            <div className="py-20 text-center">
+              <p className="text-gray-600 text-lg">Бүтээгдэхүүн байхгүй байна</p>
+              <p className="text-gray-500 text-sm mt-2">
+                Админ самбар руу очиж бүтээгдэхүүн нэмнэ үү
+              </p>
+            </div>
+          )}
+          {totalPages > 1 && (
+            <PaginationClient currentPage={page} totalPages={totalPages} />
+          )}
+        </div>
       </main>
       <Footer />
     </div>

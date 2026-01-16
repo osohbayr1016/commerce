@@ -71,7 +71,7 @@ export default function ProductForm({ product }: { product?: Product }) {
         : [];
 
       const productData = {
-        title: formData.name_en || formData.name_mn || 'Untitled Product', // Required field
+        title: formData.name_en || formData.name_mn || 'Untitled Product', 
         name_en: formData.name_en,
         name_mn: formData.name_mn,
         brand: formData.brand,
@@ -91,7 +91,7 @@ export default function ProductForm({ product }: { product?: Product }) {
       };
 
       if (product?.id) {
-        // Update existing product
+        
         const { error } = await supabase
           .from('products')
           .update(productData)
@@ -100,7 +100,7 @@ export default function ProductForm({ product }: { product?: Product }) {
         if (error) throw error;
         setMessage('Бүтээгдэхүүн амжилттай шинэчлэгдлээ!');
       } else {
-        // Create new product
+        
         const { error } = await supabase
           .from('products')
           .insert([productData]);
@@ -114,7 +114,6 @@ export default function ProductForm({ product }: { product?: Product }) {
         router.refresh();
       }, 1500);
     } catch (error) {
-      console.error('Error saving product:', error);
       setMessage(`Алдаа гарлаа: ${getErrorMessage(error)}`);
     } finally {
       setLoading(false);

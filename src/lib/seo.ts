@@ -70,9 +70,9 @@ export function generateSEO({
       },
     },
     verification: {
-      // Add your verification codes here
-      // google: 'your-google-verification-code',
-      // yandex: 'your-yandex-verification-code',
+      
+      
+      
     },
   };
 }

@@ -19,7 +19,6 @@ export default async function SalePage() {
       .order("created_at", { ascending: false });
     dbProducts = result.data;
   } catch (error) {
-    console.log("Products fetch failed during build:", error);
     dbProducts = [];
   }
 

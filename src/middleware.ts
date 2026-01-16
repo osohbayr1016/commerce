@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
-  // These are set via next.config.js and available at runtime
+  
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect admin routes
+  
   if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!session) {
       const redirectUrl = new URL('/auth/login', request.url);
@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    // Check if user is admin
+    
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')

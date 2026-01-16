@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
     
-    // Check if user is admin
+    
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch all products with images
+    
     const { data: products, error: fetchError } = await supabase
       .from('products')
       .select('id, images')
@@ -36,13 +36,13 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     const errors: string[] = [];
 
-    // Fix each product's image URLs
+    
     for (const product of products) {
       if (!product.images || product.images.length === 0) {
         continue;
       }
 
-      // Check if any image URL contains '/commerce/products/'
+      
       const needsFix = product.images.some((url: string) => 
         url.includes('/commerce/products/')
       );
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Fix the URLs by removing '/commerce/' from the path
+      
       const fixedImages = product.images.map((url: string) => {
         if (typeof url === 'string' && url.includes('/commerce/products/')) {
           return url.replace('/commerce/products/', '/products/');
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         return url;
       });
 
-      // Update the product
+      
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: fixedImages })
@@ -80,7 +80,6 @@ export async function POST(request: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
-    console.error('Error fixing image URLs:', error);
     return NextResponse.json(
       {
         error: 'Failed to fix image URLs',

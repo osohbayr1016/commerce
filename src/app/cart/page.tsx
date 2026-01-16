@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import MainNavClient from "@/components/Header/MainNavClient";
 import Footer from "@/components/Footer/Footer";
 import CartItemRow from "@/components/Cart/CartItemRow";
+import EmptyState from "@/components/ui/EmptyState";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
@@ -48,15 +49,29 @@ export default function CartPage() {
           </div>
 
           {items.length === 0 ? (
-            <div className="border border-gray-200 rounded-lg p-12 text-center">
-              <p className="text-gray-600 text-lg">Сагс хоосон байна.</p>
-              <button
-                onClick={() => router.push("/")}
-                className="mt-4 text-gray-900 font-medium hover:underline"
-              >
-                Дэлгүүр хэсэх
-              </button>
-            </div>
+            <EmptyState
+              icon={
+                <svg
+                  className="w-24 h-24 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+              }
+              title="Сагс хоосон байна"
+              description="Сагсанд бүтээгдэхүүн нэмээд захиалга өгөх боломжтой"
+              action={{
+                label: "Дэлгүүр хэсэх",
+                onClick: () => router.push("/"),
+              }}
+            />
           ) : (
             <div className="space-y-4">
               {items.map((item) => (

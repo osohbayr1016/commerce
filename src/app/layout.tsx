@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { ToastProvider } from "@/components/ui/ToastContainer";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ComparisonProvider } from "@/contexts/ComparisonContext";
 import { generateSEO } from "@/lib/seo";
 import MobileBottomNav from "@/components/Navigation/MobileBottomNav";
 
@@ -30,12 +33,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <CartProvider>
-            <div className="min-h-screen pb-16 md:pb-0">{children}</div>
-            <MobileBottomNav />
-          </CartProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <ToastProvider>
+                <ComparisonProvider>
+                  <div className="min-h-screen pb-16 md:pb-0">{children}</div>
+                  <MobileBottomNav />
+                </ComparisonProvider>
+              </ToastProvider>
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

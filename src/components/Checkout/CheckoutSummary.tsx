@@ -6,12 +6,17 @@ import { formatPrice } from "@/lib/utils";
 interface CheckoutSummaryProps {
   items: CartItem[];
   subtotal: number;
+  discount?: number;
+  total?: number;
 }
 
 export default function CheckoutSummary({
   items,
   subtotal,
+  discount = 0,
+  total,
 }: CheckoutSummaryProps) {
+  const finalTotal = total !== undefined ? total : subtotal;
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 h-fit sticky top-4">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">

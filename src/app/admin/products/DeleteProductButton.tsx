@@ -25,7 +25,6 @@ export default function DeleteProductButton({ productId }: { productId: string }
 
       router.refresh();
     } catch (error) {
-      console.error('Error deleting product:', error);
       alert('Бүтээгдэхүүн устгахад алдаа гарлаа');
     } finally {
       setDeleting(false);

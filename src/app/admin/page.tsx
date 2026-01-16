@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 export default async function AdminDashboard() {
   const supabase = await createClient();
   
-  // Fetch stats
+  
   const [productsResult, categoriesResult, ordersResult] = await Promise.all([
     supabase.from('products').select('id', { count: 'exact', head: true }),
     supabase.from('categories').select('id', { count: 'exact', head: true }),

@@ -28,7 +28,6 @@ export default async function CategoriesPage() {
       categories = data as Category[];
     }
   } catch (error) {
-    console.log("Categories fetch failed during build:", error);
   }
 
   const displayCategories = categories.length

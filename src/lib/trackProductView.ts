@@ -12,7 +12,7 @@ export async function trackProductView(
   const supabase = createClient();
 
   try {
-    // Get or create session ID for guests
+    
     let sessionId = null;
     if (!userId) {
       sessionId = localStorage.getItem("session_id");
@@ -33,8 +33,7 @@ export async function trackProductView(
       },
     ]);
   } catch (error) {
-    // Silently fail - tracking shouldn't break the app
-    console.debug("Failed to track product view:", error);
+    
   }
 }
 
@@ -59,7 +58,7 @@ export async function addToWishlist(
 
     if (error) {
       if (error.code === "23505") {
-        // Already in wishlist
+        
         return { success: true };
       }
       throw error;
@@ -123,13 +122,12 @@ export async function isInWishlist(
       .single();
 
     if (error && error.code !== "PGRST116") {
-      // PGRST116 is "not found" error
+      
       throw error;
     }
 
     return !!data;
   } catch (error) {
-    console.debug("Failed to check wishlist:", error);
     return false;
   }
 }

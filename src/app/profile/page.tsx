@@ -3,25 +3,29 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
 import MainNavClient from "@/components/Header/MainNavClient";
 import Footer from "@/components/Footer/Footer";
 import ProfileSkeleton from "@/components/Profile/ProfileSkeleton";
 import OrderHistory from "@/components/Profile/OrderHistory";
 import Wishlist from "@/components/Profile/Wishlist";
+import LanguageSelector from "@/components/Profile/LanguageSelector";
+import ReferralSection from "@/components/Profile/ReferralSection";
 
-type TabType = "orders" | "wishlist";
+type TabType = "orders" | "wishlist" | "settings" | "referral";
 
 export default function ProfilePage() {
   const { user, profile, loading } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get("tab") as TabType;
-      if (tab && ["orders", "wishlist"].includes(tab)) {
-        return tab;
+      if (tab && ["orders", "wishlist", "settings", "referral"].includes(tab)) {
+        return tab as TabType;
       }
     }
     return "orders";
@@ -59,10 +63,10 @@ export default function ProfilePage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
-                Миний профайл
+                {t("profile.title")}
               </h1>
               <p className="mt-2 text-gray-600">
-                Таны мэдээлэл, захиалга, хадгалсан бараанууд
+                {t("profile.personalInfo")}
               </p>
             </div>
 
@@ -96,19 +100,19 @@ export default function ProfilePage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
                   <div className="rounded-xl border border-gray-200 px-4 py-3">
-                    <p className="text-xs text-gray-500">Түвшин</p>
+                    <p className="text-xs text-gray-500">Level</p>
                     <p className="text-lg font-semibold text-gray-900">
                       {profile.tier_level || 2}
                     </p>
                   </div>
                   <div className="rounded-xl border border-gray-200 px-4 py-3">
-                    <p className="text-xs text-gray-500">Оноо</p>
+                    <p className="text-xs text-gray-500">Points</p>
                     <p className="text-lg font-semibold text-gray-900">
                       {profile.xp || 1000} XP
                     </p>
                   </div>
                   <div className="rounded-xl border border-gray-200 px-4 py-3">
-                    <p className="text-xs text-gray-500">Хямдрал</p>
+                    <p className="text-xs text-gray-500">{t("products.discount")}</p>
                     <p className="text-lg font-semibold text-green-600">
                       {getDiscountPercent()}%
                     </p>
@@ -127,7 +131,7 @@ export default function ProfilePage() {
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  Захиалгын түүх
+                  {t("profile.orderHistory")}
                 </button>
                 <button
                   onClick={() => setActiveTab("wishlist")}
@@ -137,12 +141,34 @@ export default function ProfilePage() {
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  Хадгалсан
+                  {t("profile.wishlist")}
+                </button>
+                <button
+                  onClick={() => setActiveTab("referral")}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                    activeTab === "referral"
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  Referrals
+                </button>
+                <button
+                  onClick={() => setActiveTab("settings")}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                    activeTab === "settings"
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {t("profile.accountSettings")}
                 </button>
               </div>
 
               {activeTab === "orders" && <OrderHistory />}
               {activeTab === "wishlist" && <Wishlist />}
+              {activeTab === "referral" && <ReferralSection />}
+              {activeTab === "settings" && <LanguageSelector />}
             </div>
           </div>
         </section>

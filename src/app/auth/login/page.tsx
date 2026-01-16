@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   const redirectUrl = searchParams.get('redirect') || '/';
 
-  // Redirect if already logged in
+  
   useEffect(() => {
     if (user) {
       router.push(redirectUrl);
@@ -35,7 +35,7 @@ export default function LoginPage() {
     try {
       await signIn(identifier, password);
       
-      // Check if redirect is to admin and user is admin
+      
       if (redirectUrl.startsWith('/admin') && isAdmin) {
         router.push(redirectUrl);
       } else if (redirectUrl.startsWith('/admin') && !isAdmin) {

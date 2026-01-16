@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthInput from '@/components/Auth/AuthInput';
@@ -10,6 +10,8 @@ import AuthButton from '@/components/Auth/AuthButton';
 import { getErrorMessage } from '@/types';
 
 export default function SignUpPage() {
+  const searchParams = useSearchParams();
+  const referralCode = searchParams?.get('ref');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const { signUp, signInWithGoogle, user } = useAuth();
 
-  // Redirect if already logged in
+  
   useEffect(() => {
     if (user) {
       router.push('/');
@@ -43,13 +45,13 @@ export default function SignUpPage() {
       return;
     }
 
-    // Validate email
+    
     if (!email || !email.includes('@')) {
       setError('И-мэйл хаяг буруу байна');
       return;
     }
 
-    // Remove all non-numeric characters for validation
+    
     const cleanPhone = phone.replace(/[^0-9]/g, '');
     if (!cleanPhone || cleanPhone.length < 8) {
       setError('Утасны дугаар буруу байна');
@@ -61,7 +63,7 @@ export default function SignUpPage() {
     try {
       await signUp(email, phone, password, fullName);
       setSuccess('Бүртгэл амжилттай! Нэвтэрч байна...');
-      // Wait a moment for auth state to update, then redirect to home
+      
       setTimeout(() => {
         router.push('/');
         router.refresh();

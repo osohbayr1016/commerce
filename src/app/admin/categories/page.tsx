@@ -31,7 +31,6 @@ export default function CategoriesPage() {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      console.error("Error fetching categories:", error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +71,7 @@ export default function CategoriesPage() {
     setMessage("");
 
     try {
-      // Base data without show_in_header
+      
       const baseData = {
         name: formData.name,
         name_en: formData.name_en,
@@ -83,7 +82,7 @@ export default function CategoriesPage() {
       };
 
       if (editing) {
-        // Update existing category - try with show_in_header first, fallback without it
+        
         let updateData: any = { ...baseData };
         if (formData.show_in_header !== undefined) {
           updateData.show_in_header = formData.show_in_header;
@@ -94,7 +93,7 @@ export default function CategoriesPage() {
           .update(updateData)
           .eq("id", editing);
 
-        // If error is about missing column, retry without show_in_header
+        
         if (error && (error.message?.includes("show_in_header") || error.message?.includes("Could not find") || (error.message?.includes("column") && error.message?.includes("does not exist")))) {
           ({ error } = await supabase
             .from("categories")
@@ -105,7 +104,7 @@ export default function CategoriesPage() {
         if (error) throw error;
         setMessage("Ангилал амжилттай шинэчлэгдлээ!");
       } else {
-        // Create new category - try with show_in_header first, fallback without it
+        
         let insertData: any = { ...baseData };
         if (formData.show_in_header !== undefined) {
           insertData.show_in_header = formData.show_in_header;
@@ -113,7 +112,7 @@ export default function CategoriesPage() {
         
         let { error } = await supabase.from("categories").insert([insertData]);
 
-        // If error is about missing column, retry without show_in_header
+        
         if (error && (error.message?.includes("show_in_header") || error.message?.includes("Could not find") || (error.message?.includes("column") && error.message?.includes("does not exist")))) {
           ({ error } = await supabase.from("categories").insert([baseData]));
         }
@@ -126,7 +125,6 @@ export default function CategoriesPage() {
       fetchCategories();
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      console.error("Error saving category:", error);
       setMessage(`Алдаа гарлаа: ${getErrorMessage(error)}`);
     }
   }
@@ -145,7 +143,6 @@ export default function CategoriesPage() {
       fetchCategories();
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      console.error("Error deleting category:", error);
       setMessage(`Алдаа гарлаа: ${getErrorMessage(error)}`);
     }
   }

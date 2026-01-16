@@ -1,4 +1,4 @@
-// Analytics utility functions
+
 
 declare global {
   interface Window {
@@ -12,7 +12,7 @@ declare global {
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-// Track page views
+
 export function pageview(url: string): void {
   if (typeof window !== "undefined" && window.gtag && GA_MEASUREMENT_ID) {
     window.gtag("config", GA_MEASUREMENT_ID, {
@@ -21,7 +21,7 @@ export function pageview(url: string): void {
   }
 }
 
-// Track events
+
 export function event({
   action,
   category,
@@ -42,7 +42,7 @@ export function event({
   }
 }
 
-// E-commerce tracking
+
 export function trackPurchase(orderId: string, amount: number): void {
   event({
     action: "purchase",

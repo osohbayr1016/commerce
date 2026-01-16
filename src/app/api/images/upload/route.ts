@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { uploadFileToR2 } from '@/lib/cloudflare/r2-upload';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate user
+    
     const supabase = await createClient();
     const {
       data: { user },
@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authError) {
-      console.error('Auth error:', authError);
       return NextResponse.json(
         {
           error: 'Authentication failed',
@@ -34,12 +33,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse form data
+    
     let formData: FormData;
     try {
       formData = await request.formData();
     } catch (parseError) {
-      console.error('FormData parse error:', parseError);
       return NextResponse.json(
         {
           error: 'Failed to parse form data',
@@ -60,7 +58,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate files
+    
     const validationErrors: string[] = [];
     const validFiles: File[] = [];
 
@@ -109,7 +107,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check R2 environment variables before attempting upload
+    
     const accountId = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
     const r2AccessKey = process.env.R2_ACCESS_KEY_ID?.trim();
     const r2SecretKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
@@ -120,7 +118,6 @@ export async function POST(request: NextRequest) {
       if (!r2AccessKey) missing.push('R2_ACCESS_KEY_ID');
       if (!r2SecretKey) missing.push('R2_SECRET_ACCESS_KEY');
       
-      console.error('Missing R2 environment variables:', missing);
       return NextResponse.json(
         {
           error: 'Server configuration error',
@@ -131,45 +128,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upload files to R2
+    
     const uploadedImages = [];
     const uploadErrors: string[] = [];
 
-    // Note: R2 binding is not accessible in Next.js API routes with OpenNext
-    // We use aws4fetch instead, which works perfectly in Cloudflare Workers
-    const r2Bucket = null; // Force aws4fetch usage
+    
+    
+    const r2Bucket = null; 
 
     for (const file of validFiles) {
       try {
-        console.log(`[Upload API] Uploading file: ${file.name}`);
         const result = await uploadFileToR2(file, 'products', r2Bucket);
-        console.log(`[Upload API] Upload successful, URL: ${result.url}`);
         uploadedImages.push({
           id: result.key,
           url: result.url,
-          variants: [result.url], // R2 doesn't have variants, so we use the same URL
+          variants: [result.url], 
         });
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown upload error';
-        console.error(`[Upload API] Error uploading file "${file.name}":`, errorMessage);
-        console.error('[Upload API] Full error:', error);
         uploadErrors.push(`Failed to upload "${file.name}": ${errorMessage}`);
       }
     }
 
-    // If some files failed but others succeeded, return partial success
+    
     if (uploadErrors.length > 0 && uploadedImages.length === 0) {
       return NextResponse.json(
         {
           error: 'All file uploads failed',
-          details: uploadErrors, // This will be visible in browser console
+          details: uploadErrors, 
         },
         { status: 500 }
       );
     }
 
-    // If some files failed but some succeeded, return partial success
+    
     if (uploadErrors.length > 0) {
       return NextResponse.json(
         {
@@ -182,7 +175,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // All files uploaded successfully
+    
     return NextResponse.json(
       {
         success: true,
@@ -192,7 +185,6 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Unexpected error in upload route:', error);
     const errorMessage =
       error instanceof Error ? error.message : 'Internal server error';
     const errorStack = error instanceof Error ? error.stack : undefined;

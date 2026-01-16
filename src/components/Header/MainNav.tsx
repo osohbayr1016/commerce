@@ -6,7 +6,7 @@ export default async function MainNav() {
   const siteName = "E-Commerce";
   let headerCategories: Category[] = [];
 
-  // Fetch categories from Supabase - handle build-time gracefully
+  
   try {
     const supabase = await createClient();
 
@@ -21,7 +21,6 @@ export default async function MainNav() {
       headerCategories = categoriesData as Category[];
     }
   } catch (error) {
-    console.log("Using defaults (build time or env vars missing)");
   }
 
   return (

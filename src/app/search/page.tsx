@@ -1,52 +1,57 @@
 import MainNav from "@/components/Header/MainNav";
 import ProductSection from "@/components/Products/ProductSection";
 import Footer from "@/components/Footer/Footer";
-import { createClient } from "@/lib/supabase/server";
+import ProductFilters from "@/components/Products/ProductFilters";
+import ProductSort from "@/components/Products/ProductSort";
+import SearchAutocomplete from "@/components/Search/SearchAutocomplete";
+import EmptyState from "@/components/ui/EmptyState";
+import {
+  getProductsWithFilters,
+  getUniqueBrands,
+  getAvailableSizes,
+  getPriceRange,
+  type SortOption,
+} from "@/lib/products";
 import { Product } from "@/data/mockProducts";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
+export const revalidate = 60;
 
 interface SearchPageProps {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{
+    q?: string;
+    brands?: string;
+    sizes?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    inStock?: string;
+    sort?: string;
+  }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedParams = (await searchParams) ?? {};
   const query = resolvedParams.q?.trim() ?? "";
-  let results: Product[] = [];
 
-  if (query) {
-    try {
-      const supabase = await createClient();
-      const { data } = await supabase
-        .from("products")
-        .select("*")
-        .or(
-          `name_en.ilike.%${query}%,name_mn.ilike.%${query}%,title.ilike.%${query}%,brand.ilike.%${query}%`
-        )
-        .order("created_at", { ascending: false });
+  const filters = {
+    searchQuery: query,
+    brands: resolvedParams.brands?.split(",").filter(Boolean),
+    sizes: resolvedParams.sizes?.split(",").map(Number).filter(Boolean),
+    minPrice: resolvedParams.minPrice ? Number(resolvedParams.minPrice) : undefined,
+    maxPrice: resolvedParams.maxPrice ? Number(resolvedParams.maxPrice) : undefined,
+    inStockOnly: resolvedParams.inStock === "true",
+  };
 
-      if (data) {
-        results = data.map((item: any) => ({
-          id: item.id,
-          brand: item.brand || "",
-          nameEn: item.name_en || item.title || "",
-          nameMn: item.name_mn || "",
-          category: item.subcategory?.toLowerCase().includes("цүнх")
-            ? "bag"
-            : "boots",
-          price: item.price || 0,
-          originalPrice: item.original_price || item.price || 0,
-          discount: item.discount,
-          brandColor: item.brand_color || "#F5F5F5",
-          imageColor: item.image_color || "#FAFAFA",
-        }));
-      }
-    } catch (error) {
-      console.log("Search failed:", error);
-    }
-  }
+  const sort = (resolvedParams.sort as SortOption) || "newest";
+
+  const [productsResult, brands, sizes, priceRange] = await Promise.all([
+    getProductsWithFilters(filters, sort),
+    getUniqueBrands(),
+    getAvailableSizes(),
+    getPriceRange(),
+  ]);
+
+  const results: Product[] = (productsResult.data || []) as Product[];
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -62,32 +67,46 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </p>
           </div>
 
-          <form action="/search" className="max-w-xl mx-auto mb-10">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                name="q"
-                defaultValue={query}
-                placeholder="Жишээ: MK, цүнх, гутал"
-                className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm md:text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          <div className="max-w-xl mx-auto mb-10">
+            <SearchAutocomplete initialQuery={query} />
+          </div>
+
+          {query && (
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <ProductFilters
+                brands={brands}
+                availableSizes={sizes}
+                minPrice={priceRange.min}
+                maxPrice={priceRange.max}
               />
-              <button
-                type="submit"
-                className="rounded-full bg-gray-900 px-5 py-2 text-white text-sm md:text-base hover:bg-gray-800"
-              >
-                Хайх
-              </button>
+              <ProductSort />
             </div>
-          </form>
+          )}
 
           {query && results.length > 0 && (
             <ProductSection products={results} title="Хайлтын үр дүн" />
           )}
 
           {query && results.length === 0 && (
-            <p className="text-center text-gray-600">
-              Илэрц олдсонгүй
-            </p>
+            <EmptyState
+              icon={
+                <svg
+                  className="w-24 h-24 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              }
+              title="Илэрц олдсонгүй"
+              description={`"${query}" гэсэн хайлтаар бүтээгдэхүүн олдсонгүй. Өөр нэрээр хайж үзнэ үү.`}
+            />
           )}
         </div>
       </main>

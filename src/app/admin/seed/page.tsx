@@ -18,7 +18,7 @@ export default function SeedDataPage() {
     const logs: string[] = [];
 
     try {
-      // Check if data already exists
+      
       const { count: existingProductCount } = await supabase
         .from('products')
         .select('*', { count: 'exact', head: true });
@@ -36,7 +36,7 @@ export default function SeedDataPage() {
         }
       }
 
-      // Step 1: Create categories (safe upsert)
+      
       logs.push('1. Ангилал шалгаж байна...');
       setDetails([...logs]);
 
@@ -54,11 +54,11 @@ export default function SeedDataPage() {
       logs.push(`✓ ${createdCategories?.length || 0} ангилал бэлэн байна`);
       setDetails([...logs]);
 
-      // Get category IDs
+      
       const bootsCategory = createdCategories?.find(c => c.slug === 'boots');
       const bagsCategory = createdCategories?.find(c => c.slug === 'bags');
 
-      // Step 2: Check which products already exist
+      
       logs.push('2. Одоогийн бүтээгдэхүүнүүдийг шалгаж байна...');
       setDetails([...logs]);
 
@@ -68,7 +68,7 @@ export default function SeedDataPage() {
       
       const existingSkus = new Set(existingProducts?.map(p => p.sku) || []);
 
-      // Step 3: Add only new products
+      
       logs.push('3. Шинэ бүтээгдэхүүн нэмж байна...');
       setDetails([...logs]);
 
@@ -104,7 +104,7 @@ export default function SeedDataPage() {
       logs.push(`→ ${productsToInsert.length} шинэ бүтээгдэхүүн нэмэгдэх болно`);
       setDetails([...logs]);
 
-      // Insert new products in batches
+      
       const batchSize = 10;
       let insertedCount = 0;
 
@@ -126,7 +126,7 @@ export default function SeedDataPage() {
       logs.push(`✓ Нийт ${insertedCount} шинэ бүтээгдэхүүн нэмэгдлээ`);
       setDetails([...logs]);
 
-      // Step 4: Verify
+      
       const { count } = await supabase
         .from('products')
         .select('*', { count: 'exact', head: true });
@@ -136,7 +136,6 @@ export default function SeedDataPage() {
 
       setMessage(`Амжилттай! ${insertedCount} шинэ бүтээгдэхүүн нэмэгдлээ.`);
     } catch (error) {
-      console.error('Seed error:', error);
       const errorMsg = getErrorMessage(error);
       logs.push(`✗ Алдаа: ${errorMsg}`);
       setDetails([...logs]);

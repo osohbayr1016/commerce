@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Product } from "@/types";
+import EmptyState from "@/components/ui/EmptyState";
 import Link from "next/link";
 
 interface WishlistItem {
@@ -37,7 +38,6 @@ export default function Wishlist() {
       if (error) throw error;
       setWishlist(data || []);
     } catch (error) {
-      console.error("Error fetching wishlist:", error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,6 @@ export default function Wishlist() {
       if (error) throw error;
       fetchWishlist();
     } catch (error) {
-      console.error("Error removing from wishlist:", error);
     }
   };
 
@@ -77,25 +76,29 @@ export default function Wishlist() {
   return (
     <div>
       {wishlist.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <svg
-            className="w-16 h-16 text-gray-400 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-          <p className="text-gray-600 text-lg">Хадгалсан бүтээгдэхүүн байхгүй</p>
-          <p className="text-gray-500 text-sm mt-2">
-            Таалагдсан бүтээгдэхүүнүүдээ энд хадгална уу
-          </p>
-        </div>
+        <EmptyState
+          icon={
+            <svg
+              className="w-24 h-24 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          }
+          title="Хадгалсан бүтээгдэхүүн байхгүй"
+          description="Таалагдсан бүтээгдэхүүнүүдээ хадгалсан бүтээгдэхүүнд нэмээд хадгална уу"
+          action={{
+            label: "Дэлгүүр хэсэх",
+            onClick: () => window.location.href = "/",
+          }}
+        />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {wishlist.map((item) => (

@@ -1,4 +1,4 @@
-// Database types
+
 export interface Category {
   id: number;
   name: string;
@@ -43,6 +43,7 @@ export interface Profile {
   tier_level: number;
   email: string | null;
   phone_number: string | null;
+  referral_code?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -89,7 +90,7 @@ export interface ProductView {
   session_id: string | null;
 }
 
-// Error types
+
 export interface AuthError extends Error {
   message: string;
   status?: number;
@@ -102,7 +103,7 @@ export interface DatabaseError extends Error {
   hint?: string;
 }
 
-// Utility function to safely get error message
+
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;

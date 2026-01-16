@@ -25,7 +25,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -35,7 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -62,7 +60,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error;
       setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error);
     } finally {
       setLoading(false);
     }
@@ -70,8 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, phone: string, password: string, fullName?: string) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
-    
-    console.log('Attempting signup with:', { email, phone: cleanPhone });
     
     const { data, error } = await supabase.auth.signUp({
       email: email,
@@ -86,9 +81,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
-      console.error('Signup error:', error);
-      
-      // Provide helpful error messages
       if (error.message.includes('Signups not allowed')) {
         throw new Error(
           'Бүртгэл идэвхгүй байна. Суpabase dashboard-аас "Enable email signups" асаах шаардлагатай. ' +
@@ -99,9 +91,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
     
-    console.log('Signup successful:', data);
-    
-    // User is automatically signed in after signup
     if (data.user) {
       setUser(data.user);
       await fetchProfile(data.user.id);
@@ -109,19 +98,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (identifier: string, password: string) => {
-    // Check if identifier is email or phone
     const isEmail = identifier.includes('@');
     
     let emailToUse: string;
     
     if (isEmail) {
-      // User entered email - use directly
       emailToUse = identifier.trim();
-      console.log('Login with email:', emailToUse);
     } else {
-      // User entered phone number - look up email from profiles table
       const cleanPhone = identifier.replace(/[^0-9]/g, '');
-      console.log('Login with phone:', cleanPhone);
       
       if (!cleanPhone || cleanPhone.length < 8) {
         throw new Error('Утасны дугаар буруу байна');
@@ -133,10 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('phone_number', cleanPhone)
         .single();
       
-      console.log('Profile lookup result:', { profile, profileError });
-      
       if (profileError) {
-        console.error('Profile lookup error:', profileError);
         throw new Error('Утасны дугаараар бүртгэл олдсонгүй. И-мэйл ашиглана уу.');
       }
       
@@ -145,7 +126,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       emailToUse = profile.email;
-      console.log('Using email from profile:', emailToUse);
     }
     
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -154,11 +134,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
-      console.error('Supabase auth error:', error);
       throw error;
     }
-    
-    console.log('Login successful!');
   };
 
   const signInWithGoogle = async () => {

@@ -1,4 +1,4 @@
-// Environment variable validation
+
 function getEnvVar(key: string): string {
   const value = process.env[key];
   if (!value) {
@@ -13,6 +13,6 @@ export const env = {
     anonKey: getEnvVar('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
   },
   site: {
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
   },
 } as const;

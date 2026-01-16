@@ -3,13 +3,17 @@ import ProductImageGallery from "@/components/ProductDetail/ProductImageGallery"
 import ProductInfo from "@/components/ProductDetail/ProductInfo";
 import ProductDescription from "@/components/ProductDetail/ProductDescription";
 import ProductSection from "@/components/Products/ProductSection";
+import ProductRecommendations from "@/components/Products/ProductRecommendations";
+import ReviewList from "@/components/Reviews/ReviewList";
+import Breadcrumb from "@/components/ProductDetail/Breadcrumb";
+import CompareButton from "@/components/ProductDetail/CompareButton";
 import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetail } from "@/data/mockProductDetail";
 import { Product } from "@/data/mockProducts";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 interface ProductPageProps {
   params: Promise<{
@@ -33,7 +37,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const { data: dbProduct } = await supabase
     .from("products")
-    .select("*")
+    .select("*, categories(*)")
     .or(filter)
     .single();
 
@@ -41,7 +45,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  // Convert database product to ProductDetail interface
+  const category = dbProduct.categories as any;
+
+  
   const productImages =
     Array.isArray(dbProduct.images) && dbProduct.images.length > 0
       ? dbProduct.images
@@ -69,6 +75,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   let relatedProducts: Product[] = [];
+  let averageRating = 0;
+  let totalReviews = 0;
 
   try {
     const { data: relatedData } = await supabase
@@ -96,7 +104,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
       }));
     }
   } catch (error) {
-    console.log("Related products fetch failed:", error);
+  }
+
+  
+  try {
+    const { data: reviewStats } = await supabase
+      .from("product_reviews")
+      .select("rating")
+      .eq("product_id", dbProduct.id);
+
+    if (reviewStats && reviewStats.length > 0) {
+      totalReviews = reviewStats.length;
+      averageRating =
+        reviewStats.reduce((sum, r) => sum + r.rating, 0) / totalReviews;
+    }
+  } catch (error) {
   }
 
   return (
@@ -104,18 +126,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <MainNav />
       
       <main className="flex-1 py-8 md:py-12">
+        <Breadcrumb
+          items={[
+            { label: "Нүүр", href: "/" },
+            ...(category
+              ? [{ label: category.name_mn || category.name_en || category.name || "Ангилал", href: `/categories/${category.slug}` }]
+              : []),
+            { label: product.nameEn || product.nameMn || "Бүтээгдэхүүн" },
+          ]}
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <a
-              href="/categories"
-              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Буцах
-            </a>
-          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-12">
             <div>
               <ProductImageGallery
@@ -137,6 +157,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
             />
           </div>
 
+          <div className="max-w-4xl mt-12 border-t border-gray-200 pt-8">
+            <ReviewList
+              productId={product.id}
+              averageRating={averageRating}
+              totalReviews={totalReviews}
+            />
+          </div>
+
           {relatedProducts.length > 0 && (
             <div className="border-t border-gray-200 mt-10 pt-8">
               <ProductSection
@@ -145,6 +173,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
             </div>
           )}
+
+          <ProductRecommendations productId={product.id} />
         </div>
       </main>
       
