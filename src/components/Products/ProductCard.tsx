@@ -23,7 +23,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         </div>
         <div className="mb-4">
-          {product.images && product.images.length > 0 && product.images[0]?.startsWith('http') ? (
+          {product.images && product.images.length > 0 && product.images[0] ? (
             <img
               src={product.images[0]}
               alt={product.nameEn || product.nameMn || ''}

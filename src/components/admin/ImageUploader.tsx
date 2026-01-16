@@ -42,7 +42,11 @@ export default function ImageUploader({
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.error || 'Upload failed');
+          console.error('Upload failed:', error);
+          const errorMessage = error.details 
+            ? `${error.error}: ${Array.isArray(error.details) ? error.details.join(', ') : error.details}`
+            : error.error || 'Upload failed';
+          throw new Error(errorMessage);
         }
 
         const data = await response.json();

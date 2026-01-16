@@ -31,7 +31,7 @@ export default function ProductImageGallery({
             style={{ backgroundColor: imageColor }}
             aria-label={`View image ${index + 1}`}
           >
-            {imageUrl && imageUrl.startsWith('http') ? (
+            {imageUrl ? (
               <img
                 src={imageUrl}
                 alt={`${productName} ${index + 1}`}
@@ -47,7 +47,7 @@ export default function ProductImageGallery({
           className="w-full aspect-square rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center relative overflow-hidden"
           style={{ backgroundColor: imageColor }}
         >
-          {images[selectedImage] && images[selectedImage].startsWith('http') ? (
+          {images[selectedImage] ? (
             <>
               <img
                 src={images[selectedImage]}

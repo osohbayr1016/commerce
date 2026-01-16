@@ -9,6 +9,7 @@ export interface Product {
   discount?: number;
   brandColor: string;
   imageColor: string;
+  images?: string[];
 }
 
 export const mockProducts: Product[] = [

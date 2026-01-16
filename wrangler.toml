@@ -11,3 +11,32 @@ binding = "ASSETS"
 
 [images]
 binding = "IMAGES"
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "commerce"
+
+# Environment Variables Configuration
+# 
+# For Cloudflare Images to work, you need to set the following environment variables
+# in the Cloudflare Workers dashboard:
+#
+# 1. Go to Cloudflare Dashboard → Workers & Pages → Your Worker → Settings → Variables and Secrets
+# 2. Add the following variables:
+#
+#    - CLOUDFLARE_ACCOUNT_ID: Your Cloudflare Account ID
+#      (Found in Cloudflare Dashboard → Right sidebar)
+#
+#    - CLOUDFLARE_IMAGES_API_TOKEN: Your Cloudflare Images API Token
+#      (Create at https://dash.cloudflare.com/profile/api-tokens)
+#      Permissions needed: Account → Cloudflare Images → Edit
+#
+# Note: For sensitive values (API tokens), use "Encrypted" secrets in the dashboard.
+#
+# Alternatively, you can set these in wrangler.toml for local development:
+# [vars]
+# CLOUDFLARE_ACCOUNT_ID = "your_account_id"
+#
+# For secrets (API tokens), use .dev.vars file (gitignored) or wrangler secrets:
+# npx wrangler secret put CLOUDFLARE_IMAGES_API_TOKEN

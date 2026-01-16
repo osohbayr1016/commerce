@@ -36,6 +36,7 @@ export default async function Home() {
     discount: p.discount,
     brandColor: p.brand_color || "#F5F5F5",
     imageColor: p.image_color || "#FAFAFA",
+    images: p.images || [],
   }));
 
   const boots = products.filter((p) => p.category === "boots");
