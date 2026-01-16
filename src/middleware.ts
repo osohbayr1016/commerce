@@ -6,13 +6,9 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // If env vars are missing, skip Supabase initialization
-  if (!supabaseUrl || !supabaseKey) {
-    return supabaseResponse;
-  }
+  // These are set via next.config.js and available at runtime
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   const supabase = createServerClient(
     supabaseUrl,
