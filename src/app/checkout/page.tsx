@@ -56,30 +56,26 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <MainNavClient />
       <main className="flex-1 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
-              Захиалга баталгаажуулах
-            </h1>
-          </div>
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {items.length === 0 ? (
-            <div className="border border-gray-200 rounded-lg p-8 text-center">
+            <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
               <p className="text-gray-600">Сагс хоосон байна</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 order-2 lg:order-1">
                 <CheckoutForm
                   items={items}
                   defaultValues={defaultValues}
                   onSuccess={handleSuccess}
                 />
               </div>
-              <CheckoutSummary items={items} subtotal={subtotal} />
+              <div className="lg:col-span-1 order-1 lg:order-2">
+                <CheckoutSummary items={items} subtotal={subtotal} />
+              </div>
             </div>
           )}
         </div>

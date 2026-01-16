@@ -17,6 +17,10 @@ binding = "IMAGES"
 binding = "R2_BUCKET"
 bucket_name = "commerce"
 
+# Environment Variables
+[vars]
+R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
+
 # Environment Variables Configuration
 # 
 # For Cloudflare Images to work, you need to set the following environment variables

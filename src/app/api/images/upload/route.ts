@@ -135,13 +135,15 @@ export async function POST(request: NextRequest) {
     const uploadedImages = [];
     const uploadErrors: string[] = [];
 
-    // In OpenNext Cloudflare, R2 binding is available as process.env.R2_BUCKET
-    // @ts-ignore - R2_BUCKET is a binding, not a string
-    const r2Bucket = process.env.R2_BUCKET;
+    // Note: R2 binding is not accessible in Next.js API routes with OpenNext
+    // We use aws4fetch instead, which works perfectly in Cloudflare Workers
+    const r2Bucket = null; // Force aws4fetch usage
 
     for (const file of validFiles) {
       try {
+        console.log(`[Upload API] Uploading file: ${file.name}`);
         const result = await uploadFileToR2(file, 'products', r2Bucket);
+        console.log(`[Upload API] Upload successful, URL: ${result.url}`);
         uploadedImages.push({
           id: result.key,
           url: result.url,
@@ -150,8 +152,8 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown upload error';
-        console.error(`Error uploading file "${file.name}":`, errorMessage);
-        console.error('Full error:', error);
+        console.error(`[Upload API] Error uploading file "${file.name}":`, errorMessage);
+        console.error('[Upload API] Full error:', error);
         uploadErrors.push(`Failed to upload "${file.name}": ${errorMessage}`);
       }
     }

@@ -8,9 +8,6 @@ export interface CheckoutFormValues {
   phone: string;
   email: string;
   address: string;
-  city: string;
-  district: string;
-  zip: string;
   note: string;
 }
 
@@ -20,12 +17,16 @@ interface CheckoutFormProps {
   onSuccess: () => void;
 }
 
+type PaymentMethod = "qpay" | "bank";
+
 export default function CheckoutForm({
   items,
   defaultValues,
   onSuccess,
 }: CheckoutFormProps) {
+  const [currentStep, setCurrentStep] = useState<"info" | "payment">("info");
   const [form, setForm] = useState<CheckoutFormValues>(defaultValues);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,7 +41,12 @@ export default function CheckoutForm({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleInfoSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setCurrentStep("payment");
+  };
+
+  const handlePaymentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (items.length === 0) return;
     setSubmitting(true);
@@ -53,6 +59,7 @@ export default function CheckoutForm({
         body: JSON.stringify({
           items,
           customer: form,
+          paymentMethod,
         }),
       });
 
@@ -69,81 +76,196 @@ export default function CheckoutForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input
-          name="fullName"
-          value={form.fullName}
-          onChange={handleChange}
-          placeholder="Нэр"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-          required
-        />
-        <input
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          placeholder="Утас"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-          required
-        />
+    <div className="bg-white rounded-lg border border-gray-200">
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200">
+        <button
+          type="button"
+          onClick={() => setCurrentStep("info")}
+          className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
+            currentStep === "info"
+              ? "text-gray-900 border-b-2 border-gray-900"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Мэдээлэл
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrentStep("payment")}
+          className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
+            currentStep === "payment"
+              ? "text-gray-900 border-b-2 border-gray-900"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Төлбөр төлөх
+        </button>
       </div>
-      <input
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-        placeholder="Имэйл"
-        type="email"
-        className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        required
-      />
-      <input
-        name="address"
-        value={form.address}
-        onChange={handleChange}
-        placeholder="Хаяг"
-        className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        required
-      />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <input
-          name="city"
-          value={form.city}
-          onChange={handleChange}
-          placeholder="Хот"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        />
-        <input
-          name="district"
-          value={form.district}
-          onChange={handleChange}
-          placeholder="Дүүрэг"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        />
-        <input
-          name="zip"
-          value={form.zip}
-          onChange={handleChange}
-          placeholder="Zip"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        />
+
+      {/* Content */}
+      <div className="p-6">
+        {currentStep === "info" ? (
+          <form onSubmit={handleInfoSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Нэр <span className="text-red-500">*</span>
+              </label>
+              <input
+                name="fullName"
+                value={form.fullName}
+                onChange={handleChange}
+                placeholder="Зочин#HG01"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Утас <span className="text-red-500">*</span>
+              </label>
+              <input
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="Утас *"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Нэмэлт мэдээлэл
+              </label>
+              <textarea
+                name="note"
+                value={form.note}
+                onChange={handleChange}
+                placeholder="Нэмэлт мэдээлэл"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                rows={4}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                what3words хаяг
+              </label>
+              <input
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                placeholder="///далай.бармат.юкинсэх т.м"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 transition-colors"
+            >
+              Үргэлжлүүлэх
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handlePaymentSubmit} className="space-y-4">
+            <div className="space-y-3">
+              {/* QPay Option */}
+              <div
+                onClick={() => setPaymentMethod("qpay")}
+                className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  paymentMethod === "qpay"
+                    ? "border-gray-900 bg-gray-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-900">
+                  <span className="text-white font-bold text-xl">Q</span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">QPay</div>
+                  <div className="text-sm text-gray-500">
+                    Төлбөрөө QPay хэтэвчээр ашиглан төлөх сонголт
+                  </div>
+                </div>
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "qpay"
+                      ? "border-gray-900 bg-gray-900"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {paymentMethod === "qpay" && (
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  )}
+                </div>
+              </div>
+
+              {/* Bank Transfer Option */}
+              <div
+                onClick={() => setPaymentMethod("bank")}
+                className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  paymentMethod === "bank"
+                    ? "border-gray-900 bg-gray-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-500">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">
+                    Дансаар шилжүүлэх
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Дансаар шинэтгэл шилжүүлэг хийх
+                  </div>
+                </div>
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "bank"
+                      ? "border-gray-900 bg-gray-900"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {paymentMethod === "bank" && (
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-lg bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {submitting ? "Илгээж байна..." : "Төлбөр төлөх"}
+            </button>
+          </form>
+        )}
       </div>
-      <textarea
-        name="note"
-        value={form.note}
-        onChange={handleChange}
-        placeholder="Тэмдэглэл"
-        className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900"
-        rows={4}
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded-full bg-gray-900 px-6 py-3 text-white text-base font-medium hover:bg-gray-800 disabled:opacity-60"
-      >
-        {submitting ? "Илгээж байна..." : "Захиалга хийх"}
-      </button>
-    </form>
+    </div>
   );
 }

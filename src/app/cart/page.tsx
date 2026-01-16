@@ -35,12 +35,12 @@ export default function CartPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
-              Сагс
+              Миний сагс
             </h1>
             {items.length > 0 && (
               <button
                 onClick={clearCart}
-                className="text-sm text-gray-500 hover:text-gray-900"
+                className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
               >
                 Бүгдийг устгах
               </button>
@@ -48,8 +48,14 @@ export default function CartPage() {
           </div>
 
           {items.length === 0 ? (
-            <div className="border border-gray-200 rounded-lg p-8 text-center">
-              <p className="text-gray-600">Сагс хоосон байна</p>
+            <div className="border border-gray-200 rounded-lg p-12 text-center">
+              <p className="text-gray-600 text-lg">Сагс хоосон байна.</p>
+              <button
+                onClick={() => router.push("/")}
+                className="mt-4 text-gray-900 font-medium hover:underline"
+              >
+                Дэлгүүр хэсэх
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -65,16 +71,16 @@ export default function CartPage() {
 
               <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Нийт дүн</p>
-                  <p className="text-2xl font-semibold text-gray-900">
+                  <p className="text-sm text-gray-500 mb-1">Нийт үнэ:</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {formatPrice(subtotal)} ₮
                   </p>
                 </div>
                 <button
                   onClick={() => router.push("/checkout")}
-                  className="rounded-full bg-gray-900 px-6 py-3 text-white text-base font-medium hover:bg-gray-800"
+                  className="rounded-lg bg-black px-8 py-3 text-white text-base font-medium hover:bg-gray-800 transition-colors"
                 >
-                  Захиалга хийх
+                  Үргэлжлүүлэх
                 </button>
               </div>
             </div>

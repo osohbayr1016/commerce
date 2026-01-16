@@ -71,6 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, phone: string, password: string, fullName?: string) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
     
+    console.log('Attempting signup with:', { email, phone: cleanPhone });
+    
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password,
@@ -83,7 +85,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Signup error:', error);
+      
+      // Provide helpful error messages
+      if (error.message.includes('Signups not allowed')) {
+        throw new Error(
+          'Бүртгэл идэвхгүй байна. Суpabase dashboard-аас "Enable email signups" асаах шаардлагатай. ' +
+          'Authentication → Providers → Email → Enable email signups'
+        );
+      }
+      
+      throw error;
+    }
+    
+    console.log('Signup successful:', data);
     
     // User is automatically signed in after signup
     if (data.user) {
