@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 interface CartAnimationProps {
   trigger: boolean;
   productImage?: string;
-  buttonRef: React.RefObject<HTMLButtonElement>;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
   onComplete: () => void;
 }
 

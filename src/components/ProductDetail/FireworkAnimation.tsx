@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 interface FireworkAnimationProps {
   trigger: boolean;
-  buttonRef: React.RefObject<HTMLButtonElement>;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 export default function FireworkAnimation({ trigger, buttonRef }: FireworkAnimationProps) {
