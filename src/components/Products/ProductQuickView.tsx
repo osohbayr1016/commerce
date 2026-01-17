@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Product } from "@/data/mockProducts";
 import { generateSlug } from "@/lib/utils";
 import AddToCartButton from "./AddToCartButton";
@@ -52,12 +53,12 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
   return (
     <>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        className="fixed inset-0 bg-white z-40"
         onClick={onClose}
       />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
@@ -81,11 +82,16 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 {product.images && product.images.length > 0 && product.images[0] ? (
-                  <img
-                    src={product.images[0]}
-                    alt={product.nameEn || product.nameMn || ""}
-                    className="w-full aspect-square rounded border border-gray-200 object-cover"
-                  />
+                  <div className="w-full aspect-square rounded border border-gray-200 overflow-hidden relative">
+                    <Image
+                      src={product.images[0]}
+                      alt={product.nameEn || product.nameMn || "Product"}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
                 ) : (
                   <div
                     className="w-full aspect-square rounded border border-gray-200 bg-gray-50"

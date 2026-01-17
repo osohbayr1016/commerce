@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { CartItem } from "@/contexts/CartContext";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 interface OrderPayload {
   items: CartItem[];
@@ -17,6 +18,10 @@ interface OrderPayload {
 }
 
 export async function POST(request: Request) {
+  // Apply strict rate limiting - 5 requests per minute for order creation
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const supabase = await createClient();
   const {
     data: { user },

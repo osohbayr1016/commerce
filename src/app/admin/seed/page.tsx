@@ -55,8 +55,8 @@ export default function SeedDataPage() {
       setDetails([...logs]);
 
       
-      const bootsCategory = createdCategories?.find(c => c.slug === 'boots');
-      const bagsCategory = createdCategories?.find(c => c.slug === 'bags');
+      const bootsCategory = createdCategories?.find((c: any) => c.slug === 'boots');
+      const bagsCategory = createdCategories?.find((c: any) => c.slug === 'bags');
 
       
       logs.push('2. Одоогийн бүтээгдэхүүнүүдийг шалгаж байна...');
@@ -66,7 +66,7 @@ export default function SeedDataPage() {
         .from('products')
         .select('sku');
       
-      const existingSkus = new Set(existingProducts?.map(p => p.sku) || []);
+      const existingSkus = new Set(existingProducts?.map((p: any) => p.sku) || []);
 
       
       logs.push('3. Шинэ бүтээгдэхүүн нэмж байна...');

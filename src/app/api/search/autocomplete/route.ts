@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 export async function GET(request: Request) {
+  // Apply rate limiting - 60 requests per minute for search
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.SEARCH);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q")?.trim();
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { uploadFileToR2 } from '@/lib/cloudflare/r2-upload';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -8,6 +9,10 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export async function POST(request: NextRequest) {
+  // Apply strict rate limiting - 5 requests per minute for image uploads
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     
     const supabase = await createClient();

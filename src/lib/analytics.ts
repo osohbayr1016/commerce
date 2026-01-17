@@ -1,69 +1,179 @@
+import { createClient } from '@/lib/supabase/server';
 
-
-declare global {
-  interface Window {
-    gtag?: (
-      command: string,
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void;
-  }
+export interface AnalyticsData {
+  overview: {
+    totalRevenue: number;
+    revenueGrowth: number;
+    totalOrders: number;
+    ordersGrowth: number;
+    totalUsers: number;
+    usersGrowth: number;
+    conversionRate: number;
+    conversionGrowth: number;
+    avgOrderValue: number;
+    avgOrderGrowth: number;
+  };
+  salesChart: Array<{
+    date: string;
+    revenue: number;
+    orders: number;
+  }>;
+  topProducts: Array<{
+    id: string;
+    name: string;
+    sales: number;
+    revenue: number;
+    views: number;
+  }>;
+  recentOrders: Array<{
+    id: string;
+    user_name: string;
+    total_amount: number;
+    status: string;
+    created_at: string;
+  }>;
+  categoryPerformance: Array<{
+    name: string;
+    sales: number;
+    revenue: number;
+  }>;
 }
 
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+export async function getAnalyticsData(
+  period: 'week' | 'month' | 'year' = 'month'
+): Promise<AnalyticsData> {
+  const supabase = await createClient();
 
+  const now = new Date();
+  const periodDays = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+  const startDate = new Date(now);
+  startDate.setDate(startDate.getDate() - periodDays);
+  
+  const previousStartDate = new Date(startDate);
+  previousStartDate.setDate(previousStartDate.getDate() - periodDays);
 
-export function pageview(url: string): void {
-  if (typeof window !== "undefined" && window.gtag && GA_MEASUREMENT_ID) {
-    window.gtag("config", GA_MEASUREMENT_ID, {
-      page_path: url,
-    });
-  }
-}
+  const [
+    currentOrders,
+    previousOrders,
+    currentUsers,
+    previousUsers,
+    topProducts,
+    recentOrders,
+    categoryStats,
+    dailyStats,
+  ] = await Promise.allSettled([
+    supabase
+      .from('orders')
+      .select('total_amount, created_at')
+      .gte('created_at', startDate.toISOString()),
+    
+    supabase
+      .from('orders')
+      .select('total_amount')
+      .gte('created_at', previousStartDate.toISOString())
+      .lt('created_at', startDate.toISOString()),
+    
+    supabase
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', startDate.toISOString()),
+    
+    supabase
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', previousStartDate.toISOString())
+      .lt('created_at', startDate.toISOString()),
+    
+    supabase.rpc('get_top_products', { limit_count: 10 }),
+    
+    supabase
+      .from('orders')
+      .select('id, full_name, total_amount, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(10),
+    
+    supabase.rpc('get_category_performance'),
+    
+    supabase.rpc('get_daily_sales', { 
+      days: periodDays 
+    }),
+  ]);
 
+  const currentOrdersData = currentOrders.status === 'fulfilled' ? currentOrders.value.data || [] : [];
+  const previousOrdersData = previousOrders.status === 'fulfilled' ? previousOrders.value.data || [] : [];
+  
+  const totalRevenue = currentOrdersData.reduce((sum: number, order: any) => sum + (order.total_amount || 0), 0);
+  const previousRevenue = previousOrdersData.reduce((sum: number, order: any) => sum + (order.total_amount || 0), 0);
+  const revenueGrowth = previousRevenue > 0 ? ((totalRevenue - previousRevenue) / previousRevenue) * 100 : 0;
 
-export function event({
-  action,
-  category,
-  label,
-  value,
-}: {
-  action: string;
-  category: string;
-  label?: string;
-  value?: number;
-}): void {
-  if (typeof window !== "undefined" && window.gtag && GA_MEASUREMENT_ID) {
-    window.gtag("event", action, {
-      event_category: category,
-      event_label: label,
-      value: value,
-    });
-  }
-}
+  const totalOrders = currentOrdersData.length;
+  const previousOrdersCount = previousOrdersData.length;
+  const ordersGrowth = previousOrdersCount > 0 ? ((totalOrders - previousOrdersCount) / previousOrdersCount) * 100 : 0;
 
+  const totalUsers = currentUsers.status === 'fulfilled' ? currentUsers.value.count || 0 : 0;
+  const previousUsersCount = previousUsers.status === 'fulfilled' ? previousUsers.value.count || 0 : 0;
+  const usersGrowth = previousUsersCount > 0 ? ((totalUsers - previousUsersCount) / previousUsersCount) * 100 : 0;
 
-export function trackPurchase(orderId: string, amount: number): void {
-  event({
-    action: "purchase",
-    category: "ecommerce",
-    label: orderId,
-    value: amount,
-  });
-}
+  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+  const previousAvgOrderValue = previousOrdersCount > 0 ? previousRevenue / previousOrdersCount : 0;
+  const avgOrderGrowth = previousAvgOrderValue > 0 ? ((avgOrderValue - previousAvgOrderValue) / previousAvgOrderValue) * 100 : 0;
 
-export function trackAddToCart(productId: string, productName: string): void {
-  event({
-    action: "add_to_cart",
-    category: "ecommerce",
-    label: `${productId}: ${productName}`,
-  });
-}
+  const conversionRate = totalUsers > 0 ? (totalOrders / totalUsers) * 100 : 0;
+  const previousConversionRate = previousUsersCount > 0 ? (previousOrdersCount / previousUsersCount) * 100 : 0;
+  const conversionGrowth = previousConversionRate > 0 ? ((conversionRate - previousConversionRate) / previousConversionRate) * 100 : 0;
 
-export function trackProductView(productId: string, productName: string): void {
-  event({
-    action: "view_item",
-    category: "ecommerce",
-    label: `${productId}: ${productName}`,
-  });
+  const salesChartData = dailyStats.status === 'fulfilled' && dailyStats.value.data 
+    ? dailyStats.value.data.map((day: any) => ({
+        date: new Date(day.date).toLocaleDateString('mn-MN', { month: 'short', day: 'numeric' }),
+        revenue: day.revenue || 0,
+        orders: day.orders || 0,
+      }))
+    : [];
+
+  const topProductsData = topProducts.status === 'fulfilled' && topProducts.value.data
+    ? topProducts.value.data.map((product: any) => ({
+        id: product.product_id,
+        name: product.product_name,
+        sales: product.total_sales || 0,
+        revenue: product.total_revenue || 0,
+        views: 0,
+      }))
+    : [];
+
+  const recentOrdersData = recentOrders.status === 'fulfilled' && recentOrders.value.data
+    ? recentOrders.value.data.map((order: any) => ({
+        id: order.id,
+        user_name: order.full_name || 'Unknown',
+        total_amount: order.total_amount || 0,
+        status: order.status || 'pending',
+        created_at: order.created_at,
+      }))
+    : [];
+
+  const categoryPerformanceData = categoryStats.status === 'fulfilled' && categoryStats.value.data
+    ? categoryStats.value.data.map((cat: any) => ({
+        name: cat.category_name,
+        sales: cat.total_sales || 0,
+        revenue: cat.total_revenue || 0,
+      }))
+    : [];
+
+  return {
+    overview: {
+      totalRevenue,
+      revenueGrowth,
+      totalOrders,
+      ordersGrowth,
+      totalUsers,
+      usersGrowth,
+      conversionRate,
+      conversionGrowth,
+      avgOrderValue,
+      avgOrderGrowth,
+    },
+    salesChart: salesChartData,
+    topProducts: topProductsData,
+    recentOrders: recentOrdersData,
+    categoryPerformance: categoryPerformanceData,
+  };
 }

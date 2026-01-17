@@ -11,6 +11,7 @@ export default function LanguageSelector() {
     { code: "mn", name: "Mongolian", nativeName: "Монгол" },
     { code: "ru", name: "Russian", nativeName: "Русский" },
     { code: "zh", name: "Chinese", nativeName: "中文" },
+    { code: "it", name: "Italian", nativeName: "Italiano" },
   ];
 
   return (

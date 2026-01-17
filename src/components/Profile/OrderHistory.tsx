@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { useModal } from "@/hooks/useModal";
 
 type OrderStatus = "all" | "pending" | "confirmed" | "delivered" | "cancelled";
 
@@ -33,7 +34,9 @@ export default function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeStatus, setActiveStatus] = useState<OrderStatus>("all");
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const supabase = createClient();
+  const modal = useModal();
 
   const fetchOrders = useCallback(async () => {
     if (!user) return;
@@ -75,9 +78,47 @@ export default function OrderHistory() {
     fetchOrders();
   }, [fetchOrders]);
 
+  const handleCancelOrder = async (orderId: string) => {
+    modal.showConfirm(
+      'Захиалга цуцлах',
+      'Та энэ захиалгыг цуцлахдаа итгэлтэй байна уу?',
+      async () => {
+        setCancellingOrderId(orderId);
+        try {
+          const response = await fetch(`/api/orders/${orderId}/cancel`, {
+            method: 'POST',
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to cancel order');
+          }
+
+          modal.showSuccess(
+            'Амжилттай',
+            'Захиалга амжилттай цуцлагдлаа'
+          );
+          
+          // Refresh orders
+          await fetchOrders();
+        } catch (error) {
+          modal.showError(
+            'Алдаа',
+            error instanceof Error ? error.message : 'Захиалга цуцлахад алдаа гарлаа'
+          );
+        } finally {
+          setCancellingOrderId(null);
+        }
+      },
+      'Цуцлах',
+      'Болих'
+    );
+  };
+
   const statusFilters = [
     { id: "all" as OrderStatus, label: "Бүгд" },
-    { id: "pending" as OrderStatus, label: "Төлбөр хүлээгдэж буй" },
+    { id: "pending" as OrderStatus, label: "Хүлээгдэж буй" },
     { id: "confirmed" as OrderStatus, label: "Баталгаажсан" },
     { id: "delivered" as OrderStatus, label: "Хүргэгдсэн" },
     { id: "cancelled" as OrderStatus, label: "Цуцалсан" },
@@ -94,8 +135,8 @@ export default function OrderHistory() {
         label: "Хүлээгдэж буй",
       },
       confirmed: {
-        icon: "🟢",
-        text: "text-green-700",
+        icon: "🔵",
+        text: "text-blue-700",
         label: "Баталгаажсан",
       },
       delivered: {
@@ -131,6 +172,10 @@ export default function OrderHistory() {
     return new Intl.NumberFormat("mn-MN").format(price) + "₮";
   };
 
+  const canCancelOrder = (status: string) => {
+    return status === 'pending';
+  };
+
   if (loading) {
     return (
       <div className="text-center py-12">
@@ -142,7 +187,6 @@ export default function OrderHistory() {
 
   return (
     <div>
-      {/* Status Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         {statusFilters.map((filter) => (
           <button
@@ -159,7 +203,6 @@ export default function OrderHistory() {
         ))}
       </div>
 
-      {/* Orders List */}
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <svg
@@ -192,13 +235,16 @@ export default function OrderHistory() {
                   ID
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Date
+                  Огноо
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Файлын үнэ
+                  Нийт үнэ
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                  Itemsы
+                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                  Төлөв
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                  Үйлдэл
                 </th>
               </tr>
             </thead>
@@ -209,21 +255,31 @@ export default function OrderHistory() {
                     {index + 1}
                   </td>
                   <td className="px-4 py-4 text-sm text-gray-600">
-                    {order.id.slice(0, 5)}
+                    #{order.id.slice(0, 8)}
                   </td>
                   <td className="px-4 py-4 text-sm text-gray-600">
                     {formatDate(order.created_at)}
                   </td>
                   <td className="px-4 py-4 text-sm text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <span className="text-gray-900 font-medium">
-                        {formatPrice(order.total_amount)}
-                      </span>
-                      {getStatusBadge(order.status)}
-                    </div>
+                    <span className="text-gray-900 font-medium">
+                      {formatPrice(order.total_amount)}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 text-sm text-gray-900 text-right font-medium">
-                    {order.order_items?.length || 0}
+                  <td className="px-4 py-4 text-sm text-center">
+                    {getStatusBadge(order.status)}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-center">
+                    {canCancelOrder(order.status) ? (
+                      <button
+                        onClick={() => handleCancelOrder(order.id)}
+                        disabled={cancellingOrderId === order.id}
+                        className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {cancellingOrderId === order.id ? 'Цуцлаж байна...' : 'Цуцлах'}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-400">-</span>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply generous rate limiting - 100 requests per minute for reading reviews
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.GENEROUS);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") || "1");
@@ -68,6 +73,10 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply standard rate limiting - 30 requests per minute for posting reviews
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -157,6 +166,10 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply standard rate limiting - 30 requests per minute for updating reviews
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -203,6 +216,10 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply standard rate limiting - 30 requests per minute for deleting reviews
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   const { searchParams } = new URL(request.url);
   const review_id = searchParams.get("review_id");

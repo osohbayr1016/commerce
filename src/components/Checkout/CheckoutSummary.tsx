@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { CartItem } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
 
@@ -28,15 +29,18 @@ export default function CheckoutSummary({
         {items.map((item) => (
           <div key={item.id} className="flex gap-4">
             {/* Product Image */}
-            <div className="w-20 h-20 flex-shrink-0">
+            <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded-lg border border-gray-200">
               {item.images && item.images.length > 0 ? (
-                <img
+                <Image
                   src={item.images[0]}
                   alt={item.name}
-                  className="w-full h-full object-cover rounded-lg border border-gray-200"
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                  loading="lazy"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-100 rounded-lg border border-gray-200" />
+                <div className="w-full h-full bg-gray-100" />
               )}
             </div>
 

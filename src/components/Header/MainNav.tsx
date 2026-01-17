@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import UserMenu from "./UserMenu";
+import SearchButton from "./SearchButton";
 import { Category } from "@/types";
 
 export default async function MainNav() {
   const siteName = "E-Commerce";
   let headerCategories: Category[] = [];
 
-  
   try {
     const supabase = await createClient();
 
@@ -49,15 +49,9 @@ export default async function MainNav() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-4">
-            <a
-              href="/search"
-              className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"
-              aria-label="search"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </a>
+            <div className="hidden sm:block">
+              <SearchButton />
+            </div>
             <a
               href="/cart"
               className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"

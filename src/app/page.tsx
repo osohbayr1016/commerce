@@ -14,7 +14,7 @@ import {
 } from "@/lib/products";
 import { Product } from "@/data/mockProducts";
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 interface HomeProps {
   searchParams?: Promise<{

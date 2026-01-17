@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ComparisonProvider } from "@/contexts/ComparisonContext";
 import { generateSEO } from "@/lib/seo";
 import MobileBottomNav from "@/components/Navigation/MobileBottomNav";
+import { ModalProvider } from "@/hooks/useModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
                 <ComparisonProvider>
                   <div className="min-h-screen pb-16 md:pb-0">{children}</div>
                   <MobileBottomNav />
+                  <ModalProvider />
                 </ComparisonProvider>
               </ToastProvider>
             </CartProvider>

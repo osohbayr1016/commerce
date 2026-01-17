@@ -6,6 +6,7 @@ import MainNavClient from "@/components/Header/MainNavClient";
 import Footer from "@/components/Footer/Footer";
 import CartItemRow from "@/components/Cart/CartItemRow";
 import EmptyState from "@/components/ui/EmptyState";
+import BackButton from "@/components/ui/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
@@ -34,6 +35,9 @@ export default function CartPage() {
       <MainNavClient />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <BackButton />
+          </div>
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
               Миний сагс

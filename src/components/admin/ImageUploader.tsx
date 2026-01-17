@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import { useModal } from '@/hooks/useModal';
 
 interface UploadedImage {
   id: string;
@@ -21,6 +22,7 @@ export default function ImageUploader({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modal = useModal();
 
   const handleUpload = useCallback(
     async (files: FileList | null) => {
@@ -53,7 +55,10 @@ export default function ImageUploader({
         onImagesChange([...images, ...newImageUrls]);
         setUploadProgress(100);
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Upload failed');
+        modal.showError(
+          'Upload алдаа',
+          error instanceof Error ? error.message : 'Upload failed'
+        );
       } finally {
         setUploading(false);
         setUploadProgress(0);

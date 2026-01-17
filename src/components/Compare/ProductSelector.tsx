@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Product } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { useComparison } from "@/contexts/ComparisonContext";
@@ -113,11 +114,16 @@ export default function ProductSelector({ onClose, excludeIds }: ProductSelector
                   >
                     <div className="mb-2">
                       {product.images && product.images.length > 0 ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name_en || product.name_mn || ""}
-                          className="w-full aspect-square object-cover rounded"
-                        />
+                        <div className="w-full aspect-square relative rounded overflow-hidden">
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name_en || product.name_mn || "Product"}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 33vw"
+                            className="object-cover"
+                            loading="lazy"
+                          />
+                        </div>
                       ) : (
                         <div
                           className="w-full aspect-square rounded"

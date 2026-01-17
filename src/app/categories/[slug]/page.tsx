@@ -18,7 +18,7 @@ import {
 import { Product } from "@/data/mockProducts";
 import { Category } from "@/types";
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -34,11 +34,23 @@ interface CategoryPageProps {
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
-  const { slug } = await params;
-  const paramsData = await searchParams;
   let category: Category | null = null;
+  let products: Product[] = [];
+  let totalCount = 0;
+  let totalPages = 1;
+  let brands: string[] = [];
+  let sizes: number[] = [];
+  let priceRange = { min: 0, max: 1000000 };
+  let categoryName = "Ангилал";
+  let currentPage = 1;
 
   try {
+    const { slug } = await params;
+    
+    if (!slug || typeof slug !== "string") {
+      notFound();
+    }
+
     const supabase = await createClient();
     
     const { data: categoryData, error: categoryError } = await supabase
@@ -53,6 +65,68 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }
 
     category = categoryData as Category;
+
+    if (!category || !category.id) {
+      notFound();
+    }
+
+    categoryName = category.name_mn || category.name_en || category.name || "Ангилал";
+
+    const paramsData = searchParams ? await searchParams : ({} as {
+      brands?: string;
+      sizes?: string;
+      minPrice?: string;
+      maxPrice?: string;
+      inStock?: string;
+      sort?: string;
+      page?: string;
+    });
+    currentPage = Math.max(1, parseInt(paramsData?.page || "1") || 1);
+    const limit = 24;
+    const offset = (currentPage - 1) * limit;
+
+    const filters = {
+      categoryId: category.id,
+      brands: paramsData?.brands?.split(",").filter(Boolean) || [],
+      sizes: paramsData?.sizes?.split(",").map(Number).filter((n) => !isNaN(n) && n > 0) || [],
+      minPrice: paramsData?.minPrice ? Number(paramsData.minPrice) : undefined,
+      maxPrice: paramsData?.maxPrice ? Number(paramsData.maxPrice) : undefined,
+      inStockOnly: paramsData?.inStock === "true",
+    };
+
+    if (filters.minPrice !== undefined && isNaN(filters.minPrice)) {
+      filters.minPrice = undefined;
+    }
+    if (filters.maxPrice !== undefined && isNaN(filters.maxPrice)) {
+      filters.maxPrice = undefined;
+    }
+
+    const sort = (paramsData?.sort as SortOption) || "newest";
+
+    const results = await Promise.allSettled([
+      getProductsWithFilters(filters, sort, limit, offset),
+      getUniqueBrands(),
+      getAvailableSizes(),
+      getPriceRange(),
+    ]);
+
+    if (results[0].status === "fulfilled") {
+      products = (results[0].value.data || []) as Product[];
+      totalCount = results[0].value.count || 0;
+      totalPages = Math.max(1, Math.ceil(totalCount / limit));
+    }
+
+    if (results[1].status === "fulfilled") {
+      brands = results[1].value || [];
+    }
+
+    if (results[2].status === "fulfilled") {
+      sizes = results[2].value || [];
+    }
+
+    if (results[3].status === "fulfilled") {
+      priceRange = results[3].value || { min: 0, max: 1000000 };
+    }
   } catch (error) {
     notFound();
   }
@@ -60,33 +134,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   if (!category) {
     notFound();
   }
-
-  const page = parseInt(paramsData?.page || "1");
-  const limit = 24;
-  const offset = (page - 1) * limit;
-
-  const filters = {
-    categoryId: category.id,
-    brands: paramsData?.brands?.split(",").filter(Boolean),
-    sizes: paramsData?.sizes?.split(",").map(Number).filter(Boolean),
-    minPrice: paramsData?.minPrice ? Number(paramsData.minPrice) : undefined,
-    maxPrice: paramsData?.maxPrice ? Number(paramsData.maxPrice) : undefined,
-    inStockOnly: paramsData?.inStock === "true",
-  };
-
-  const sort = (paramsData?.sort as SortOption) || "newest";
-
-  const [productsResult, brands, sizes, priceRange] = await Promise.all([
-    getProductsWithFilters(filters, sort, limit, offset),
-    getUniqueBrands(),
-    getAvailableSizes(),
-    getPriceRange(),
-  ]);
-
-  const products: Product[] = (productsResult.data || []) as Product[];
-  const totalCount = productsResult.count || 0;
-  const totalPages = Math.ceil(totalCount / limit);
-  const categoryName = category.name_mn || category.name_en || category.name;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -116,7 +163,10 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             <>
               <ProductSection products={products} />
               {totalPages > 1 && (
-                <PaginationClient currentPage={page} totalPages={totalPages} />
+                <PaginationClient 
+                  currentPage={Math.min(currentPage, totalPages)} 
+                  totalPages={totalPages} 
+                />
               )}
             </>
           ) : (

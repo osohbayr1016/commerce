@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import DeleteProductButton from './DeleteProductButton';
+import ProductsTable from '@/components/admin/ProductsTable';
 import AdminPagination from './AdminPagination';
 
 interface ProductsPageProps {
@@ -19,7 +19,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   
   const { data: products, error, count } = await supabase
     .from('products')
-    .select('*', { count: 'exact' })
+    .select('id, name_en, name_mn, title, brand, price, discount, stock, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -48,64 +48,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </div>
 
       {products && products.length > 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-                  Нэр
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-                  Брэнд
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-                  Үнэ
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-                  Хөнгөлөлт
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">
-                  Нөөц
-                </th>
-                <th className="px-6 py-4 text-right text-sm font-medium text-gray-900">
-                  Үйлдэл
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      {product.name_en || product.title}
-                    </div>
-                    <div className="text-sm text-gray-500">{product.name_mn}</div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.brand || '-'}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.price?.toLocaleString()} ₮
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.discount ? `-${product.discount}%` : '-'}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {product.stock}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm space-x-2">
-                    <Link
-                      href={`/admin/products/${product.id}/edit`}
-                      className="inline-block px-3 py-1 text-gray-700 hover:text-gray-900 font-medium"
-                    >
-                      Засах
-                    </Link>
-                    <DeleteProductButton productId={product.id} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-4">
+          <ProductsTable products={products} />
           <AdminPagination currentPage={page} totalPages={totalPages} basePath="/admin/products" />
         </div>
       ) : (

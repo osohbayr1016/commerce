@@ -5,8 +5,7 @@ import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { Product } from "@/data/mockProducts";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function SalePage() {
   let dbProducts = null;
@@ -31,8 +30,11 @@ export default async function SalePage() {
     price: p.price || 0,
     originalPrice: p.original_price || p.price || 0,
     discount: p.discount,
+    stock: p.stock || 0,
+    sizes: p.sizes || [],
     brandColor: p.brand_color || "#F5F5F5",
     imageColor: p.image_color || "#FAFAFA",
+    images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [],
   }));
 
   const discounted = products.filter(

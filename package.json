@@ -20,7 +20,9 @@
     "aws4fetch": "^1.0.20",
     "next": "15.5.9",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^3.6.0",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.14.8",

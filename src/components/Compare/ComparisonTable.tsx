@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Product } from "@/types";
 import { useRouter } from "next/navigation";
 import { generateSlug } from "@/lib/utils";
@@ -45,11 +46,16 @@ export default function ComparisonTable({ products, reviews, onRemove }: Compari
       render: (product: Product) => (
         <div className="flex justify-center">
           {product.images && product.images.length > 0 ? (
-            <img
-              src={product.images[0]}
-              alt={product.name_en || product.name_mn || ""}
-              className="w-full max-w-[200px] aspect-square object-cover rounded-lg"
-            />
+            <div className="w-full max-w-[200px] aspect-square relative rounded-lg overflow-hidden">
+              <Image
+                src={product.images[0]}
+                alt={product.name_en || product.name_mn || "Product"}
+                fill
+                sizes="200px"
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>
           ) : (
             <div
               className="w-full max-w-[200px] aspect-square rounded-lg"

@@ -87,42 +87,42 @@ export default function ReferralSection() {
         Referral Program
       </h3>
 
-      <div className="bg-gradient-to-br from-gray-900 to-gray-700 rounded-lg p-6 mb-6 text-white">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-white/80">Your Referral Code</h4>
-            <p className="text-2xl font-bold">{profile?.referral_code || "Loading..."}</p>
+            <h4 className="text-sm font-medium text-gray-600">Your Referral Code</h4>
+            <p className="text-2xl font-bold text-gray-900">{profile?.referral_code || "Loading..."}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-white/10 rounded-lg p-3">
-            <p className="text-xs text-white/70">Total Referrals</p>
-            <p className="text-xl font-bold">{referrals.length}</p>
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-600">Total Referrals</p>
+            <p className="text-xl font-bold text-gray-900">{referrals.length}</p>
           </div>
-          <div className="bg-white/10 rounded-lg p-3">
-            <p className="text-xs text-white/70">XP Earned</p>
-            <p className="text-xl font-bold">{totalRewards} XP</p>
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-600">XP Earned</p>
+            <p className="text-xl font-bold text-gray-900">{totalRewards} XP</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <div className="bg-white/10 rounded-lg p-3 flex items-center justify-between">
+          <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
             <input
               type="text"
               value={referralUrl}
               readOnly
-              className="bg-transparent flex-1 text-sm text-white outline-none"
+              className="bg-transparent flex-1 text-sm text-gray-900 outline-none"
             />
             <button
               onClick={() => copyToClipboard(referralUrl)}
               disabled={copying}
-              className="ml-2 px-3 py-1 bg-white text-gray-900 rounded text-sm font-medium hover:bg-gray-100 transition"
+              className="ml-2 px-3 py-1 bg-gray-900 text-white rounded text-sm font-medium hover:bg-gray-800 transition"
             >
               {copying ? "Copied!" : "Copy"}
             </button>
@@ -130,7 +130,7 @@ export default function ReferralSection() {
 
           <button
             onClick={() => copyToClipboard(profile?.referral_code || "")}
-            className="w-full px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition"
+            className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-900 transition"
           >
             Copy Code Only
           </button>

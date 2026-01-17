@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Apply strict rate limiting - 5 requests per minute for admin operations
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const supabase = await createClient();
     

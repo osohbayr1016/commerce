@@ -7,6 +7,7 @@ import ProductRecommendations from "@/components/Products/ProductRecommendations
 import ReviewList from "@/components/Reviews/ReviewList";
 import Breadcrumb from "@/components/ProductDetail/Breadcrumb";
 import CompareButton from "@/components/ProductDetail/CompareButton";
+import BackButton from "@/components/ui/BackButton";
 import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetail } from "@/data/mockProductDetail";
@@ -74,51 +75,48 @@ export default async function ProductPage({ params }: ProductPageProps) {
     hasFinancing: dbProduct.has_financing || false,
   };
 
+  const [relatedProductsResult, reviewStatsResult] = await Promise.all([
+    supabase
+      .from("products")
+      .select("id, brand, name_en, title, name_mn, subcategory, price, original_price, discount, brand_color, image_color, images")
+      .eq("subcategory", dbProduct.subcategory)
+      .neq("id", dbProduct.id)
+      .order("created_at", { ascending: false })
+      .limit(8),
+    supabase
+      .from("product_reviews")
+      .select("rating")
+      .eq("product_id", dbProduct.id)
+  ]);
+
   let relatedProducts: Product[] = [];
   let averageRating = 0;
   let totalReviews = 0;
 
-  try {
-    const { data: relatedData } = await supabase
-      .from("products")
-      .select("*")
-      .eq("subcategory", dbProduct.subcategory)
-      .neq("id", dbProduct.id)
-      .order("created_at", { ascending: false })
-      .limit(8);
-
-    if (relatedData) {
-      relatedProducts = relatedData.map((item: any) => ({
-        id: item.id,
-        brand: item.brand || "",
-        nameEn: item.name_en || item.title || "",
-        nameMn: item.name_mn || "",
-        category: item.subcategory?.toLowerCase().includes("цүнх")
-          ? "bag"
-          : "boots",
-        price: item.price || 0,
-        originalPrice: item.original_price || item.price || 0,
-        discount: item.discount,
-        brandColor: item.brand_color || "#F5F5F5",
-        imageColor: item.image_color || "#FAFAFA",
-      }));
-    }
-  } catch (error) {
+  if (relatedProductsResult.data) {
+    relatedProducts = relatedProductsResult.data.map((item: any) => ({
+      id: item.id,
+      brand: item.brand || "",
+      nameEn: item.name_en || item.title || "",
+      nameMn: item.name_mn || "",
+      category: item.subcategory?.toLowerCase().includes("цүнх")
+        ? "bag"
+        : "boots",
+      price: item.price || 0,
+      originalPrice: item.original_price || item.price || 0,
+      discount: item.discount,
+      stock: 0,
+      sizes: [],
+      brandColor: item.brand_color || "#F5F5F5",
+      imageColor: item.image_color || "#FAFAFA",
+      images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [],
+    }));
   }
 
-  
-  try {
-    const { data: reviewStats } = await supabase
-      .from("product_reviews")
-      .select("rating")
-      .eq("product_id", dbProduct.id);
-
-    if (reviewStats && reviewStats.length > 0) {
-      totalReviews = reviewStats.length;
-      averageRating =
-        reviewStats.reduce((sum, r) => sum + r.rating, 0) / totalReviews;
-    }
-  } catch (error) {
+  if (reviewStatsResult.data && reviewStatsResult.data.length > 0) {
+    totalReviews = reviewStatsResult.data.length;
+    averageRating =
+      reviewStatsResult.data.reduce((sum: number, r: any) => sum + r.rating, 0) / totalReviews;
   }
 
   return (
@@ -136,6 +134,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
           ]}
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <BackButton />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-12">
             <div>
               <ProductImageGallery
@@ -145,8 +146,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
             </div>
             
-            <div>
+            <div className="space-y-4">
               <ProductInfo product={product} />
+              <CompareButton product={product} />
             </div>
           </div>
           

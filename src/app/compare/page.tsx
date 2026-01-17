@@ -63,7 +63,7 @@ export default function ComparePage() {
             .eq("product_id", id);
 
           if (reviewData && reviewData.length > 0) {
-            const avg = reviewData.reduce((sum, r) => sum + r.rating, 0) / reviewData.length;
+            const avg = reviewData.reduce((sum: number, r: any) => sum + r.rating, 0) / reviewData.length;
             reviewsData[id as string] = {
               average: avg,
               count: reviewData.length,

@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Apply generous rate limiting - 100 requests per minute for stock checks
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.GENEROUS);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   const supabase = await createClient();
 

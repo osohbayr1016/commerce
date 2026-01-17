@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Apply rate limiting - 30 requests per minute
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -64,6 +69,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Apply rate limiting - 30 requests per minute
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -123,6 +132,10 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  // Apply rate limiting - 30 requests per minute
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -187,6 +200,10 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  // Apply rate limiting - 30 requests per minute
+  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const supabase = await createClient();
   const {
     data: { user },

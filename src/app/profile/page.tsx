@@ -12,6 +12,7 @@ import OrderHistory from "@/components/Profile/OrderHistory";
 import Wishlist from "@/components/Profile/Wishlist";
 import LanguageSelector from "@/components/Profile/LanguageSelector";
 import ReferralSection from "@/components/Profile/ReferralSection";
+import BackButton from "@/components/ui/BackButton";
 
 type TabType = "orders" | "wishlist" | "settings" | "referral";
 
@@ -61,6 +62,9 @@ export default function ProfilePage() {
       <main className="flex-1 bg-white">
         <section className="py-10 md:py-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-6">
+              <BackButton />
+            </div>
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
                 {t("profile.title")}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Product } from '@/data/mockProducts';
 import { generateSlug } from '@/lib/utils';
 import AddToCartButton from './AddToCartButton';
@@ -75,12 +76,16 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="mb-4 relative group/image">
           {product.images && product.images.length > 0 && product.images[0] ? (
             <>
-              <img
-                src={product.images[0]}
-                alt={product.nameEn || product.nameMn || ''}
-                className="w-full aspect-square rounded border border-gray-200 object-cover cursor-pointer"
-                onClick={handleImageClick}
-              />
+              <div className="w-full aspect-square rounded border border-gray-200 overflow-hidden relative cursor-pointer" onClick={handleImageClick}>
+                <Image
+                  src={product.images[0]}
+                  alt={product.nameEn || product.nameMn || 'Product'}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover"
+                  loading="lazy"
+                />
+              </div>
               <button
                 onClick={handleImageClick}
                 className="absolute inset-0 bg-black bg-opacity-0 group-hover/image:bg-opacity-10 transition-opacity flex items-center justify-center opacity-0 group-hover/image:opacity-100"

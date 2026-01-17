@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -23,7 +24,7 @@ export default function ProductImageGallery({
           <button
             key={index}
             onClick={() => setSelectedImage(index)}
-            className={`w-16 h-16 md:w-20 md:h-20 rounded border-2 transition-all overflow-hidden ${
+            className={`w-16 h-16 md:w-20 md:h-20 rounded border-2 transition-all overflow-hidden relative ${
               selectedImage === index
                 ? 'border-gray-900'
                 : 'border-gray-200 hover:border-gray-400'
@@ -32,10 +33,13 @@ export default function ProductImageGallery({
             aria-label={`View image ${index + 1}`}
           >
             {imageUrl ? (
-              <img
+              <Image
                 src={imageUrl}
                 alt={`${productName} ${index + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                sizes="80px"
+                className="object-cover"
+                loading="lazy"
               />
             ) : null}
           </button>
@@ -49,12 +53,15 @@ export default function ProductImageGallery({
         >
           {images[selectedImage] ? (
             <>
-              <img
+              <Image
                 src={images[selectedImage]}
                 alt={productName || "Product Image"}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
               />
-              <span className="absolute top-3 right-3 text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
+              <span className="absolute top-3 right-3 text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded z-10">
                 {selectedImage + 1} of {totalImages}
               </span>
             </>

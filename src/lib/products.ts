@@ -26,7 +26,7 @@ export async function getProductsWithFilters(
   offset?: number
 ) {
   const supabase = await createClient();
-  let query = supabase.from("products").select("*", { count: "exact" });
+  let query = supabase.from("products").select("id, brand, name_en, name_mn, title, price, original_price, discount, stock, sizes, subcategory, brand_color, image_color, images, created_at, category_id, categories(slug)", { count: "exact" });
 
   if (filters.brands && filters.brands.length > 0) {
     query = query.in("brand", filters.brands);
@@ -93,51 +93,79 @@ export async function getProductsWithFilters(
     return { data: [], error, count: 0 };
   }
 
-  const products: Product[] = (data || []).map((p: any) => ({
-    id: p.id,
-    brand: p.brand || "",
-    nameEn: p.name_en || p.title || "",
-    nameMn: p.name_mn || "",
-    category: p.subcategory?.toLowerCase().includes("цүнх") ? "bag" : "boots",
-    price: p.price || 0,
-    originalPrice: p.original_price || p.price || 0,
-    discount: p.discount,
-    stock: p.stock || 0,
-    sizes: p.sizes || [],
-    brandColor: p.brand_color || "#F5F5F5",
-    imageColor: p.image_color || "#FAFAFA",
-    images: p.images || [],
-  }));
+  const products: Product[] = (data || []).map((p: any) => {
+    let category: 'boots' | 'bag' = 'boots';
+    
+    if (p.categories?.slug) {
+      category = p.categories.slug === 'bags' ? 'bag' : 'boots';
+    } else if (p.subcategory) {
+      category = p.subcategory.toLowerCase().includes("цүнх") ? "bag" : "boots";
+    }
+    
+    return {
+      id: p.id,
+      brand: p.brand || "",
+      nameEn: p.name_en || p.title || "",
+      nameMn: p.name_mn || "",
+      category,
+      price: p.price || 0,
+      originalPrice: p.original_price || p.price || 0,
+      discount: p.discount,
+      stock: p.stock || 0,
+      sizes: p.sizes || [],
+      brandColor: p.brand_color || "#F5F5F5",
+      imageColor: p.image_color || "#FAFAFA",
+      images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [],
+    };
+  });
 
   return { data: products, error: null, count: count || 0 };
 }
 
+let brandsCache: { data: string[]; timestamp: number } | null = null;
+const CACHE_DURATION = 5 * 60 * 1000;
+
 export async function getUniqueBrands() {
+  const now = Date.now();
+  if (brandsCache && now - brandsCache.timestamp < CACHE_DURATION) {
+    return brandsCache.data;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
     .select("brand")
-    .not("brand", "is", null);
+    .not("brand", "is", null)
+    .limit(1000);
 
   if (error) {
-    return [];
+    return brandsCache?.data || [];
   }
 
   const brands = Array.from(
     new Set((data || []).map((p: any) => p.brand).filter(Boolean))
   ).sort() as string[];
 
+  brandsCache = { data: brands, timestamp: now };
   return brands;
 }
 
+let sizesCache: { data: number[]; timestamp: number } | null = null;
+
 export async function getAvailableSizes() {
+  const now = Date.now();
+  if (sizesCache && now - sizesCache.timestamp < CACHE_DURATION) {
+    return sizesCache.data;
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
-    .select("sizes");
+    .select("sizes")
+    .limit(1000);
 
   if (error) {
-    return [];
+    return sizesCache?.data || [];
   }
 
   const allSizes = new Set<number>();
@@ -147,29 +175,41 @@ export async function getAvailableSizes() {
     }
   });
 
-  return Array.from(allSizes).sort((a, b) => a - b);
+  const sizes = Array.from(allSizes).sort((a, b) => a - b);
+  sizesCache = { data: sizes, timestamp: now };
+  return sizes;
 }
 
+let priceRangeCache: { data: { min: number; max: number }; timestamp: number } | null = null;
+
 export async function getPriceRange() {
+  const now = Date.now();
+  if (priceRangeCache && now - priceRangeCache.timestamp < CACHE_DURATION) {
+    return priceRangeCache.data;
+  }
+
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data: minData, error: minError } = await supabase
     .from("products")
     .select("price")
     .order("price", { ascending: true })
     .limit(1);
 
-  const { data: maxData } = await supabase
+  const { data: maxData, error: maxError } = await supabase
     .from("products")
     .select("price")
     .order("price", { ascending: false })
     .limit(1);
 
-  if (error || !data || !maxData) {
-    return { min: 0, max: 1000000 };
+  if (minError || maxError || !minData || !maxData) {
+    return priceRangeCache?.data || { min: 0, max: 1000000 };
   }
 
-  return {
-    min: data[0]?.price || 0,
+  const range = {
+    min: minData[0]?.price || 0,
     max: maxData[0]?.price || 1000000,
   };
+
+  priceRangeCache = { data: range, timestamp: now };
+  return range;
 }

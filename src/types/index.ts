@@ -23,6 +23,10 @@ export interface Product {
   discount?: number;
   stock?: number;
   sizes?: number[];
+  colors?: string[];
+  materials?: string[];
+  default_color?: string;
+  default_material?: string;
   description?: string;
   subcategory?: string;
   category_id?: number;
@@ -30,6 +34,21 @@ export interface Product {
   image_color?: string;
   has_financing?: boolean;
   images?: string[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ProductVariant {
+  id?: string;
+  product_id: string;
+  color?: string;
+  material?: string;
+  size?: number;
+  sku?: string;
+  stock: number;
+  price_adjustment?: number;
+  images?: string[];
+  is_active?: boolean;
   created_at?: string;
   updated_at?: string;
 }

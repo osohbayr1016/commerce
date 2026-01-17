@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Product } from "@/types";
@@ -107,12 +108,15 @@ export default function Wishlist() {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
             >
               {/* Product Image */}
-              <div className="relative aspect-square bg-gray-100">
+              <div className="relative aspect-square bg-gray-100 overflow-hidden">
                 {item.products.images && item.products.images.length > 0 ? (
-                  <img
+                  <Image
                     src={item.products.images[0]}
-                    alt={item.products.name_mn || item.products.name_en || ""}
-                    className="w-full h-full object-cover"
+                    alt={item.products.name_mn || item.products.name_en || "Product"}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    className="object-cover"
+                    loading="lazy"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">

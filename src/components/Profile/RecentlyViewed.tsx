@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Product } from "@/types";
@@ -39,8 +40,8 @@ export default function RecentlyViewed() {
 
       
       const uniqueProducts = data?.filter(
-        (item, index, self) =>
-          index === self.findIndex((t) => t.product_id === item.product_id)
+        (item: any, index: number, self: any[]) =>
+          index === self.findIndex((t: any) => t.product_id === item.product_id)
       );
 
       setViewedProducts(uniqueProducts || []);
@@ -154,12 +155,15 @@ export default function RecentlyViewed() {
               className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition"
             >
               {/* Product Image */}
-              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
+              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden relative flex-shrink-0">
                 {item.products.images && item.products.images.length > 0 ? (
-                  <img
+                  <Image
                     src={item.products.images[0]}
-                    alt={item.products.name_mn || item.products.name_en || ""}
-                    className="w-full h-full object-cover"
+                    alt={item.products.name_mn || item.products.name_en || "Product"}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                    loading="lazy"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
