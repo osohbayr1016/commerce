@@ -12,15 +12,6 @@ export default function HeroBanner() {
               Онлайн худалдааг хөгжүүлэгч платформ
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700">Бүгд</span>
-            <span className="px-3 py-1 rounded-full border border-gray-200 text-gray-600">
-              Америк захиалга
-            </span>
-            <span className="px-3 py-1 rounded-full border border-gray-200 text-gray-600">
-              Монгол дахь бэлэн бараа
-            </span>
-          </div>
           <button className="flex items-center gap-2 px-6 py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors text-sm md:text-base">
             <span>Дэлгүүр хэсэх</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

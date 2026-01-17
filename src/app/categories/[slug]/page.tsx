@@ -190,7 +190,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               description="Одоогоор энэ ангилалд бүтээгдэхүүн байхгүй байна. Бусад ангилалуудыг үзэх боломжтой"
               action={{
                 label: "Бүх ангилал",
-                onClick: () => window.location.href = "/categories",
+                href: "/categories",
               }}
             />
           )}

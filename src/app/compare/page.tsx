@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import ProductSelector from "@/components/Compare/ProductSelector";
 import ComparisonTable from "@/components/Compare/ComparisonTable";
 import EmptyState from "@/components/ui/EmptyState";
+import BackButton from "@/components/ui/BackButton";
 
 export default function ComparePage() {
   const router = useRouter();
@@ -98,6 +99,9 @@ export default function ComparePage() {
         <MainNavClient />
         <main className="flex-1 py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-6">
+              <BackButton />
+            </div>
             <EmptyState
               icon={
                 <svg
@@ -133,6 +137,9 @@ export default function ComparePage() {
       <MainNavClient />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <BackButton />
+          </div>
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Product Comparison</h1>

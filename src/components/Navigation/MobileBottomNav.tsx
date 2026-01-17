@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useCart } from "@/contexts/CartContext";
 
 export default function MobileBottomNav() {
+  const { totalItems } = useCart();
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white md:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-around px-4 pb-3 pt-2">
@@ -39,12 +44,17 @@ export default function MobileBottomNav() {
 
         <Link
           href="/cart"
-          className="flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
+          className="relative flex flex-col items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
           aria-label="cart"
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H6.4M7 13l-1.6 8H19M7 13l.4-2M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
           </svg>
+          {totalItems > 0 && (
+            <span className="absolute -top-1 right-0 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-gray-900 px-1.5 text-[10px] font-semibold text-white">
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
+          )}
           <span>Сагс</span>
         </Link>
 

@@ -78,6 +78,12 @@ export default function CartPage() {
             />
           ) : (
             <div className="space-y-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-gray-600">
+                  Сагсанд <span className="font-semibold text-gray-900">{items.reduce((sum, item) => sum + item.quantity, 0)} ширхэг</span> бүтээгдэхүүн байна
+                </p>
+              </div>
+
               {items.map((item) => (
                 <CartItemRow
                   key={item.id}
@@ -88,18 +94,28 @@ export default function CartPage() {
                 />
               ))}
 
-              <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Нийт үнэ:</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {formatPrice(subtotal)} ₮
-                  </p>
+              <div className="border-t border-gray-200 pt-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">
+                      Бүтээгдэхүүний тоо: <span className="font-medium text-gray-900">{items.reduce((sum, item) => sum + item.quantity, 0)} ширхэг</span>
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Нэгж бүтээгдэхүүн: <span className="font-medium text-gray-900">{items.length} төрөл</span>
+                    </p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p className="text-sm text-gray-500 mb-1">Нийт дүн:</p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      {formatPrice(subtotal)} ₮
+                    </p>
+                  </div>
                 </div>
                 <button
                   onClick={() => router.push("/checkout")}
-                  className="rounded-lg bg-black px-8 py-3 text-white text-base font-medium hover:bg-gray-800 transition-colors"
+                  className="w-full sm:w-auto rounded-lg bg-black px-8 py-3 text-white text-base font-medium hover:bg-gray-800 transition-colors"
                 >
-                  Үргэлжлүүлэх
+                  Захиалга өгөх
                 </button>
               </div>
             </div>

@@ -3,69 +3,89 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 export async function GET(request: Request) {
-  // Apply rate limiting - 30 requests per minute
-  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
-  if (rateLimitResponse) return rateLimitResponse;
+  try {
+    // Apply rate limiting - 30 requests per minute
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+    if (rateLimitResponse) return rateLimitResponse;
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { data: cartItems, error } = await supabase
-    .from("cart_items")
-    .select(
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { data: cartItems, error } = await supabase
+      .from("cart_items")
+      .select(
+        `
+        *,
+        products (
+          id,
+          name_en,
+          name_mn,
+          title,
+          price,
+          original_price,
+          discount,
+          brand,
+          brand_color,
+          image_color,
+          images,
+          stock
+        )
       `
-      *,
-      products (
-        id,
-        name_en,
-        name_mn,
-        title,
-        price,
-        original_price,
-        discount,
-        brand,
-        brand_color,
-        image_color,
-        images,
-        stock
       )
-    `
-    )
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error("Cart API error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // If cart is empty, return empty array successfully
+    if (!cartItems || cartItems.length === 0) {
+      return NextResponse.json({ items: [] });
+    }
+
+    // Filter out items with missing products (deleted products)
+    const items = cartItems
+      .filter((item: any) => item.products && item.products.id)
+      .map((item: any) => {
+        try {
+          const product = item.products;
+          const productName = product?.name_en || product?.title || product?.name_mn || "";
+          return {
+            id: item.product_id,
+            name: productName,
+            price: product?.price || 0,
+            originalPrice: product?.original_price || product?.price || 0,
+            quantity: item.quantity,
+            slug: `${product?.brand || ""}-${productName}`.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+            brand: product?.brand,
+            imageColor: product?.image_color,
+            brandColor: product?.brand_color,
+            images: product?.images || [],
+            size: item.size || undefined,
+          };
+        } catch (mapError) {
+          console.error("Error mapping cart item:", mapError);
+          return null;
+        }
+      })
+      .filter((item: any) => item !== null);
+
+    return NextResponse.json({ items });
+  } catch (err: any) {
+    console.error("Cart API unexpected error:", err);
+    return NextResponse.json(
+      { error: err?.message || "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  
-  const items = (cartItems || [])
-    .filter((item: any) => item.products) 
-    .map((item: any) => {
-      const product = item.products;
-      const productName = product?.name_en || product?.title || product?.name_mn || "";
-      return {
-        id: item.product_id,
-        name: productName,
-        price: product?.price || 0,
-        originalPrice: product?.original_price || product?.price || 0,
-        quantity: item.quantity,
-        slug: `${product?.brand || ""}-${productName}`.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
-        brand: product?.brand,
-        imageColor: product?.image_color,
-        brandColor: product?.brand_color,
-        images: product?.images || [],
-        size: item.size || undefined,
-      };
-    });
-
-  return NextResponse.json({ items });
 }
 
 export async function POST(request: Request) {

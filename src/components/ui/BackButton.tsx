@@ -16,7 +16,11 @@ export default function BackButton({ href, className = "" }: BackButtonProps) {
     if (href) {
       router.push(href);
     } else {
-      router.back();
+      if (typeof window !== "undefined" && window.history.length > 1) {
+        router.back();
+      } else {
+        router.push("/");
+      }
     }
   };
 

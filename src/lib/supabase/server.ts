@@ -38,8 +38,14 @@ export async function createClient() {
         },
         setAll(cookiesToSet) {
           try {
+            const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, {
+                ...options,
+                secure: isProduction,
+                sameSite: options?.sameSite ?? ('lax' as const),
+                path: options?.path ?? '/',
+              })
             );
           } catch {
             // This can fail in middleware or during static generation

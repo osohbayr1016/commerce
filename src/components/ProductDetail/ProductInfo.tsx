@@ -1,10 +1,14 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { ProductDetail } from "@/data/mockProductDetail";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import CartAnimation from "./CartAnimation";
+import FireworkAnimation from "./FireworkAnimation";
 
 interface ProductInfoProps {
   product: ProductDetail;
@@ -13,8 +17,13 @@ interface ProductInfoProps {
 export default function ProductInfo({ product }: ProductInfoProps) {
   const { user } = useAuth();
   const { addItem } = useCart();
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
+  const [animateCart, setAnimateCart] = useState(false);
+  const [showFirework, setShowFirework] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const shortDescription =
     product.description ||
     "Манай дэлгүүр АНУ-аас бараагаа илгээдэг тул захиалга баталгаажсаны дараа 10–14 хоногийн дотор Монголд очих бөгөөд каргоны төлбөрийг тусад нь төлөхийг анхаарна уу.";
@@ -34,7 +43,23 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       brand: product.brand,
       imageColor: product.imageColor,
       brandColor: product.brandColor,
+      images: product.images || [],
     });
+    
+    if (!goToCheckout) {
+      setShowFirework(true);
+      setAnimateCart(true);
+      setShowSuccess(true);
+      
+      setTimeout(() => {
+        setShowFirework(false);
+      }, 1000);
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+    }
+    
     if (goToCheckout) {
       router.push("/checkout");
     }
@@ -86,11 +111,23 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
+        <FireworkAnimation trigger={showFirework} buttonRef={addToCartButtonRef} />
+        <CartAnimation
+          trigger={animateCart}
+          productImage={product.images?.[0]}
+          buttonRef={addToCartButtonRef}
+          onComplete={() => setAnimateCart(false)}
+        />
         <button
+          ref={addToCartButtonRef}
           onClick={() => handleCartAction(false)}
-          className="flex-1 rounded-lg bg-gray-900 px-6 py-3 text-white text-base font-medium hover:bg-gray-800"
+          className={`flex-1 rounded-lg px-6 py-3 text-white text-base font-medium transition-all duration-500 ${
+            showSuccess
+              ? "bg-green-600 hover:bg-green-700 scale-105"
+              : "bg-gray-900 hover:bg-gray-800"
+          }`}
         >
-          Сагслах
+          {showSuccess ? (t("toast.success") || "Ажилттай") : "Сагслах"}
         </button>
         <button
           onClick={() => handleCartAction(true)}

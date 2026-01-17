@@ -11,6 +11,7 @@ import CheckoutForm, {
 } from "@/components/Checkout/CheckoutForm";
 import CheckoutSummary from "@/components/Checkout/CheckoutSummary";
 import PromoCodeInput from "@/components/Checkout/PromoCodeInput";
+import BackButton from "@/components/ui/BackButton";
 
 const emptyForm: CheckoutFormValues = {
   fullName: "",
@@ -63,6 +64,9 @@ export default function CheckoutPage() {
       <MainNavClient />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <BackButton />
+          </div>
           {items.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
               <p className="text-gray-600">Сагс хоосон байна</p>
