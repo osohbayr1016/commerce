@@ -15,6 +15,11 @@ interface OrderPayload {
     zip?: string;
     note?: string;
   };
+  paymentMethod?: string;
+  coinPayment?: {
+    coinsUsed: number;
+    totalInMNT: number;
+  };
 }
 
 export async function POST(request: Request) {
@@ -42,6 +47,45 @@ export async function POST(request: Request) {
     0
   );
 
+  // Handle coin payment
+  if (payload.paymentMethod === "coins" && payload.coinPayment) {
+    const { coinsUsed } = payload.coinPayment;
+    
+    // Check if user has enough coins
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("coin_balance")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError || !profile) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    if (profile.coin_balance < coinsUsed) {
+      return NextResponse.json(
+        { error: "Хангалтгүй монет үлдэгдэл" },
+        { status: 400 }
+      );
+    }
+
+    // Deduct coins using the function (negative amount for spending)
+    const { error: coinError } = await supabase.rpc("update_coin_balance", {
+      p_user_id: user.id,
+      p_amount: -coinsUsed,
+      p_transaction_type: "spend",
+      p_description: `Захиалга #pending - ${coinsUsed} монет ашигласан`,
+    });
+
+    if (coinError) {
+      console.error("Error deducting coins:", coinError);
+      return NextResponse.json(
+        { error: "Монет хасахад алдаа гарлаа" },
+        { status: 500 }
+      );
+    }
+  }
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
@@ -62,7 +106,28 @@ export async function POST(request: Request) {
     .single();
 
   if (orderError || !order) {
+    // If order creation failed after deducting coins, refund them
+    if (payload.paymentMethod === "coins" && payload.coinPayment) {
+      await supabase.rpc("update_coin_balance", {
+        p_user_id: user.id,
+        p_amount: payload.coinPayment.coinsUsed,
+        p_transaction_type: "refund",
+        p_description: "Захиалга үүсгэхэд алдаа гарсан тул буцаасан",
+      });
+    }
     return NextResponse.json({ error: "Order create failed" }, { status: 500 });
+  }
+
+  // Update transaction with order_id if paid with coins
+  if (payload.paymentMethod === "coins" && payload.coinPayment) {
+    await supabase
+      .from("coin_transactions")
+      .update({ order_id: order.id })
+      .eq("user_id", user.id)
+      .eq("transaction_type", "spend")
+      .is("order_id", null)
+      .order("created_at", { ascending: false })
+      .limit(1);
   }
 
   const itemsPayload = payload.items.map((item) => ({
@@ -78,6 +143,30 @@ export async function POST(request: Request) {
 
   if (itemsError) {
     return NextResponse.json({ error: "Order items failed" }, { status: 500 });
+  }
+
+  // Award referral discount to referrer if applicable
+  try {
+    const { data: referralResult, error: referralError } = await supabase.rpc(
+      "award_referral_discount",
+      {
+        p_buyer_user_id: user.id,
+        p_order_id: order.id,
+        p_purchase_amount: totalAmount,
+      }
+    );
+
+    if (referralError) {
+      console.error("Error awarding referral discount:", referralError);
+      // Don't fail the order if referral award fails
+    } else if (referralResult?.discount_awarded) {
+      console.log("Referral discount awarded:", referralResult);
+      // TODO: Trigger realtime notification via Durable Object
+      // This will be implemented in the WebSocket section
+    }
+  } catch (referralErr) {
+    console.error("Exception in referral award:", referralErr);
+    // Don't fail the order
   }
 
   return NextResponse.json({ orderId: order.id }, { status: 200 });

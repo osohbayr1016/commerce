@@ -12,9 +12,13 @@ import OrderHistory from "@/components/Profile/OrderHistory";
 import Wishlist from "@/components/Profile/Wishlist";
 import LanguageSelector from "@/components/Profile/LanguageSelector";
 import ReferralSection from "@/components/Profile/ReferralSection";
+import CoinPurchase from "@/components/Profile/CoinPurchase";
+import PromoCodeManager from "@/components/Profile/PromoCodeManager";
+import ReferralStats from "@/components/Profile/ReferralStats";
 import BackButton from "@/components/ui/BackButton";
+import SpinWheel from "@/components/Spin/SpinWheel";
 
-type TabType = "orders" | "wishlist" | "settings" | "referral";
+type TabType = "orders" | "wishlist" | "settings" | "referral" | "coins" | "promo" | "spin";
 
 export default function ProfilePage() {
   const { user, profile, loading } = useAuth();
@@ -25,7 +29,7 @@ export default function ProfilePage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get("tab") as TabType;
-      if (tab && ["orders", "wishlist", "settings", "referral"].includes(tab)) {
+      if (tab && ["orders", "wishlist", "settings", "referral", "coins", "promo", "spin"].includes(tab)) {
         return tab as TabType;
       }
     }
@@ -102,7 +106,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   <div className="rounded-xl border border-gray-200 px-4 py-3">
                     <p className="text-xs text-gray-500">Level</p>
                     <p className="text-lg font-semibold text-gray-900">
@@ -113,6 +117,12 @@ export default function ProfilePage() {
                     <p className="text-xs text-gray-500">Points</p>
                     <p className="text-lg font-semibold text-gray-900">
                       {profile.xp || 1000} XP
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3">
+                    <p className="text-xs text-gray-500">Монет</p>
+                    <p className="text-lg font-semibold text-yellow-600">
+                      {profile.coin_balance?.toLocaleString() || '0'}
                     </p>
                   </div>
                   <div className="rounded-xl border border-gray-200 px-4 py-3">
@@ -126,10 +136,10 @@ export default function ProfilePage() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row gap-2 border-b border-gray-200 pb-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-2 border-b border-gray-200 pb-4 mb-6 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab("orders")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
                     activeTab === "orders"
                       ? "bg-gray-900 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -138,8 +148,38 @@ export default function ProfilePage() {
                   {t("profile.orderHistory")}
                 </button>
                 <button
+                  onClick={() => setActiveTab("coins")}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
+                    activeTab === "coins"
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  💰 Монет
+                </button>
+                <button
+                  onClick={() => setActiveTab("spin")}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
+                    activeTab === "spin"
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  🎰 Spin Wheel
+                </button>
+                <button
+                  onClick={() => setActiveTab("promo")}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
+                    activeTab === "promo"
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  🎁 Promo Code
+                </button>
+                <button
                   onClick={() => setActiveTab("wishlist")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
                     activeTab === "wishlist"
                       ? "bg-gray-900 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -149,7 +189,7 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={() => setActiveTab("referral")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
                     activeTab === "referral"
                       ? "bg-gray-900 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -159,7 +199,7 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={() => setActiveTab("settings")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
                     activeTab === "settings"
                       ? "bg-gray-900 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -170,6 +210,14 @@ export default function ProfilePage() {
               </div>
 
               {activeTab === "orders" && <OrderHistory />}
+              {activeTab === "coins" && <CoinPurchase />}
+              {activeTab === "spin" && <SpinWheel />}
+              {activeTab === "promo" && (
+                <div className="space-y-6">
+                  <PromoCodeManager />
+                  <ReferralStats />
+                </div>
+              )}
               {activeTab === "wishlist" && <Wishlist />}
               {activeTab === "referral" && <ReferralSection />}
               {activeTab === "settings" && <LanguageSelector />}

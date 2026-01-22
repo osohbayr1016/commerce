@@ -8,81 +8,89 @@ export async function POST(request: Request) {
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
-    const { referralCode, userId } = await request.json();
+    const { promoCode } = await request.json();
 
-    if (!referralCode || !userId) {
+    if (!promoCode) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Promo код оруулна уу" },
         { status: 400 }
       );
     }
 
     const supabase = await createClient();
+    
+    // Get authenticated user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Нэвтэрч орно уу" },
+        { status: 401 }
+      );
+    }
 
+    const normalizedCode = promoCode.toUpperCase().trim();
+
+    // Find referrer by promo code
     const { data: referrer, error: referrerError } = await supabase
       .from("profiles")
-      .select("id, full_name")
-      .eq("referral_code", referralCode)
+      .select("id, full_name, promo_code")
+      .eq("promo_code", normalizedCode)
       .single();
 
     if (referrerError || !referrer) {
       return NextResponse.json(
-        { error: "Invalid referral code" },
+        { error: "Promo код олдсонгүй" },
         { status: 400 }
       );
     }
 
-    if (referrer.id === userId) {
+    // Prevent self-referral
+    if (referrer.id === user.id) {
       return NextResponse.json(
-        { error: "Cannot use your own referral code" },
+        { error: "Өөрийн promo код ашиглах боломжгүй" },
         { status: 400 }
       );
     }
 
+    // Check if user already has a referrer
     const { data: existingReferral } = await supabase
       .from("referrals")
       .select("id")
-      .eq("referrer_id", referrer.id)
-      .eq("referred_id", userId)
+      .eq("user_id", user.id)
       .single();
 
     if (existingReferral) {
       return NextResponse.json(
-        { error: "Referral already exists" },
+        { error: "Та аль хэдийн бүртгүүлсэн байна" },
         { status: 400 }
       );
     }
 
+    // Create referral relationship
     const { error: insertError } = await supabase.from("referrals").insert({
+      user_id: user.id,
       referrer_id: referrer.id,
-      referred_id: userId,
-      status: "pending",
-      referrer_reward_xp: 500,
-      referred_reward_xp: 500,
+      promo_code_used: normalizedCode,
     });
 
     if (insertError) {
+      console.error('Error creating referral:', insertError);
       return NextResponse.json(
-        { error: "Failed to create referral" },
+        { error: "Referral үүсгэхэд алдаа гарлаа" },
         { status: 500 }
       );
     }
 
-    const { error: xpError } = await supabase.rpc("award_xp", {
-      p_user_id: userId,
-      p_amount: 500,
-      p_source: "referral_signup",
-      p_description: "Welcome bonus for using referral code",
-    });
-
     return NextResponse.json({
       success: true,
-      message: "Referral applied successfully",
-      bonus: 500,
+      message: "Promo код амжилттай ашиглагдлаа!",
+      referrer_name: referrer.full_name || "Хэрэглэгч",
     });
   } catch (error) {
+    console.error('Error in referral validation:', error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Алдаа гарлаа. Дахин оролдоно уу." },
       { status: 500 }
     );
   }

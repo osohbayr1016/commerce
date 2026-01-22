@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import UserMenu from "./UserMenu";
 import SearchButton from "./SearchButton";
 import CartIconWithBadge from "./CartIconWithBadge";
+import CoinBalance from "./CoinBalance";
 import { Category } from "@/types";
 
 export default async function MainNav() {
@@ -38,6 +39,9 @@ export default async function MainNav() {
             <a href="/sale" className="hover:text-gray-900">
               Хямдрал
             </a>
+            <a href="/profile?tab=spin" className="hover:text-gray-900 flex items-center gap-1">
+              🎰 Spin
+            </a>
             <a href="/profile" className="hover:text-gray-900">
               Профайл
             </a>
@@ -53,6 +57,7 @@ export default async function MainNav() {
             <div className="hidden sm:block">
               <SearchButton />
             </div>
+            <CoinBalance />
             <CartIconWithBadge />
             <UserMenu />
           </div>

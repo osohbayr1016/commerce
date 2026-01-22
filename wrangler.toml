@@ -17,18 +17,41 @@ binding = "IMAGES"
 binding = "R2_BUCKET"
 bucket_name = "commerce"
 
+# Durable Objects Bindings
+[[durable_objects.bindings]]
+name = "REFERRAL_ROOM"
+class_name = "ReferralRoomDO"
+script_name = "referral-room"
+
+# Migrations for Durable Objects
+[[migrations]]
+tag = "v1"
+new_classes = ["ReferralRoomDO"]
+
 # Environment Variables
 [vars]
 R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
 
 # Environment Variables Configuration
 # 
-# For Cloudflare Images to work, you need to set the following environment variables
-# in the Cloudflare Workers dashboard:
-#
+# CRITICAL: Set these environment variables in Cloudflare Dashboard for deployment
+# 
 # 1. Go to Cloudflare Dashboard → Workers & Pages → Your Worker → Settings → Variables and Secrets
-# 2. Add the following variables:
+# 2. Add the following REQUIRED variables:
 #
+#    SUPABASE CONFIGURATION (REQUIRED):
+#    - NEXT_PUBLIC_SUPABASE_URL: Your Supabase project URL
+#      Example: https://xxxxxxxxxxxxx.supabase.co
+#      (Found in Supabase Dashboard → Settings → API → Project URL)
+#
+#    - NEXT_PUBLIC_SUPABASE_ANON_KEY: Your Supabase anonymous key
+#      Example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+#      (Found in Supabase Dashboard → Settings → API → Project API keys → anon public)
+#
+#    - NEXT_PUBLIC_SITE_URL: Your deployed site URL
+#      Example: https://your-site.pages.dev
+#
+#    CLOUDFLARE IMAGES (OPTIONAL):
 #    - CLOUDFLARE_ACCOUNT_ID: Your Cloudflare Account ID
 #      (Found in Cloudflare Dashboard → Right sidebar)
 #
@@ -38,9 +61,5 @@ R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
 #
 # Note: For sensitive values (API tokens), use "Encrypted" secrets in the dashboard.
 #
-# Alternatively, you can set these in wrangler.toml for local development:
-# [vars]
-# CLOUDFLARE_ACCOUNT_ID = "your_account_id"
-#
-# For secrets (API tokens), use .dev.vars file (gitignored) or wrangler secrets:
-# npx wrangler secret put CLOUDFLARE_IMAGES_API_TOKEN
+# For local development, create a .env.local file with these values.
+# Never commit .env.local to git!

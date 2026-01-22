@@ -11,6 +11,7 @@ import CheckoutForm, {
 } from "@/components/Checkout/CheckoutForm";
 import CheckoutSummary from "@/components/Checkout/CheckoutSummary";
 import PromoCodeInput from "@/components/Checkout/PromoCodeInput";
+import DiscountSelector from "@/components/Checkout/DiscountSelector";
 import BackButton from "@/components/ui/BackButton";
 
 const emptyForm: CheckoutFormValues = {
@@ -27,6 +28,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [promoCodeId, setPromoCodeId] = useState("");
+  const [referralDiscountPercent, setReferralDiscountPercent] = useState(0);
   
   const defaultValues = useMemo(
     () => ({
@@ -38,7 +40,8 @@ export default function CheckoutPage() {
     [profile, user]
   );
 
-  const finalTotal = subtotal - promoDiscount;
+  const referralDiscountAmount = Math.floor((subtotal * referralDiscountPercent) / 100);
+  const finalTotal = subtotal - promoDiscount - referralDiscountAmount;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -88,10 +91,14 @@ export default function CheckoutPage() {
                     setPromoCodeId(id);
                   }}
                 />
+                <DiscountSelector
+                  subtotal={subtotal}
+                  onDiscountChange={(percent) => setReferralDiscountPercent(percent)}
+                />
                 <CheckoutSummary
                   items={items}
                   subtotal={subtotal}
-                  discount={promoDiscount}
+                  discount={promoDiscount + referralDiscountAmount}
                   total={finalTotal}
                 />
               </div>

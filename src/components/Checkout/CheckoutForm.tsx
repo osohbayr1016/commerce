@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CartItem } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface CheckoutFormValues {
   fullName: string;
@@ -17,18 +18,28 @@ interface CheckoutFormProps {
   onSuccess: () => void;
 }
 
-type PaymentMethod = "qpay" | "bank";
+type PaymentMethod = "qpay" | "bank" | "coins";
+
+const COIN_PRICE_MNT = 1000; // 1 coin = 1000 MNT
 
 export default function CheckoutForm({
   items,
   defaultValues,
   onSuccess,
 }: CheckoutFormProps) {
+  const { profile } = useAuth();
   const [currentStep, setCurrentStep] = useState<"info" | "payment">("info");
   const [form, setForm] = useState<CheckoutFormValues>(defaultValues);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  
+  // Calculate total in MNT
+  const totalInMNT = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Calculate required coins (round up)
+  const requiredCoins = Math.ceil(totalInMNT / COIN_PRICE_MNT);
+  const userCoins = profile?.coin_balance || 0;
+  const hasEnoughCoins = userCoins >= requiredCoins;
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, ...defaultValues }));
@@ -49,6 +60,13 @@ export default function CheckoutForm({
   const handlePaymentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (items.length === 0) return;
+    
+    // Check if paying with coins and has enough
+    if (paymentMethod === "coins" && !hasEnoughCoins) {
+      setError(`Хангалтгүй монет. Таны үлдэгдэл: ${userCoins}, Шаардлагатай: ${requiredCoins}`);
+      return;
+    }
+    
     setSubmitting(true);
     setError("");
 
@@ -60,16 +78,21 @@ export default function CheckoutForm({
           items,
           customer: form,
           paymentMethod,
+          coinPayment: paymentMethod === "coins" ? {
+            coinsUsed: requiredCoins,
+            totalInMNT: totalInMNT,
+          } : undefined,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Захиалга үүсгэхэд алдаа гарлаа");
+        const data = await response.json();
+        throw new Error(data.error || "Захиалга үүсгэхэд алдаа гарлаа");
       }
 
       onSuccess();
-    } catch (err) {
-      setError("Захиалга үүсгэхэд алдаа гарлаа");
+    } catch (err: any) {
+      setError(err.message || "Захиалга үүсгэхэд алдаа гарлаа");
     } finally {
       setSubmitting(false);
     }
@@ -244,6 +267,57 @@ export default function CheckoutForm({
                   }`}
                 >
                   {paymentMethod === "bank" && (
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  )}
+                </div>
+              </div>
+
+              {/* Coin Payment Option */}
+              <div
+                onClick={() => hasEnoughCoins && setPaymentMethod("coins")}
+                className={`flex items-center gap-4 p-4 rounded-lg border-2 transition-all ${
+                  !hasEnoughCoins
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                } ${
+                  paymentMethod === "coins"
+                    ? "border-yellow-500 bg-yellow-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-yellow-500">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">
+                    Монетоор төлөх
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {hasEnoughCoins ? (
+                      <>
+                        Шаардлагатай: {requiredCoins} монет (Үлдэгдэл: {userCoins})
+                      </>
+                    ) : (
+                      <span className="text-red-500">
+                        Хангалтгүй монет (Шаардлагатай: {requiredCoins}, Үлдэгдэл: {userCoins})
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "coins"
+                      ? "border-yellow-500 bg-yellow-500"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {paymentMethod === "coins" && (
                     <div className="w-2 h-2 rounded-full bg-white" />
                   )}
                 </div>

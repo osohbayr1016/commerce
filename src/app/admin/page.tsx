@@ -236,6 +236,54 @@ export default async function AdminDashboard() {
           </a>
           
           <a
+            href="/admin/referral/top6"
+            className="p-4 border border-yellow-200 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
+          >
+            <h3 className="font-medium text-gray-900 mb-1">
+              Top 6 удирдах
+            </h3>
+            <p className="text-sm text-gray-600">
+              Referral Top 6 гишүүд
+            </p>
+          </a>
+          
+          <a
+            href="/admin/referral/analytics"
+            className="p-4 border border-purple-200 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+          >
+            <h3 className="font-medium text-gray-900 mb-1">
+              Referral Analytics
+            </h3>
+            <p className="text-sm text-gray-600">
+              Referral мэдээлэл харах
+            </p>
+          </a>
+          
+          <a
+            href="/admin/referral/network"
+            className="p-4 border border-green-200 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+          >
+            <h3 className="font-medium text-gray-900 mb-1">
+              Referral Network
+            </h3>
+            <p className="text-sm text-gray-600">
+              Сүлжээний бүтэц харах
+            </p>
+          </a>
+          
+          <a
+            href="/admin/spin"
+            className="p-4 border border-orange-200 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
+          >
+            <h3 className="font-medium text-gray-900 mb-1">
+              🎰 Spin Wheel
+            </h3>
+            <p className="text-sm text-gray-600">
+              Spin бүтээгдэхүүн удирдах
+            </p>
+          </a>
+          
+          <a
             href="/admin/settings"
             className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >

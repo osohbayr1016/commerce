@@ -25,8 +25,25 @@ import { cookies } from 'next/headers';
 export async function createClient() {
   const cookieStore = await cookies();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+  // Validate environment variables
+  if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('MISSING')) {
+    console.error(
+      '❌ NEXT_PUBLIC_SUPABASE_URL is not configured.\n' +
+      'Add it to Cloudflare Dashboard → Settings → Environment variables'
+    );
+    throw new Error('Supabase configuration missing. Check server logs.');
+  }
+  
+  if (!supabaseKey || supabaseKey.includes('placeholder') || supabaseKey.includes('MISSING')) {
+    console.error(
+      '❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is not configured.\n' +
+      'Add it to Cloudflare Dashboard → Settings → Environment variables'
+    );
+    throw new Error('Supabase configuration missing. Check server logs.');
+  }
 
   return createServerClient(
     supabaseUrl,

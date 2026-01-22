@@ -11,12 +11,13 @@ import { getErrorMessage } from '@/types';
 
 export default function SignUpPage() {
   const searchParams = useSearchParams();
-  const referralCode = searchParams?.get('ref');
+  const referralCodeParam = searchParams?.get('ref');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [promoCode, setPromoCode] = useState(referralCodeParam || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -62,6 +63,29 @@ export default function SignUpPage() {
 
     try {
       await signUp(email, phone, password, fullName);
+      
+      // If promo code is provided, validate and apply it
+      if (promoCode.trim()) {
+        try {
+          const promoResponse = await fetch('/api/referral/validate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ promoCode: promoCode.trim() }),
+          });
+          
+          if (!promoResponse.ok) {
+            const promoData = await promoResponse.json();
+            console.warn('Promo code validation failed:', promoData.error);
+            // Don't fail signup if promo code is invalid
+          }
+        } catch (promoErr) {
+          console.warn('Failed to apply promo code:', promoErr);
+          // Don't fail signup if promo code application fails
+        }
+      }
+      
       setSuccess('Бүртгэл амжилттай! Нэвтэрч байна...');
       
       setTimeout(() => {
@@ -174,6 +198,22 @@ export default function SignUpPage() {
               required
               autoComplete="new-password"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Promo Code (заавал биш)
+            </label>
+            <AuthInput
+              type="text"
+              placeholder="FRIEND123"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              autoComplete="off"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Найзын promo код байвал оруулна уу
+            </p>
           </div>
 
           <AuthButton type="submit" loading={loading} disabled={loading}>
