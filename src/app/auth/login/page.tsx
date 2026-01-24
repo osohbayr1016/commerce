@@ -55,8 +55,16 @@ export default function LoginPage() {
     setError('');
     try {
       await signInWithGoogle();
-    } catch (err) {
-      setError(getErrorMessage(err) || 'Google нэвтрэх үед алдаа гарлаа');
+    } catch (err: unknown) {
+      const msg = getErrorMessage(err);
+      const isProviderDisabled =
+        typeof msg === 'string' &&
+        (msg.includes('provider is not enabled') || msg.includes('Unsupported provider'));
+      setError(
+        isProviderDisabled
+          ? 'Google нэвтрэх идэвхгүй байна. Supabase Dashboard → Authentication → Providers → Google идэвхжүүлнэ. Заавар: ENABLE_GOOGLE_LOGIN.md'
+          : msg || 'Google нэвтрэх үед алдаа гарлаа'
+      );
       setLoading(false);
     }
   };
@@ -130,6 +138,7 @@ export default function LoginPage() {
           <div className="flex-1 border-t border-gray-300"></div>
         </div>
 
+        <p className="text-center text-sm text-gray-500 mb-3">Google-ээр нэвтрэх</p>
         <AuthButton
           variant="secondary"
           onClick={handleGoogleSignIn}

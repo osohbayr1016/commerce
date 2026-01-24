@@ -17,16 +17,14 @@ binding = "IMAGES"
 binding = "R2_BUCKET"
 bucket_name = "commerce"
 
-# Durable Objects Bindings
-[[durable_objects.bindings]]
-name = "REFERRAL_ROOM"
-class_name = "ReferralRoomDO"
-script_name = "referral-room"
-
-# Migrations for Durable Objects
-[[migrations]]
-tag = "v1"
-new_classes = ["ReferralRoomDO"]
+# Durable Objects Bindings (Optional - for realtime features)
+# Uncomment when ready to deploy Durable Objects
+# [[durable_objects.bindings]]
+# name = "REFERRAL_ROOM"
+# class_name = "ReferralRoomDO"
+# [[migrations]]
+# tag = "v1"
+# new_classes = ["ReferralRoomDO"]
 
 # Environment Variables
 [vars]

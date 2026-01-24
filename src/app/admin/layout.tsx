@@ -72,6 +72,41 @@ export default function AdminLayout({
             </Link>
 
             <Link
+              href="/admin/users"
+              className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors border-l-2 border-transparent hover:border-blue-400"
+            >
+              Хэрэглэгч удирдах
+            </Link>
+
+            <Link
+              href="/admin/referral/top6"
+              className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-yellow-50 hover:text-gray-900 rounded-lg transition-colors border-l-2 border-transparent hover:border-yellow-400"
+            >
+              Top 6 удирдах
+            </Link>
+
+            <Link
+              href="/admin/referral/analytics"
+              className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-purple-50 hover:text-gray-900 rounded-lg transition-colors border-l-2 border-transparent hover:border-purple-400"
+            >
+              Referral Analytics
+            </Link>
+
+            <Link
+              href="/admin/referral/network"
+              className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-green-50 hover:text-gray-900 rounded-lg transition-colors border-l-2 border-transparent hover:border-green-400"
+            >
+              Referral Network
+            </Link>
+
+            <Link
+              href="/admin/spin"
+              className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-orange-50 hover:text-gray-900 rounded-lg transition-colors border-l-2 border-transparent hover:border-orange-400"
+            >
+              🎰 Spin Wheel
+            </Link>
+
+            <Link
               href="/admin/settings"
               className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors"
             >

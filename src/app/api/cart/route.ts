@@ -42,6 +42,9 @@ export async function GET(request: Request) {
       .order("created_at", { ascending: false });
 
     if (error) {
+      if (error.code === "PGRST205" && /cart_items/i.test(String(error.message))) {
+        return NextResponse.json({ items: [] });
+      }
       console.error("Cart API error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
