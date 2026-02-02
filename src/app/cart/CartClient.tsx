@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import CartItemRow from "@/components/Cart/CartItemRow";
 import EmptyState from "@/components/ui/EmptyState";
 import BackButton from "@/components/ui/BackButton";
+import CartSkeleton from "@/components/ui/skeletons/CartSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
@@ -19,11 +20,7 @@ export default function CartClient() {
   }, [loading, user, router]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-gray-600">Уншиж байна...</p>
-      </div>
-    );
+    return <CartSkeleton />;
   }
 
   return (
@@ -79,7 +76,7 @@ export default function CartClient() {
                   <span className="font-semibold text-gray-900">
                     {(items || []).reduce(
                       (sum, item) => sum + item.quantity,
-                      0,
+                      0
                     )}{" "}
                     ширхэг
                   </span>{" "}
@@ -105,7 +102,7 @@ export default function CartClient() {
                       <span className="font-medium text-gray-900">
                         {(items || []).reduce(
                           (sum, item) => sum + item.quantity,
-                          0,
+                          0
                         )}{" "}
                         ширхэг
                       </span>

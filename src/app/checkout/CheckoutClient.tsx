@@ -9,6 +9,7 @@ import CheckoutSummary from "@/components/Checkout/CheckoutSummary";
 import PromoCodeInput from "@/components/Checkout/PromoCodeInput";
 import DiscountSelector from "@/components/Checkout/DiscountSelector";
 import BackButton from "@/components/ui/BackButton";
+import CheckoutSkeleton from "@/components/ui/skeletons/CheckoutSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 
@@ -35,11 +36,11 @@ export default function CheckoutClient() {
       phone: profile?.phone_number || "",
       email: user?.email || "",
     }),
-    [profile, user],
+    [profile, user]
   );
 
   const referralDiscountAmount = Math.floor(
-    (subtotal * referralDiscountPercent) / 100,
+    (subtotal * referralDiscountPercent) / 100
   );
   const finalTotal = subtotal - promoDiscount - referralDiscountAmount;
 
@@ -49,11 +50,7 @@ export default function CheckoutClient() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-gray-600">Уншиж байна...</p>
-      </div>
-    );
+    return <CheckoutSkeleton />;
   }
 
   return (

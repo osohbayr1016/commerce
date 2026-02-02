@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import ProductGrid from "./ProductGrid";
+import Skeleton from "@/components/ui/Skeleton";
+import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 import { Product } from "@/data/mockProducts";
 
 interface ProductRecommendationsProps {
@@ -37,11 +39,13 @@ export default function ProductRecommendations({
 
   if (loading) {
     return (
-      <div className="py-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-          Танд зөвлөж байна
-        </h2>
-        <div className="text-center py-8 text-gray-500">Уншиж байна...</div>
+      <div className="py-8 border-t border-gray-200">
+        <Skeleton className="h-8 w-48 mb-6" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }

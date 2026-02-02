@@ -65,17 +65,56 @@ export default function SearchButton({ onToggle }: SearchButtonProps) {
 
   if (isOpen) {
     return (
-      <div ref={containerRef} className="hidden md:block relative z-20">
-        <div
-          className={`transition-all duration-300 ease-out overflow-visible ${
-            isExpanded ? "w-[400px] opacity-100" : "w-9 opacity-0"
-          }`}
-          style={{
-            transitionProperty: "width, opacity",
-          }}
-        >
-          <div className="relative w-full">
-            <SearchAutocomplete onClose={handleClose} />
+      <div
+        ref={containerRef}
+        className="flex-1 md:flex-initial min-w-0 flex items-center justify-end md:justify-start overflow-hidden"
+      >
+        {/* Desktop: expanding search bar */}
+        <div className="hidden md:block relative z-20">
+          <div
+            className={`transition-all duration-300 ease-out overflow-visible ${
+              isExpanded ? "w-[400px] opacity-100" : "w-9 opacity-0"
+            }`}
+            style={{ transitionProperty: "width, opacity" }}
+          >
+            <div className="relative w-full">
+              <SearchAutocomplete onClose={handleClose} />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile: inline expanding bar (fills header except logo) */}
+        <div className="md:hidden flex-1 flex items-center min-w-0 overflow-hidden pl-1">
+          <div
+            className="flex items-center gap-2 min-w-0 overflow-hidden transition-[width,opacity] duration-300 ease-out"
+            style={{
+              width: isExpanded ? "100%" : "0%",
+              opacity: isExpanded ? 1 : 0,
+            }}
+          >
+            <div className="w-full min-w-0 shrink overflow-hidden">
+              <SearchAutocomplete onClose={handleClose} />
+            </div>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors"
+              aria-label="Хайлт хаах"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -105,10 +144,10 @@ export default function SearchButton({ onToggle }: SearchButtonProps) {
         </svg>
       </button>
 
-      {/* Mobile: Icon button with modal */}
+      {/* Mobile: Icon button - opens inline expanding bar */}
       <button
-        onClick={() => setIsOpen(true)}
-        className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors"
+        onClick={handleOpen}
+        className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors shrink-0"
         aria-label="Хайлт нээх"
       >
         <svg
@@ -125,43 +164,6 @@ export default function SearchButton({ onToggle }: SearchButtonProps) {
           />
         </svg>
       </button>
-
-      {/* Mobile Modal */}
-      {isOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-20 px-4"
-          onClick={handleClose}
-        >
-          <div
-            className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Хайлт</h2>
-              <button
-                onClick={handleClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Close search"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <SearchAutocomplete onClose={handleClose} />
-          </div>
-        </div>
-      )}
     </>
   );
 }

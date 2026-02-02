@@ -26,9 +26,9 @@ export default function MainNavClient({
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Main Navigation Bar */}
         <div className="relative flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
-          {/* Left: Logo */}
+          {/* Left: Logo - shrink-0 so search bar expansion doesn't squash it */}
           <div
-            className={`flex items-center z-10 transition-opacity duration-300 ${
+            className={`flex items-center shrink-0 z-10 transition-opacity duration-300 ${
               isSearchOpen ? "opacity-70" : "opacity-100"
             }`}
           >
@@ -90,16 +90,22 @@ export default function MainNavClient({
             </a>
           </nav>
 
-          {/* Right: Actions */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 z-10">
+          {/* Right: Actions - on mobile when search open, only SearchButton shows */}
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 z-10 flex-1 md:flex-initial min-w-0 md:min-w-0 justify-end">
             <SearchButton onToggle={setIsSearchOpen} />
-            <WishlistIcon />
-            <CartIconWithBadge />
-            <div className="hidden sm:block">
-              <CoinBalance />
+            <div
+              className={`items-center gap-2 sm:gap-3 lg:gap-4 ${
+                isSearchOpen ? "hidden md:flex" : "flex"
+              }`}
+            >
+              <WishlistIcon />
+              <CartIconWithBadge />
+              <div className="hidden sm:block">
+                <CoinBalance />
+              </div>
+              <UserMenu />
+              <MobileMenu categories={headerCategories} />
             </div>
-            <UserMenu />
-            <MobileMenu categories={headerCategories} />
           </div>
         </div>
 
