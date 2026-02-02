@@ -1,17 +1,23 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/client';
-import { Profile } from '@/types';
+import { createContext, useContext, useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+import { Profile } from "@/types";
 
 interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, phone: string, password: string, fullName?: string) => Promise<void>;
+  signUp: (
+    email: string,
+    phone: string,
+    password: string,
+    fullName?: string,
+  ) => Promise<void>;
   signIn: (identifier: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithFacebook: () => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   isAdmin: boolean;
@@ -26,36 +32,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
+    // Check if Supabase is properly configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+    if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+      console.error(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Cloudflare Dashboard.",
+      );
+      setLoading(false);
+      return;
+    }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }: any) => {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchProfile(session.user.id);
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error("Auth: Failed to get session", error);
         setLoading(false);
-      }
-    });
+      });
 
-    return () => subscription.unsubscribe();
+    let subscription: any;
+    try {
+      const {
+        data: { subscription: sub },
+      } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchProfile(session.user.id);
+        } else {
+          setProfile(null);
+          setLoading(false);
+        }
+      });
+      subscription = sub;
+    } catch (error: unknown) {
+      console.error("Auth: Failed to set up auth state listener", error);
+      setLoading(false);
+    }
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
         .single();
 
       if (error) throw error;
@@ -66,15 +99,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, phone: string, password: string, fullName?: string) => {
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    
+  const signUp = async (
+    email: string,
+    phone: string,
+    password: string,
+    fullName?: string,
+  ) => {
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password,
       options: {
         data: {
-          full_name: fullName || '',
+          full_name: fullName || "",
           phone_number: cleanPhone,
         },
         emailRedirectTo: undefined,
@@ -82,16 +120,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
-      if (error.message.includes('Signups not allowed')) {
+      if (error.message.includes("Signups not allowed")) {
         throw new Error(
           'Бүртгэл идэвхгүй байна. Суpabase dashboard-аас "Enable email signups" асаах шаардлагатай. ' +
-          'Authentication → Providers → Email → Enable email signups'
+            "Authentication → Providers → Email → Enable email signups",
         );
       }
-      
+
       throw error;
     }
-    
+
     if (data.user) {
       setUser(data.user);
       await fetchProfile(data.user.id);
@@ -99,36 +137,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (identifier: string, password: string) => {
-    const isEmail = identifier.includes('@');
-    
+    const isEmail = identifier.includes("@");
+
     let emailToUse: string;
-    
+
     if (isEmail) {
       emailToUse = identifier.trim();
     } else {
-      const cleanPhone = identifier.replace(/[^0-9]/g, '');
-      
+      const cleanPhone = identifier.replace(/[^0-9]/g, "");
+
       if (!cleanPhone || cleanPhone.length < 8) {
-        throw new Error('Утасны дугаар буруу байна');
+        throw new Error("Утасны дугаар буруу байна");
       }
-      
+
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('phone_number', cleanPhone)
+        .from("profiles")
+        .select("email")
+        .eq("phone_number", cleanPhone)
         .single();
-      
+
       if (profileError) {
-        throw new Error('Утасны дугаараар бүртгэл олдсонгүй. И-мэйл ашиглана уу.');
+        throw new Error(
+          "Утасны дугаараар бүртгэл олдсонгүй. И-мэйл ашиглана уу.",
+        );
       }
-      
+
       if (!profile?.email) {
-        throw new Error('Бүртгэлийн мэдээлэл дутуу байна. Та дахин бүртгүүлнэ үү.');
+        throw new Error(
+          "Бүртгэлийн мэдээлэл дутуу байна. Та дахин бүртгүүлнэ үү.",
+        );
       }
-      
+
       emailToUse = profile.email;
     }
-    
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email: emailToUse,
       password,
@@ -141,7 +183,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) throw error;
+  };
+
+  const signInWithFacebook = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "facebook",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -161,7 +214,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === "admin";
 
   const value = {
     user,
@@ -170,6 +223,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signUp,
     signIn,
     signInWithGoogle,
+    signInWithFacebook,
     signOut,
     refreshProfile,
     isAdmin,
@@ -181,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

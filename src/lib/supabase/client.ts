@@ -20,7 +20,7 @@ let browserClient: ReturnType<typeof createBrowserClient> | null = null;
  */
 function validateEnvVars() {
   if (!SUPABASE_URL || SUPABASE_URL.includes('placeholder') || SUPABASE_URL.includes('MISSING')) {
-    throw new Error(
+    console.error(
       '❌ Supabase configuration missing!\n\n' +
       'NEXT_PUBLIC_SUPABASE_URL is not set.\n\n' +
       'To fix this:\n' +
@@ -29,10 +29,11 @@ function validateEnvVars() {
       '3. Add NEXT_PUBLIC_SUPABASE_URL with your Supabase project URL\n\n' +
       'See DEPLOYMENT.md for detailed instructions.'
     );
+    return false;
   }
   
   if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes('placeholder') || SUPABASE_ANON_KEY.includes('MISSING')) {
-    throw new Error(
+    console.error(
       '❌ Supabase configuration missing!\n\n' +
       'NEXT_PUBLIC_SUPABASE_ANON_KEY is not set.\n\n' +
       'To fix this:\n' +
@@ -41,7 +42,9 @@ function validateEnvVars() {
       '3. Add NEXT_PUBLIC_SUPABASE_ANON_KEY with your Supabase anon key\n\n' +
       'See DEPLOYMENT.md for detailed instructions.'
     );
+    return false;
   }
+  return true;
 }
 
 /**
@@ -50,18 +53,25 @@ function validateEnvVars() {
  */
 export function createClient() {
   // Validate environment variables in browser
-  if (typeof window !== 'undefined') {
-    validateEnvVars();
-  }
+  const isValid = typeof window === 'undefined' || validateEnvVars();
+  
+  // Use placeholder values if env vars are missing to prevent crashes
+  const url = SUPABASE_URL && !SUPABASE_URL.includes('placeholder') && !SUPABASE_URL.includes('MISSING')
+    ? SUPABASE_URL
+    : 'https://placeholder.supabase.co';
+  
+  const key = SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('placeholder') && !SUPABASE_ANON_KEY.includes('MISSING')
+    ? SUPABASE_ANON_KEY
+    : 'placeholder-key';
   
   if (typeof window === 'undefined') {
     // Server-side: always create new client
-    return createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return createBrowserClient(url, key);
   }
 
   // Browser-side: reuse existing client instance
   if (!browserClient) {
-    browserClient = createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    browserClient = createBrowserClient(url, key);
   }
 
   return browserClient;

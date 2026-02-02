@@ -7,8 +7,13 @@ export async function middleware(request: NextRequest) {
   });
 
   
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If environment variables are missing, skip auth checks and continue
+  if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+    return supabaseResponse;
+  }
 
   const supabase = createServerClient(
     supabaseUrl,
@@ -39,11 +44,19 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  let session = null;
+  try {
+    const {
+      data: { session: sessionData },
+    } = await supabase.auth.getSession();
+    session = sessionData;
+  } catch (error) {
+    // If Supabase connection fails, continue without auth
+    console.error('Middleware: Supabase connection error', error);
+    return supabaseResponse;
+  }
 
-  const authRequiredPaths = ["/cart", "/checkout", "/profile"];
+  const authRequiredPaths = ["/profile"];
   if (authRequiredPaths.some((path) => request.nextUrl.pathname.startsWith(path))) {
     if (!session) {
       const redirectUrl = new URL("/auth/login", request.url);
@@ -60,14 +73,19 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single();
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
 
-    if (!profile || profile.role !== 'admin') {
+      if (!profile || profile.role !== 'admin') {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+    } catch (error) {
+      // If database query fails, redirect to home
+      console.error('Middleware: Profile query error', error);
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
@@ -76,5 +94,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/cart", "/checkout", "/profile"],
+  matcher: ["/admin/:path*", "/profile"],
 };

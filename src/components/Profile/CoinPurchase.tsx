@@ -1,20 +1,20 @@
 /* eslint-disable */
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { CoinTransaction } from '@/types';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { CoinTransaction } from "@/types";
 
 const COIN_PRICE_MNT = 1000;
-const PRESET_AMOUNTS = [10, 50, 100, 500, 1000];
+const PRESET_AMOUNTS = [100, 500, 1000, 10000, 20000];
 
 export default function CoinPurchase() {
   const { profile } = useAuth();
-  const [coinAmount, setCoinAmount] = useState<number>(10);
-  const [customAmount, setCustomAmount] = useState<string>('');
+  const [coinAmount, setCoinAmount] = useState<number>(100);
+  const [customAmount, setCustomAmount] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
 
@@ -24,13 +24,13 @@ export default function CoinPurchase() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('/api/coins/transactions?limit=10');
+      const response = await fetch("/api/coins/transactions?limit=10");
       if (response.ok) {
         const data = await response.json();
         setTransactions(data.transactions || []);
       }
     } catch (err) {
-      console.error('Failed to fetch transactions:', err);
+      console.error("Failed to fetch transactions:", err);
     } finally {
       setLoadingTransactions(false);
     }
@@ -39,15 +39,15 @@ export default function CoinPurchase() {
   const totalPrice = coinAmount * COIN_PRICE_MNT;
 
   const handlePurchase = async () => {
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
-      const response = await fetch('/api/coins/purchase', {
-        method: 'POST',
+      const response = await fetch("/api/coins/purchase", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ coinAmount }),
       });
@@ -56,18 +56,18 @@ export default function CoinPurchase() {
 
       if (response.ok) {
         setSuccess(data.message);
-        setCoinAmount(10);
-        setCustomAmount('');
-        
+        setCoinAmount(100);
+        setCustomAmount("");
+
         // Reload page to refresh coin balance everywhere
         setTimeout(() => {
           window.location.reload();
         }, 1500);
       } else {
-        setError(data.error || 'Алдаа гарлаа');
+        setError(data.error || "Алдаа гарлаа");
       }
     } catch (err) {
-      setError('Сүлжээний алдаа гарлаа');
+      setError("Сүлжээний алдаа гарлаа");
     } finally {
       setLoading(false);
     }
@@ -83,18 +83,18 @@ export default function CoinPurchase() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('mn-MN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return date.toLocaleDateString("mn-MN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
     <div className="space-y-6">
-      <div className=" from-yellow-50 to-yellow-100 border border-yellow-200 rounded-2xl p-6">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Миний монет</h3>
@@ -104,13 +104,13 @@ export default function CoinPurchase() {
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-600">Үлдэгдэл</p>
-            <p className="text-3xl font-bold text-yellow-600">
-              {profile?.coin_balance?.toLocaleString() || '0'}
+            <p className="text-3xl font-bold text-gray-900">
+              {profile?.coin_balance?.toLocaleString() || "0"}
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 space-y-4">
+        <div className="bg-gray-50 rounded-xl p-5 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Монет сонгох
@@ -121,15 +121,15 @@ export default function CoinPurchase() {
                   key={amount}
                   onClick={() => {
                     setCoinAmount(amount);
-                    setCustomAmount('');
+                    setCustomAmount("");
                   }}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition ${
                     coinAmount === amount && !customAmount
-                      ? 'bg-yellow-500 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-black text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                   }`}
                 >
-                  {amount}
+                  {amount.toLocaleString()}
                 </button>
               ))}
             </div>
@@ -139,11 +139,11 @@ export default function CoinPurchase() {
               onChange={(e) => handleCustomAmountChange(e.target.value)}
               placeholder="Өөрийн дүн оруулах"
               min="1"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900"
             />
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Монет:</span>
               <span className="font-semibold text-gray-900">
@@ -152,7 +152,7 @@ export default function CoinPurchase() {
             </div>
             <div className="flex justify-between text-lg font-bold">
               <span className="text-gray-900">Нийт үнэ:</span>
-              <span className="text-yellow-600">
+              <span className="text-gray-900">
                 ₮{totalPrice.toLocaleString()}
               </span>
             </div>
@@ -173,9 +173,9 @@ export default function CoinPurchase() {
           <button
             onClick={handlePurchase}
             disabled={loading || coinAmount < 1}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Төлж байна...' : 'Монет худалдаж авах'}
+            {loading ? "Төлж байна..." : "Монет худалдаж авах"}
           </button>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function CoinPurchase() {
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Гүйлгээний түүх
         </h3>
-        
+
         {loadingTransactions ? (
           <div className="text-center py-8 text-gray-500">Уншиж байна...</div>
         ) : transactions.length === 0 ? (
@@ -208,10 +208,10 @@ export default function CoinPurchase() {
                 </div>
                 <div
                   className={`text-lg font-bold ${
-                    transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                    transaction.amount > 0 ? "text-green-600" : "text-red-600"
                   }`}
                 >
-                  {transaction.amount > 0 ? '+' : ''}
+                  {transaction.amount > 0 ? "+" : ""}
                   {transaction.amount.toLocaleString()}
                 </div>
               </div>

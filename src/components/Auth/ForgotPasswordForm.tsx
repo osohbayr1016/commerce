@@ -27,12 +27,22 @@ export default function ForgotPasswordForm() {
     }
     setLoading(true);
     try {
-      // TODO: Call API to send OTP - you'll add real logic later
-      await new Promise((r) => setTimeout(r, 800));
+      const res = await fetch("/api/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "OTP илгээхэд алдаа гарлаа");
+      }
+      
       setStep(2);
       setSuccess('OTP имэйл рүүгээ илгээгдлээ. Шалгана уу.');
-    } catch {
-      setError('OTP илгээхэд алдаа гарлаа. Дахин оролдоно уу.');
+    } catch (err: any) {
+      setError(err.message || 'OTP илгээхэд алдаа гарлаа. Дахин оролдоно уу.');
     } finally {
       setLoading(false);
     }
@@ -47,12 +57,22 @@ export default function ForgotPasswordForm() {
     }
     setLoading(true);
     try {
-      // TODO: Call API to verify OTP - you'll add real logic later
-      await new Promise((r) => setTimeout(r, 600));
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otp }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "OTP буруу байна");
+      }
+      
       setStep(3);
       setSuccess('');
-    } catch {
-      setError('OTP буруу байна. Дахин оролдоно уу.');
+    } catch (err: any) {
+      setError(err.message || 'OTP буруу байна. Дахин оролдоно уу.');
     } finally {
       setLoading(false);
     }
@@ -71,11 +91,22 @@ export default function ForgotPasswordForm() {
     }
     setLoading(true);
     try {
-      // TODO: Call API to reset password - you'll add real logic later
-      await new Promise((r) => setTimeout(r, 800));
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otp, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Нууц үг солиход алдаа гарлаа");
+      }
+      
       setSuccess('Нууц үг амжилттай солигдлоо. Нэвтэрч болно.');
-    } catch {
-      setError('Нууц үг солиход алдаа гарлаа. Дахин оролдоно уу.');
+      // Optional: Redirect to login after a delay
+    } catch (err: any) {
+      setError(err.message || 'Нууц үг солиход алдаа гарлаа. Дахин оролдоно уу.');
     } finally {
       setLoading(false);
     }

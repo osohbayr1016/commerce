@@ -44,10 +44,11 @@ export default function AddToCartButton({ product, slug }: AddToCartButtonProps)
   }, [product.id]);
 
   const handleAdd = async () => {
-    if (!user) {
-      router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
-      return;
-    }
+    // Removed auth check
+    // if (!user) {
+    //   router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+    //   return;
+    // }
     if (!product.id) {
       return;
     }

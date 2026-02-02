@@ -27,15 +27,37 @@ export default function CheckoutForm({
   defaultValues,
   onSuccess,
 }: CheckoutFormProps) {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [currentStep, setCurrentStep] = useState<"info" | "payment">("info");
   const [form, setForm] = useState<CheckoutFormValues>(defaultValues);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  
+  const [isVerified, setIsVerified] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+
+  useEffect(() => {
+    if (user?.email) {
+      setIsVerified(true);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      setIsVerified(false);
+      setVerificationSent(false);
+      setShowOtpInput(false);
+      setOtpCode("");
+    }
+  }, [form.email, user]);
+
   // Calculate total in MNT
-  const totalInMNT = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalInMNT = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   // Calculate required coins (round up)
   const requiredCoins = Math.ceil(totalInMNT / COIN_PRICE_MNT);
   const userCoins = profile?.coin_balance || 0;
@@ -46,27 +68,92 @@ export default function CheckoutForm({
   }, [defaultValues]);
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleVerifyEmail = async () => {
+    if (!form.email) return;
+    setVerificationSent(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Show OTP input even if there's an error, so user can try again
+        setShowOtpInput(true);
+        throw new Error(data.error || "И-мэйл илгээхэд алдаа гарлаа");
+      }
+
+      setShowOtpInput(true);
+    } catch (err: any) {
+      setError(
+        err.message || "И-мэйл илгээхэд алдаа гарлаа. Дахин оролдоно уу.",
+      );
+      // Keep OTP input visible so user can retry
+      setShowOtpInput(true);
+    } finally {
+      setVerificationSent(false);
+    }
+  };
+
+  const handleConfirmOtp = async () => {
+    if (!otpCode) return;
+    setVerificationSent(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, code: otpCode }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Баталгаажуулахад алдаа гарлаа");
+      }
+
+      setIsVerified(true);
+      setShowOtpInput(false);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setVerificationSent(false);
+    }
+  };
+
   const handleInfoSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!isVerified) {
+      setError("И-мэйл хаягаа баталгаажуулна уу");
+      return;
+    }
     setCurrentStep("payment");
   };
 
   const handlePaymentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (items.length === 0) return;
-    
+
     // Check if paying with coins and has enough
     if (paymentMethod === "coins" && !hasEnoughCoins) {
-      setError(`Хангалтгүй монет. Таны үлдэгдэл: ${userCoins}, Шаардлагатай: ${requiredCoins}`);
+      setError(
+        `Хангалтгүй монет. Таны үлдэгдэл: ${userCoins}, Шаардлагатай: ${requiredCoins}`,
+      );
       return;
     }
-    
+
     setSubmitting(true);
     setError("");
 
@@ -78,10 +165,13 @@ export default function CheckoutForm({
           items,
           customer: form,
           paymentMethod,
-          coinPayment: paymentMethod === "coins" ? {
-            coinsUsed: requiredCoins,
-            totalInMNT: totalInMNT,
-          } : undefined,
+          coinPayment:
+            paymentMethod === "coins"
+              ? {
+                  coinsUsed: requiredCoins,
+                  totalInMNT: totalInMNT,
+                }
+              : undefined,
         }),
       });
 
@@ -157,6 +247,85 @@ export default function CheckoutForm({
                 required
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                И-мэйл <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="name@example.com"
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                  required
+                  readOnly={isVerified && !!user} // Only readOnly if logged in user
+                />
+                {!user && !isVerified && !showOtpInput && (
+                  <button
+                    type="button"
+                    onClick={handleVerifyEmail}
+                    disabled={!form.email || verificationSent}
+                    className="px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap bg-black text-white hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {verificationSent ? "Илгээж байна..." : "Баталгаажуулах"}
+                  </button>
+                )}
+                {isVerified && (
+                  <span className="flex items-center justify-center px-4 py-2 rounded-lg font-medium bg-green-500 text-white cursor-default">
+                    Баталгаажсан
+                  </span>
+                )}
+              </div>
+
+              {showOtpInput && !isVerified && (
+                <div className="mt-3 space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      placeholder="6 оронтой код оруулах"
+                      className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                      maxLength={6}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleConfirmOtp}
+                      disabled={
+                        !otpCode || otpCode.length < 6 || verificationSent
+                      }
+                      className="px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap bg-black text-white hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      {verificationSent ? "Шалгаж байна..." : "Баталгаажуулах"}
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-500">
+                      {form.email} хаяг руу код илгээгдсэн
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleVerifyEmail}
+                      disabled={verificationSent}
+                      className="text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                    >
+                      Дахин илгээх
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -301,11 +470,13 @@ export default function CheckoutForm({
                   <div className="text-sm text-gray-500">
                     {hasEnoughCoins ? (
                       <>
-                        Шаардлагатай: {requiredCoins} монет (Үлдэгдэл: {userCoins})
+                        Шаардлагатай: {requiredCoins} монет (Үлдэгдэл:{" "}
+                        {userCoins})
                       </>
                     ) : (
                       <span className="text-red-500">
-                        Хангалтгүй монет (Шаардлагатай: {requiredCoins}, Үлдэгдэл: {userCoins})
+                        Хангалтгүй монет (Шаардлагатай: {requiredCoins},
+                        Үлдэгдэл: {userCoins})
                       </span>
                     )}
                   </div>

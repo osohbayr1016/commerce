@@ -29,10 +29,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     "Манай дэлгүүр АНУ-аас бараагаа илгээдэг тул захиалга баталгаажсаны дараа 10–14 хоногийн дотор Монголд очих бөгөөд каргоны төлбөрийг тусад нь төлөхийг анхаарна уу.";
 
   const handleCartAction = (goToCheckout: boolean) => {
-    if (!user) {
-      router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
-      return;
-    }
+    // Removed auth check
+    // if (!user) {
+    //   router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+    //   return;
+    // }
     addItem({
       id: String(product.id),
       name: product.nameEn,

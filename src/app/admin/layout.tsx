@@ -38,6 +38,7 @@ export default function AdminLayout({
     },
     { href: "/admin/referral/network", label: "Referral Network", icon: "🌐" },
     { href: "/admin/spin", label: "Spin Wheel", icon: "🎰" },
+    { href: "/admin/footer", label: "Footer", icon: "📄" },
     { href: "/admin/settings", label: "Тохиргоо", icon: "⚙️" },
   ];
 
@@ -55,7 +56,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-4 py-3">
@@ -110,7 +111,7 @@ export default function AdminLayout({
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out transform ${
+        className={`fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out transform shrink-0 ${
           mobileMenuOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
@@ -201,7 +202,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0">
+      <main className="flex-1 min-h-screen pt-16 lg:pt-0 overflow-x-hidden">
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
     </div>

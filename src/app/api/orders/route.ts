@@ -32,9 +32,10 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // Allow guest checkout - user can be null
+  // if (!user) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
 
   const payload = (await request.json()) as OrderPayload;
 
@@ -44,13 +45,23 @@ export async function POST(request: Request) {
 
   const totalAmount = payload.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
-  // Handle coin payment
+  // Check if user is logged in
+  const isGuest = !user;
+
+  // Handle coin payment (only for logged-in users)
   if (payload.paymentMethod === "coins" && payload.coinPayment) {
+    if (isGuest) {
+      return NextResponse.json(
+        { error: "Зочин монетоор төлбөр төлөх боломжгүй" },
+        { status: 400 },
+      );
+    }
+
     const { coinsUsed } = payload.coinPayment;
-    
+
     // Check if user has enough coins
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
@@ -65,7 +76,7 @@ export async function POST(request: Request) {
     if (profile.coin_balance < coinsUsed) {
       return NextResponse.json(
         { error: "Хангалтгүй монет үлдэгдэл" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -81,7 +92,7 @@ export async function POST(request: Request) {
       console.error("Error deducting coins:", coinError);
       return NextResponse.json(
         { error: "Монет хасахад алдаа гарлаа" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
@@ -89,7 +100,7 @@ export async function POST(request: Request) {
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
-      user_id: user.id,
+      user_id: isGuest ? null : user.id,
       total_amount: totalAmount,
       status: "pending",
       earned_xp: 0,
@@ -106,8 +117,10 @@ export async function POST(request: Request) {
     .single();
 
   if (orderError || !order) {
+    console.error("Order creation DB error:", orderError); // Log the specific error
+
     // If order creation failed after deducting coins, refund them
-    if (payload.paymentMethod === "coins" && payload.coinPayment) {
+    if (payload.paymentMethod === "coins" && payload.coinPayment && !isGuest) {
       await supabase.rpc("update_coin_balance", {
         p_user_id: user.id,
         p_amount: payload.coinPayment.coinsUsed,
@@ -115,11 +128,17 @@ export async function POST(request: Request) {
         p_description: "Захиалга үүсгэхэд алдаа гарсан тул буцаасан",
       });
     }
-    return NextResponse.json({ error: "Order create failed" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Order create failed",
+        details: orderError?.message || "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 
   // Update transaction with order_id if paid with coins
-  if (payload.paymentMethod === "coins" && payload.coinPayment) {
+  if (payload.paymentMethod === "coins" && payload.coinPayment && !isGuest) {
     await supabase
       .from("coin_transactions")
       .update({ order_id: order.id })
@@ -146,27 +165,29 @@ export async function POST(request: Request) {
   }
 
   // Award referral discount to referrer if applicable
-  try {
-    const { data: referralResult, error: referralError } = await supabase.rpc(
-      "award_referral_discount",
-      {
-        p_buyer_user_id: user.id,
-        p_order_id: order.id,
-        p_purchase_amount: totalAmount,
-      }
-    );
+  if (!isGuest && user) {
+    try {
+      const { data: referralResult, error: referralError } = await supabase.rpc(
+        "award_referral_discount",
+        {
+          p_buyer_user_id: user.id,
+          p_order_id: order.id,
+          p_purchase_amount: totalAmount,
+        },
+      );
 
-    if (referralError) {
-      console.error("Error awarding referral discount:", referralError);
-      // Don't fail the order if referral award fails
-    } else if (referralResult?.discount_awarded) {
-      console.log("Referral discount awarded:", referralResult);
-      // TODO: Trigger realtime notification via Durable Object
-      // This will be implemented in the WebSocket section
+      if (referralError) {
+        console.error("Error awarding referral discount:", referralError);
+        // Don't fail the order if referral award fails
+      } else if (referralResult?.discount_awarded) {
+        console.log("Referral discount awarded:", referralResult);
+        // TODO: Trigger realtime notification via Durable Object
+        // This will be implemented in the WebSocket section
+      }
+    } catch (referralErr) {
+      console.error("Exception in referral award:", referralErr);
+      // Don't fail the order
     }
-  } catch (referralErr) {
-    console.error("Exception in referral award:", referralErr);
-    // Don't fail the order
   }
 
   return NextResponse.json({ orderId: order.id }, { status: 200 });

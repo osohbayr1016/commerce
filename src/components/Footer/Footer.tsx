@@ -1,17 +1,87 @@
-export default function Footer() {
+import { createClient } from "@/lib/supabase/server";
+
+export const revalidate = 300;
+
+async function getFooterContents() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("footer_contents")
+    .select("*")
+    .eq("is_active", true)
+    .order("section", { ascending: true })
+    .order("display_order", { ascending: true });
+
+  const contents: Record<string, Record<string, string>> = {};
+  data?.forEach((item) => {
+    if (!contents[item.section]) {
+      contents[item.section] = {};
+    }
+    contents[item.section][item.key] = item.value;
+  });
+
+  return contents;
+}
+
+export default async function Footer() {
+  const contents = await getFooterContents();
+
+  const company = contents.company || {};
+  const social = contents.social || {};
+  const helpMenu = contents.help_menu || {};
+  const contact = contents.contact || {};
+  const bottomLinks = contents.bottom_links || {};
+
+  const helpMenuItems = [
+    {
+      text: helpMenu.about_text || "Бидний тухай",
+      url: helpMenu.about_url || "#",
+    },
+    {
+      text: helpMenu.contact_text || "Холбоо барих",
+      url: helpMenu.contact_url || "#",
+    },
+    {
+      text: helpMenu.faq_text || "Түгээмэл асуултууд",
+      url: helpMenu.faq_url || "#",
+    },
+  ];
+
+  const bottomNavItems = [
+    {
+      text: bottomLinks.home_text || "Нүүр",
+      url: bottomLinks.home_url || "/",
+    },
+    {
+      text: bottomLinks.categories_text || "Ангилал",
+      url: bottomLinks.categories_url || "#",
+    },
+    {
+      text: bottomLinks.sale_text || "Хямдрал",
+      url: bottomLinks.sale_url || "#",
+    },
+    {
+      text: bottomLinks.profile_text || "Профайл",
+      url: bottomLinks.profile_url || "/profile",
+    },
+  ];
+
   return (
     <footer className="bg-white border-t border-gray-200 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           <div>
             <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-5">
-              E-Commerce
+              {company.title || "E-Commerce"}
             </h3>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              Онлайн худалдааг хөгжүүлэгч платформ
+              {company.description || "Онлайн худалдааг хөгжүүлэгч платформ"}
             </p>
             <div className="mt-6 flex items-center gap-4 text-gray-500">
-              <a href="#" className="hover:text-gray-900" aria-label="facebook">
+              <a
+                href={social.facebook_url || "#"}
+                className="hover:text-gray-900"
+                aria-label="facebook"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="currentColor"
@@ -21,7 +91,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href={social.instagram_url || "#"}
                 className="hover:text-gray-900"
                 aria-label="instagram"
               >
@@ -41,30 +111,16 @@ export default function Footer() {
               Туслах цэс
             </h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-gray-900 text-base"
-                >
-                  Бидний тухай
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-gray-900 text-base"
-                >
-                  Холбоо барих
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-gray-900 text-base"
-                >
-                  Түгээмэл асуултууд
-                </a>
-              </li>
+              {helpMenuItems.map((item, index) => (
+                <li key={index}>
+                  <a
+                    href={item.url}
+                    className="text-gray-700 hover:text-gray-900 text-base"
+                  >
+                    {item.text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -72,39 +128,38 @@ export default function Footer() {
             <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">
               Холбоо барих
             </h3>
-            <p className="text-base text-gray-700 mb-4 leading-relaxed">
-              Somewhere
-            </p>
-            <a
-              href="tel:99119911"
-              className="text-gray-700 hover:text-gray-900 block mb-2 text-base"
-            >
-              Утас: 99119911
-            </a>
-            <a
-              href="mailto:test@gmail.com"
-              className="text-gray-700 hover:text-gray-900 block text-base"
-            >
-              И-мэйл: test@gmail.com
-            </a>
+            {contact.address && (
+              <p className="text-base text-gray-700 mb-4 leading-relaxed">
+                {contact.address}
+              </p>
+            )}
+            {contact.phone && (
+              <a
+                href={`tel:${contact.phone}`}
+                className="text-gray-700 hover:text-gray-900 block mb-2 text-base"
+              >
+                Утас: {contact.phone}
+              </a>
+            )}
+            {contact.email && (
+              <a
+                href={`mailto:${contact.email}`}
+                className="text-gray-700 hover:text-gray-900 block text-base"
+              >
+                И-мэйл: {contact.email}
+              </a>
+            )}
           </div>
         </div>
 
         <div className="mt-10 border-t border-gray-200 pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-gray-500">
-          <p>Developed by Twissu</p>
+          <p>{bottomLinks.copyright || "Developed by Twissu"}</p>
           <div className="flex items-center gap-4 text-gray-500">
-            <a href="/" className="hover:text-gray-900">
-              Нүүр
-            </a>
-            <a href="#" className="hover:text-gray-900">
-              Ангилал
-            </a>
-            <a href="#" className="hover:text-gray-900">
-              Хямдрал
-            </a>
-            <a href="/profile" className="hover:text-gray-900">
-              Профайл
-            </a>
+            {bottomNavItems.map((item, index) => (
+              <a key={index} href={item.url} className="hover:text-gray-900">
+                {item.text}
+              </a>
+            ))}
           </div>
         </div>
       </div>
