@@ -32,6 +32,7 @@ bucket_name = "commerce"
 
 # Environment Variables
 [vars]
+NEXT_PUBLIC_SITE_URL = "https://maayaauvuu.com"
 R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
 
 # Environment Variables Configuration
