@@ -12,6 +12,8 @@ export interface Category {
   updated_at?: string;
 }
 
+export type ProductType = 'shoes' | 'clothes' | 'beauty';
+
 export interface Product {
   id?: string;
   name_en?: string;
@@ -23,6 +25,7 @@ export interface Product {
   discount?: number;
   stock?: number;
   sizes?: number[];
+  product_type?: ProductType;
   colors?: string[];
   materials?: string[];
   default_color?: string;

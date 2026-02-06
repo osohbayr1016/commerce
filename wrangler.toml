@@ -16,10 +16,10 @@ binding = "ASSETS"
 [images]
 binding = "IMAGES"
 
-# R2 Bucket Binding
+# R2 Bucket Binding (bucket_name must match your R2 bucket, e.g. commerceq)
 [[r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "commerce"
+bucket_name = "commerceq"
 
 # Durable Objects Bindings (Optional - for realtime features)
 # Uncomment when ready to deploy Durable Objects
@@ -30,10 +30,11 @@ bucket_name = "commerce"
 # tag = "v1"
 # new_classes = ["ReferralRoomDO"]
 
-# Environment Variables
+# Environment Variables (must match your R2 bucket's Public Development URL)
 [vars]
 NEXT_PUBLIC_SITE_URL = "https://maayaauvuu.com"
-R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
+R2_PUBLIC_URL = "https://pub-4cd9628710df4d9285813065e654a9c7.r2.dev"
+R2_BUCKET_NAME = "commerceq"
 
 # Environment Variables Configuration
 # 
@@ -51,6 +52,10 @@ R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
 #      Example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 #      (Found in Supabase Dashboard → Settings → API → Project API keys → anon public)
 #
+#    - SUPABASE_SERVICE_ROLE_KEY: Your Supabase service_role key (REQUIRED for admin APIs)
+#      Add as Encrypted secret. Required for admin user role changes (Эрх хасах/Админ болгох).
+#      (Found in Supabase Dashboard → Settings → API → Project API keys → service_role)
+#
 #    - NEXT_PUBLIC_SITE_URL: Your deployed site URL
 #      Example: https://your-site.pages.dev
 #
@@ -61,6 +66,14 @@ R2_PUBLIC_URL = "https://pub-917070bb7d724798b2b631d35c140746.r2.dev"
 #    - CLOUDFLARE_IMAGES_API_TOKEN: Your Cloudflare Images API Token
 #      (Create at https://dash.cloudflare.com/profile/api-tokens)
 #      Permissions needed: Account → Cloudflare Images → Edit
+#
+#    HERO BANNERS (optional fallback when Supabase is down or hero_banners empty):
+#    - NEXT_PUBLIC_HERO_FALLBACK_IMAGE_URL: Full URL to a default hero image
+#      Example: https://pub-4cd9628710df4d9285813065e654a9c7.r2.dev/products/your-banner.jpg
+#
+#    R2 (for uploads and hero image URLs):
+#    - R2_PUBLIC_URL: Your R2 bucket Public URL (see R2 → bucket → Public Development URL)
+#    - R2_BUCKET_NAME: Your bucket name (e.g. commerceq)
 #
 # Note: For sensitive values (API tokens), use "Encrypted" secrets in the dashboard.
 #

@@ -39,6 +39,7 @@ export default function AdminLayout({
     },
     { href: "/admin/referral/network", label: "Referral Network", icon: "🌐" },
     { href: "/admin/spin", label: "Spin Wheel", icon: "🎰" },
+    { href: "/admin/hero", label: "Banner", icon: "🖼️" },
     { href: "/admin/footer", label: "Footer", icon: "📄" },
     { href: "/admin/settings", label: "Тохиргоо", icon: "⚙️" },
   ];
@@ -52,7 +53,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-4 py-3">
           <Link href="/admin" className="text-lg font-semibold text-gray-900">
             Admin
@@ -95,21 +96,26 @@ export default function AdminLayout({
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
-          onClick={closeMobileMenu}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out transform shrink-0 ${
+      {/* Overlay - fades in, tap to close */}
+      <div
+        role="button"
+        tabIndex={-1}
+        onClick={closeMobileMenu}
+        onKeyDown={(e) => e.key === "Escape" && closeMobileMenu()}
+        aria-hidden={!mobileMenuOpen}
+        className={`lg:hidden fixed inset-0 z-40 bg-gray-900/25 transition-opacity duration-300 ease-out ${
           mobileMenuOpen
-            ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
+      />
+
+      {/* Sidebar - sliding drawer with explicit animation */}
+      <aside
+        className="admin-drawer fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 shrink-0 shadow-xl lg:shadow-none"
+        style={{
+          transform: mobileMenuOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
       >
         <div className="flex flex-col h-full">
           {/* Desktop Header */}
@@ -142,16 +148,6 @@ export default function AdminLayout({
               })}
             </div>
 
-            <div className="border-t border-gray-200 my-4"></div>
-
-            <Link
-              href="/admin/seed"
-              onClick={closeMobileMenu}
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <span className="text-lg">💾</span>
-              <span>Өгөгдөл нэмэх</span>
-            </Link>
           </nav>
 
           {/* User Info & Actions */}

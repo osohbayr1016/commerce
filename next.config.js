@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.r2.cloudflarestorage.com",
       },
+      {
+        protocol: "https",
+        hostname: "maayaauvuu.com",
+      },
     ],
   },
 
@@ -29,10 +33,12 @@ const nextConfig = {
   // Cloudflare Pages compatibility
   trailingSlash: false,
 
-  // Fix webpack chunk issues with OpenNext
+  // Next.js 16: declare turbopack so build does not error when webpack is also set
+  turbopack: {},
+
+  // Fix webpack chunk issues with OpenNext (used when building with webpack)
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // Fix module resolution for server-side chunks
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,

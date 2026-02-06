@@ -3,10 +3,35 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { Product, Category, getErrorMessage } from '@/types';
+import { Product, Category, ProductVariant, getErrorMessage } from '@/types';
+import type { ProductType } from '@/types';
+import { getSizesForType } from '@/lib/product-types';
 import ImageUploader from '@/components/admin/ImageUploader';
+import ProductFormStockSection from './ProductFormStockSection';
 
-export default function ProductForm({ product }: { product?: Product }) {
+function buildInitialSizeStocks(
+  productType: ProductType,
+  sizeOnlyVariants?: ProductVariant[]
+): Record<number, number> {
+  const sizes = getSizesForType(productType);
+  const out: Record<number, number> = {};
+  sizes.forEach((s) => { out[s] = 0; });
+  if (sizeOnlyVariants?.length) {
+    sizeOnlyVariants.forEach((v) => {
+      if (v.size != null) out[v.size] = v.stock ?? 0;
+    });
+  }
+  return out;
+}
+
+export default function ProductForm({
+  product,
+  productVariants,
+}: {
+  product?: Product;
+  productVariants?: ProductVariant[];
+}) {
+  const productType = (product?.product_type as ProductType) || 'shoes';
   const [formData, setFormData] = useState({
     name_en: product?.name_en || '',
     name_mn: product?.name_mn || '',
@@ -16,14 +41,17 @@ export default function ProductForm({ product }: { product?: Product }) {
     original_price: product?.original_price || 0,
     discount: product?.discount || 0,
     stock: product?.stock || 0,
-    sizes: product?.sizes?.join(',') || '',
     description: product?.description || '',
     subcategory: product?.subcategory || '',
-    category_id: product?.category_id || '',
+    category_id: product?.category_id?.toString() ?? '',
     brand_color: product?.brand_color || '#F5F5F5',
     image_color: product?.image_color || '#FAFAFA',
     has_financing: product?.has_financing || false,
   });
+  const [type, setType] = useState<ProductType>(productType);
+  const [sizeStocks, setSizeStocks] = useState<Record<number, number>>(() =>
+    buildInitialSizeStocks(productType, productVariants)
+  );
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -35,6 +63,13 @@ export default function ProductForm({ product }: { product?: Product }) {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const sizes = getSizesForType(type);
+    setSizeStocks((prev) =>
+      sizes.reduce((acc, s) => ({ ...acc, [s]: prev[s] ?? 0 }), {} as Record<number, number>)
+    );
+  }, [type]);
 
   async function fetchCategories() {
     const { data } = await supabase
@@ -66,46 +101,49 @@ export default function ProductForm({ product }: { product?: Product }) {
     setMessage('');
 
     try {
-      const sizesArray = formData.sizes
-        ? formData.sizes.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n))
-        : [];
+      const sizesArray = getSizesForType(type);
+      const isBeauty = type === 'beauty';
+      const stock = isBeauty ? parseInt(formData.stock.toString(), 10) : 0;
 
       const productData = {
-        title: formData.name_en || formData.name_mn || 'Untitled Product', 
+        title: formData.name_en || formData.name_mn || 'Untitled Product',
         name_en: formData.name_en,
         name_mn: formData.name_mn,
         brand: formData.brand,
         sku: formData.sku,
-        price: parseInt(formData.price.toString()),
-        original_price: parseInt(formData.original_price.toString()),
-        discount: parseInt(formData.discount.toString()),
-        stock: parseInt(formData.stock.toString()),
+        price: parseInt(formData.price.toString(), 10),
+        original_price: parseInt(formData.original_price.toString(), 10),
+        discount: parseInt(formData.discount.toString(), 10),
+        stock,
         sizes: sizesArray,
+        product_type: type,
         description: formData.description,
         subcategory: formData.subcategory,
-        category_id: formData.category_id ? parseInt(formData.category_id.toString()) : null,
+        category_id: formData.category_id ? parseInt(formData.category_id.toString(), 10) : null,
         brand_color: formData.brand_color,
         image_color: formData.image_color,
         has_financing: formData.has_financing,
-        images: images,
+        images,
+        ...(isBeauty ? {} : { sizeStocks }),
       };
 
       if (product?.id) {
-        
-        const { error } = await supabase
-          .from('products')
-          .update(productData)
-          .eq('id', product.id);
-
-        if (error) throw error;
+        const res = await fetch(`/api/admin/products/${product.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Update failed');
         setMessage('Бүтээгдэхүүн амжилттай шинэчлэгдлээ!');
       } else {
-        
-        const { error } = await supabase
-          .from('products')
-          .insert([productData]);
-
-        if (error) throw error;
+        const res = await fetch('/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Create failed');
         setMessage('Бүтээгдэхүүн амжилттай нэмэгдлээ!');
       }
 
@@ -253,88 +291,21 @@ export default function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
-        <h2 className="text-xl font-bold text-black mb-4">Ангилал & Нөөц</h2>
-        
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Ангилал
-            </label>
-            <select
-              name="category_id"
-              value={formData.category_id}
-              onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-            >
-              <option value="">Сонгоно уу</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Дэд ангилал
-            </label>
-            <input
-              type="text"
-              name="subcategory"
-              value={formData.subcategory}
-              onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder="Жишээ: Гутал"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Нөөц *
-            </label>
-            <input
-              type="number"
-              name="stock"
-              value={formData.stock}
-              onChange={handleChange}
-              min="0"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Размерууд (таслалаар тусгаарлах)
-            </label>
-            <input
-              type="text"
-              name="sizes"
-              value={formData.sizes}
-              onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder="35, 36, 37, 38, 39, 40"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="has_financing"
-            checked={formData.has_financing}
-            onChange={handleChange}
-            className="w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-400"
-          />
-          <label className="ml-3 text-base font-medium text-black">
-            Зээлийн боломжтой
-          </label>
-        </div>
-      </div>
+      <ProductFormStockSection
+        productType={type}
+        setProductType={setType}
+        sizeStocks={sizeStocks}
+        setSizeStocks={setSizeStocks}
+        stock={formData.stock}
+        onStockChange={(v) => setFormData((p) => ({ ...p, stock: v }))}
+        categoryId={formData.category_id}
+        onCategoryChange={(v) => setFormData((p) => ({ ...p, category_id: v }))}
+        subcategory={formData.subcategory}
+        onSubcategoryChange={(v) => setFormData((p) => ({ ...p, subcategory: v }))}
+        hasFinancing={formData.has_financing}
+        onHasFinancingChange={(v) => setFormData((p) => ({ ...p, has_financing: v }))}
+        categories={categories}
+      />
 
       {message && (
         <div

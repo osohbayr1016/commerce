@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function PATCH(
   req: NextRequest,
@@ -42,11 +43,22 @@ export async function PATCH(
       );
     }
 
-    const { data: updated, error } = await supabase
+    let adminClient;
+    try {
+      adminClient = createAdminClient();
+    } catch (adminErr) {
+      console.error('Admin client init failed (is SUPABASE_SERVICE_ROLE_KEY set?):', adminErr);
+      return NextResponse.json(
+        { error: 'Эрх шинэчлэхэд алдаа гарлаа. Тохиргоог шалгана уу.' },
+        { status: 503 }
+      );
+    }
+
+    const { data: updated, error } = await adminClient
       .from('profiles')
       .update({ role })
       .eq('id', id)
-      .select('id, full_name, email, phone_number, role, updated_at')
+      .select('id, full_name, role, updated_at')
       .single();
 
     if (error) {

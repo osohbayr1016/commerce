@@ -182,10 +182,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
+    // Prefer the production domain if we're not on localhost to avoid mismatch issues
+    // or if explicitly requested.
+    const origin = window.location.origin;
+    const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
+    
+    const redirectTo = isLocalhost 
+      ? `${origin}/auth/callback`
+      : "https://maayaauvuu.com/auth/callback";
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
 
@@ -193,10 +206,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithFacebook = async () => {
+    const origin = window.location.origin;
+    const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
+    
+    const redirectTo = isLocalhost 
+      ? `${origin}/auth/callback`
+      : "https://maayaauvuu.com/auth/callback";
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
       },
     });
 

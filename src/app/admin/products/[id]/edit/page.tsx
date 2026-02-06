@@ -20,6 +20,13 @@ export default async function EditProductPage({
     notFound();
   }
 
+  const { data: sizeOnlyVariants } = await supabase
+    .from('product_variants')
+    .select('id, product_id, color, material, size, stock')
+    .eq('product_id', id)
+    .is('color', null)
+    .is('material', null);
+
   return (
     <div className="p-8">
       <div className="mb-8">
@@ -31,7 +38,7 @@ export default async function EditProductPage({
         </p>
       </div>
 
-      <ProductForm product={product} />
+      <ProductForm product={product} productVariants={sizeOnlyVariants ?? undefined} />
     </div>
   );
 }

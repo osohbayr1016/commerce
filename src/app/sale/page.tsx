@@ -1,5 +1,4 @@
 import MainNav from "@/components/Header/MainNav";
-import HeroBanner from "@/components/Hero/HeroBanner";
 import ProductSection from "@/components/Products/ProductSection";
 import Footer from "@/components/Footer/Footer";
 import { createClient } from "@/lib/supabase/server";
@@ -44,7 +43,6 @@ export default async function SalePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <MainNav />
-      <HeroBanner />
       <main className="flex-1 bg-white">
         <section className="py-10 md:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

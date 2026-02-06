@@ -74,19 +74,41 @@ export default function CategoriesPage() {
     setMessage("");
   }
 
+  function getCategoryPayload(includeShowInHeader: boolean) {
+    const { name, name_en, name_mn, slug, is_active, display_order, show_in_header } =
+      formData;
+    const payload: Record<string, unknown> = {
+      name,
+      name_en: name_en || null,
+      name_mn: name_mn || null,
+      slug,
+      is_active,
+      display_order,
+    };
+    if (includeShowInHeader) payload.show_in_header = show_in_header;
+    return payload;
+  }
+
   async function handleSubmit() {
     setLoading(true);
     try {
       if (editing) {
-        const { error } = await supabase
-          .from("categories")
-          .update(formData)
-          .eq("id", editing);
-        if (error) throw error;
+        const payload = getCategoryPayload(true);
+        const res = await fetch(`/api/admin/categories/${editing}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "Update failed");
         setMessage("Category updated successfully");
       } else {
-        const { error } = await supabase.from("categories").insert([formData]);
-        if (error) throw error;
+        const payload = getCategoryPayload(true);
+        let result = await supabase.from("categories").insert([payload]);
+        if (result.error?.message?.includes("show_in_header") && result.error?.message?.includes("schema cache")) {
+          result = await supabase.from("categories").insert([getCategoryPayload(false)]);
+        }
+        if (result.error) throw result.error;
         setMessage("Category created successfully");
       }
       resetForm();
@@ -100,8 +122,9 @@ export default function CategoriesPage() {
 
   async function handleDelete(id: number) {
     try {
-      const { error } = await supabase.from("categories").delete().eq("id", id);
-      if (error) throw error;
+      const res = await fetch(`/api/admin/categories/${id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Delete failed");
       setMessage("Category deleted successfully");
       await fetchCategories();
     } catch (error) {
@@ -111,11 +134,13 @@ export default function CategoriesPage() {
 
   async function handleToggleActive(id: number, isActive: boolean) {
     try {
-      const { error } = await supabase
-        .from("categories")
-        .update({ is_active: isActive })
-        .eq("id", id);
-      if (error) throw error;
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_active: isActive }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Update failed");
       await fetchCategories();
     } catch (error) {
       setMessage(`Error: ${getErrorMessage(error)}`);

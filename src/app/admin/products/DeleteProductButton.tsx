@@ -1,13 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useModal } from '@/hooks/useModal';
 
 export default function DeleteProductButton({ productId }: { productId: string }) {
   const [deleting, setDeleting] = useState(false);
-  const supabase = createClient();
   const router = useRouter();
   const modal = useModal();
 
@@ -18,12 +16,9 @@ export default function DeleteProductButton({ productId }: { productId: string }
       async () => {
         setDeleting(true);
         try {
-          const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', productId);
-
-          if (error) throw error;
+          const res = await fetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.error || 'Delete failed');
 
           modal.showSuccess(
             'Амжилттай',

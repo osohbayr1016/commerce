@@ -115,7 +115,7 @@ export default async function AdminDashboard() {
 
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs sm:text-sm text-gray-600">Шинэ хэрэглэгч</p>
+            <p className="text-xs sm:text-sm text-gray-600">Нийт хэрэглэгч</p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded ${
                 analytics.overview.usersGrowth >= 0

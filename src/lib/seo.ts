@@ -8,14 +8,16 @@ interface SEOProps {
   type?: "website" | "article";
 }
 
+const DEFAULT_METADATA_IMAGE = "/favicon.ico";
+
 export function generateSEO({
-  title = "E-Commerce",
-  description = "E-Commerce website",
-  image = "/og-image.jpg",
+  title = "MaayaaUvuu",
+  description = "MaayaaUvuu",
+  image = DEFAULT_METADATA_IMAGE,
   url,
   type = "website",
 }: SEOProps = {}): Metadata {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://maayaauvuu.com";
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
 
@@ -23,29 +25,30 @@ export function generateSEO({
     title,
     description,
     keywords: [
-      "гутал",
-      "цүнх",
-      "эмэгтэй",
-      "shoes",
-      "bags",
-      "women",
-      "Mongolia",
-      "Монгол",
-      "shoez",
-      "брэнд",
-      "fashion",
+      "maayaauvuu",
+      "maayaa uvuu",
+      "maayaa uvuu mongolia",
+      "maayaa uvuu mongolia shoes",
+      "maayaa uvuu mongolia bags",
+      "maayaa uvuu mongolia women",
+      "maayaa uvuu mongolia men",
+      "maayaa uvuu mongolia kids",
+      "maayaa uvuu mongolia fashion",
+      "maayaa uvuu website",
     ],
-    authors: [{ name: "E-Commerce" }],
+    authors: [{ name: "MaayaaUvuu " }],
+    metadataBase: new URL(siteUrl),
+    icons: { icon: DEFAULT_METADATA_IMAGE, shortcut: DEFAULT_METADATA_IMAGE, apple: DEFAULT_METADATA_IMAGE },
     openGraph: {
       title,
       description,
       url: fullUrl,
-      siteName: "E-Commerce",
+      siteName: "MaayaaUvuu",
       images: [
         {
           url: fullImage,
-          width: 1200,
-          height: 630,
+          width: 512,
+          height: 512,
           alt: title,
         },
       ],
@@ -69,10 +72,6 @@ export function generateSEO({
         "max-snippet": -1,
       },
     },
-    verification: {
-      
-      
-      
-    },
+    verification: {},
   };
 }

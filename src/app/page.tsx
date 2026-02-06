@@ -1,5 +1,5 @@
 import MainNav from "@/components/Header/MainNav";
-import HeroBanner from "@/components/Hero/HeroBanner";
+import HeroCarousel from "@/components/Hero/HeroCarousel";
 import ProductSection from "@/components/Products/ProductSection";
 import Footer from "@/components/Footer/Footer";
 import ProductFilters from "@/components/Products/ProductFilters";
@@ -12,6 +12,7 @@ import {
   getPriceRange,
   type SortOption,
 } from "@/lib/products";
+import { getHeroBanners } from "@/lib/hero";
 import { Product } from "@/data/mockProducts";
 
 export const revalidate = 300;
@@ -45,11 +46,12 @@ export default async function Home({ searchParams }: HomeProps) {
 
   const sort = (params?.sort as SortOption) || "newest";
 
-  const [productsResult, brands, sizes, priceRange] = await Promise.all([
+  const [productsResult, brands, sizes, priceRange, heroBanners] = await Promise.all([
     getProductsWithFilters(filters, sort, limit, offset),
     getUniqueBrands(),
     getAvailableSizes(),
     getPriceRange(),
+    getHeroBanners(),
   ]);
 
   const products: Product[] = (productsResult.data || []) as Product[];
@@ -62,7 +64,7 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <MainNav />
-      <HeroBanner />
+      <HeroCarousel initialBanners={heroBanners} />
       <main className="flex-1 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface AnalyticsData {
   overview: {
@@ -43,6 +44,7 @@ export async function getAnalyticsData(
   period: 'week' | 'month' | 'year' = 'month'
 ): Promise<AnalyticsData> {
   const supabase = await createClient();
+  const adminClient = createAdminClient();
 
   const now = new Date();
   const periodDays = period === 'week' ? 7 : period === 'month' ? 30 : 365;
@@ -55,8 +57,9 @@ export async function getAnalyticsData(
   const [
     currentOrders,
     previousOrders,
-    currentUsers,
-    previousUsers,
+    totalUsersResp,
+    newUsersCurrentPeriod,
+    newUsersPreviousPeriod,
     topProducts,
     recentOrders,
     categoryStats,
@@ -73,12 +76,16 @@ export async function getAnalyticsData(
       .gte('created_at', previousStartDate.toISOString())
       .lt('created_at', startDate.toISOString()),
     
-    supabase
+    adminClient
+      .from('profiles')
+      .select('id', { count: 'exact', head: true }),
+    
+    adminClient
       .from('profiles')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', startDate.toISOString()),
     
-    supabase
+    adminClient
       .from('profiles')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', previousStartDate.toISOString())
@@ -110,16 +117,17 @@ export async function getAnalyticsData(
   const previousOrdersCount = previousOrdersData.length;
   const ordersGrowth = previousOrdersCount > 0 ? ((totalOrders - previousOrdersCount) / previousOrdersCount) * 100 : 0;
 
-  const totalUsers = currentUsers.status === 'fulfilled' ? currentUsers.value.count || 0 : 0;
-  const previousUsersCount = previousUsers.status === 'fulfilled' ? previousUsers.value.count || 0 : 0;
-  const usersGrowth = previousUsersCount > 0 ? ((totalUsers - previousUsersCount) / previousUsersCount) * 100 : 0;
+  const totalUsers = totalUsersResp.status === 'fulfilled' ? totalUsersResp.value.count ?? 0 : 0;
+  const newUsersCurrent = newUsersCurrentPeriod.status === 'fulfilled' ? newUsersCurrentPeriod.value.count ?? 0 : 0;
+  const newUsersPrevious = newUsersPreviousPeriod.status === 'fulfilled' ? newUsersPreviousPeriod.value.count ?? 0 : 0;
+  const usersGrowth = newUsersPrevious > 0 ? ((newUsersCurrent - newUsersPrevious) / newUsersPrevious) * 100 : (newUsersCurrent > 0 ? 100 : 0);
 
   const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
   const previousAvgOrderValue = previousOrdersCount > 0 ? previousRevenue / previousOrdersCount : 0;
   const avgOrderGrowth = previousAvgOrderValue > 0 ? ((avgOrderValue - previousAvgOrderValue) / previousAvgOrderValue) * 100 : 0;
 
   const conversionRate = totalUsers > 0 ? (totalOrders / totalUsers) * 100 : 0;
-  const previousConversionRate = previousUsersCount > 0 ? (previousOrdersCount / previousUsersCount) * 100 : 0;
+  const previousConversionRate = totalUsers > 0 ? (previousOrdersCount / totalUsers) * 100 : 0;
   const conversionGrowth = previousConversionRate > 0 ? ((conversionRate - previousConversionRate) / previousConversionRate) * 100 : 0;
 
   const salesChartData = dailyStats.status === 'fulfilled' && dailyStats.value.data 

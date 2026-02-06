@@ -39,3 +39,15 @@ input[type="number"] {
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.2s ease-in-out infinite;
 }
+
+/* Admin sidebar slide animation */
+.admin-drawer {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+@media (min-width: 1024px) {
+  .admin-drawer {
+    transform: translateX(0) !important;
+    will-change: auto;
+  }
+}

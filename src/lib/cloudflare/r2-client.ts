@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client } from "@aws-sdk/client-s3";
 
 export interface R2Config {
   accountId: string;
@@ -12,17 +12,17 @@ export function getR2Config(): R2Config {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
   const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim();
   const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
-  const bucketName = process.env.R2_BUCKET_NAME?.trim() || 'commerce';
+  const bucketName = process.env.R2_BUCKET_NAME?.trim() || "commerce";
 
   const missing = [];
-  if (!accountId) missing.push('CLOUDFLARE_ACCOUNT_ID');
-  if (!accessKeyId) missing.push('R2_ACCESS_KEY_ID');
-  if (!secretAccessKey) missing.push('R2_SECRET_ACCESS_KEY');
+  if (!accountId) missing.push("CLOUDFLARE_ACCOUNT_ID");
+  if (!accessKeyId) missing.push("R2_ACCESS_KEY_ID");
+  if (!secretAccessKey) missing.push("R2_SECRET_ACCESS_KEY");
 
   if (missing.length > 0) {
     throw new Error(
-      `Missing required R2 environment variables: ${missing.join(', ')}. ` +
-        `Please configure these in Cloudflare Workers dashboard under Settings → Variables and Secrets.`
+      `Missing required R2 environment variables: ${missing.join(", ")}. ` +
+        `Please configure these in Cloudflare Workers dashboard under Settings → Variables and Secrets.`,
     );
   }
 
@@ -43,7 +43,7 @@ export function createR2Client(): S3Client {
   const config = getR2Config();
 
   return new S3Client({
-    region: 'auto',
+    region: "auto",
     endpoint: config.endpoint,
     forcePathStyle: true,
     credentials: {
@@ -54,29 +54,35 @@ export function createR2Client(): S3Client {
 }
 
 export function getR2PublicUrl(key: string): string {
-  const r2PublicUrl = process.env.R2_PUBLIC_URL;
+  const r2PublicUrl = process.env.R2_PUBLIC_URL?.trim();
 
   if (r2PublicUrl) {
-    const baseUrl = r2PublicUrl.replace(/\/$/, '');
-    const finalUrl = `${baseUrl}/${key}`;
-    return finalUrl;
+    const base = r2PublicUrl.replace(/\/$/, "");
+    return `${base}/${key}`;
   }
 
-  const isLocalDev = process.env.NODE_ENV === 'development' || 
-                     (typeof window !== 'undefined' && window.location.hostname === 'localhost');
+  const isLocalDev =
+    process.env.NODE_ENV === "development" ||
+    (typeof window !== "undefined" && window.location.hostname === "localhost");
 
   if (isLocalDev) {
-    const proxyUrl = `/api/images/r2/${key}`;
-    return proxyUrl;
+    return `/api/images/r2/${encodeURIComponent(key)}`;
   }
 
-  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
-  const bucketName = process.env.R2_BUCKET_NAME?.trim() || 'commerce';
+  return `/api/images/r2/${encodeURIComponent(key)}`;
+}
 
-  if (accountId) {
-    const constructedUrl = `https://pub-${accountId}.r2.dev/${bucketName}/${key}`;
-    return constructedUrl;
+/** Rewrite stored image_url to current R2 public base so old DB URLs still load. */
+export function ensureR2PublicUrl(stored: string): string {
+  if (!stored?.trim()) return stored;
+  const trimmed = stored.trim();
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return getR2PublicUrl(trimmed);
   }
-
-  return `/api/images/r2/${key}`;
+  const r2Base = process.env.R2_PUBLIC_URL?.trim();
+  if (!r2Base) return trimmed;
+  const base = r2Base.replace(/\/$/, "");
+  const match = trimmed.match(/^https?:\/\/[^/]+\/+(.+)$/);
+  if (match) return `${base}/${match[1]}`;
+  return trimmed;
 }

@@ -3,18 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/types";
-
-interface FooterContent {
-  id: number;
-  section: string;
-  key: string;
-  value: string;
-  display_order: number;
-  is_active: boolean;
-}
+import { getDefaultFooterRows, type FooterContentRow } from "@/lib/footer-defaults";
 
 export default function FooterPage() {
-  const [contents, setContents] = useState<FooterContent[]>([]);
+  const [contents, setContents] = useState<FooterContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<number | null>(null);
   const [formData, setFormData] = useState({
@@ -25,6 +17,7 @@ export default function FooterPage() {
     is_active: true,
   });
   const [message, setMessage] = useState("");
+  const [tableMissing, setTableMissing] = useState(false);
 
   const supabase = createClient();
 
@@ -36,10 +29,23 @@ export default function FooterPage() {
         .order("section", { ascending: true })
         .order("display_order", { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        const msg = getErrorMessage(error);
+        if (msg.includes("schema cache") || msg.includes("does not exist")) {
+          setTableMissing(true);
+          setContents(getDefaultFooterRows());
+        } else {
+          setMessage(`Error: ${msg}`);
+        }
+        return;
+      }
+      setTableMissing(false);
       setContents(data || []);
+      setMessage("");
     } catch (error) {
       setMessage(`Error: ${getErrorMessage(error)}`);
+      setTableMissing(true);
+      setContents(getDefaultFooterRows());
     } finally {
       setLoading(false);
     }
@@ -65,7 +71,7 @@ export default function FooterPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleEdit(content: FooterContent) {
+  function handleEdit(content: FooterContentRow) {
     setFormData({
       section: content.section,
       key: content.key,
@@ -78,6 +84,10 @@ export default function FooterPage() {
   }
 
   async function handleSubmit() {
+    if (tableMissing) {
+      setMessage("Хүснэгт байхгүй тул хадгалах боломжгүй. Migration ажиллуулна уу.");
+      return;
+    }
     setLoading(true);
     try {
       if (editing) {
@@ -108,6 +118,7 @@ export default function FooterPage() {
   }
 
   async function handleDelete(id: number) {
+    if (tableMissing) return;
     try {
       const { error } = await supabase
         .from("footer_contents")
@@ -138,6 +149,11 @@ export default function FooterPage() {
         </p>
       </div>
 
+      {tableMissing && (
+        <div className="mb-6 p-4 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
+          <strong>footer_contents</strong> хүснэгт олдсонгүй. Supabase Dashboard → SQL Editor-ээр доорх SQL ажиллуулбал footer засварлагдах болно.
+        </div>
+      )}
       {message && (
         <div
           className={`mb-6 p-4 rounded-lg ${
@@ -226,7 +242,7 @@ export default function FooterPage() {
           <div className="flex gap-2 pt-4">
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={loading || tableMissing}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
               {loading ? "Saving..." : editing ? "Update" : "Create"}
@@ -304,7 +320,8 @@ export default function FooterPage() {
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="text-red-600 hover:text-red-900"
+                          disabled={tableMissing}
+                          className="text-red-600 hover:text-red-900 disabled:opacity-50"
                         >
                           Delete
                         </button>
