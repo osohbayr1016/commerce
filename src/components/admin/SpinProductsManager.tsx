@@ -1,8 +1,8 @@
 /* eslint-disable */
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import type { SpinProduct, Product, SpinStatistics } from '@/types';
+import { useState, useEffect } from "react";
+import type { SpinProduct, Product, SpinStatistics } from "@/types";
 
 export default function SpinProductsManager() {
   const [spinProducts, setSpinProducts] = useState<SpinProduct[]>([]);
@@ -10,15 +10,15 @@ export default function SpinProductsManager() {
   const [statistics, setStatistics] = useState<SpinStatistics | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   // Add product modal state
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState('');
-  const [customName, setCustomName] = useState('');
-  const [customImage, setCustomImage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [customName, setCustomName] = useState("");
+  const [customImage, setCustomImage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchSpinProducts();
@@ -28,13 +28,13 @@ export default function SpinProductsManager() {
 
   const fetchSpinProducts = async () => {
     try {
-      const res = await fetch('/api/admin/spin/products');
+      const res = await fetch("/api/admin/spin/products");
       if (res.ok) {
         const data = await res.json();
         setSpinProducts(data);
       }
     } catch (err) {
-      console.error('Error fetching spin products:', err);
+      console.error("Error fetching spin products:", err);
     } finally {
       setLoading(false);
     }
@@ -42,42 +42,42 @@ export default function SpinProductsManager() {
 
   const fetchAvailableProducts = async () => {
     try {
-      const res = await fetch('/api/products');
+      const res = await fetch("/api/admin/products");
       if (res.ok) {
         const data = await res.json();
         setAvailableProducts(data.products || []);
       }
     } catch (err) {
-      console.error('Error fetching products:', err);
+      console.error("Error fetching products:", err);
     }
   };
 
   const fetchStatistics = async () => {
     try {
-      const res = await fetch('/api/admin/spin/statistics?days=30');
+      const res = await fetch("/api/admin/spin/statistics?days=30");
       if (res.ok) {
         const data = await res.json();
         setStatistics(data);
       }
     } catch (err) {
-      console.error('Error fetching statistics:', err);
+      console.error("Error fetching statistics:", err);
     }
   };
 
   const handleAddProduct = async () => {
     if (!selectedProductId) {
-      setError('Бүтээгдэхүүн сонгоно уу');
+      setError("Бүтээгдэхүүн сонгоно уу");
       return;
     }
 
     setActionLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const res = await fetch('/api/admin/spin/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/spin/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: selectedProductId,
           display_name: customName || null,
@@ -89,18 +89,18 @@ export default function SpinProductsManager() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess('Амжилттай нэмэгдлээ!');
+        setSuccess("Амжилттай нэмэгдлээ!");
         setSpinProducts([data, ...spinProducts]);
         setShowAddModal(false);
-        setSelectedProductId('');
-        setCustomName('');
-        setCustomImage('');
+        setSelectedProductId("");
+        setCustomName("");
+        setCustomImage("");
         fetchStatistics();
       } else {
-        setError(data.error || 'Алдаа гарлаа');
+        setError(data.error || "Алдаа гарлаа");
       }
     } catch (err) {
-      setError('Серверийн алдаа гарлаа');
+      setError("Серверийн алдаа гарлаа");
     } finally {
       setActionLoading(false);
     }
@@ -109,9 +109,9 @@ export default function SpinProductsManager() {
   const handleToggleActive = async (id: string, currentStatus: boolean) => {
     setActionLoading(true);
     try {
-      const res = await fetch('/api/admin/spin/products', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/spin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id,
           is_active: !currentStatus,
@@ -121,34 +121,34 @@ export default function SpinProductsManager() {
       if (res.ok) {
         const updated = await res.json();
         setSpinProducts(
-          spinProducts.map((sp) => (sp.id === id ? updated : sp))
+          spinProducts.map((sp) => (sp.id === id ? updated : sp)),
         );
-        setSuccess('Статус шинэчлэгдлээ');
+        setSuccess("Статус шинэчлэгдлээ");
         fetchStatistics();
       }
     } catch (err) {
-      setError('Алдаа гарлаа');
+      setError("Алдаа гарлаа");
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Энэ бүтээгдэхүүнийг spin-аас хасах уу?')) return;
+    if (!confirm("Энэ бүтээгдэхүүнийг spin-аас хасах уу?")) return;
 
     setActionLoading(true);
     try {
       const res = await fetch(`/api/admin/spin/products?id=${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (res.ok) {
         setSpinProducts(spinProducts.filter((sp) => sp.id !== id));
-        setSuccess('Амжилттай устгагдлаа');
+        setSuccess("Амжилттай устгагдлаа");
         fetchStatistics();
       }
     } catch (err) {
-      setError('Алдаа гарлаа');
+      setError("Алдаа гарлаа");
     } finally {
       setActionLoading(false);
     }
@@ -159,10 +159,10 @@ export default function SpinProductsManager() {
     .filter((p) => !spinProducts.some((sp) => sp.product_id === p.id))
     .filter((p) =>
       searchQuery
-        ? (p.name_mn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.name_en?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.brand?.toLowerCase().includes(searchQuery.toLowerCase()))
-        : true
+        ? p.name_mn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.name_en?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.brand?.toLowerCase().includes(searchQuery.toLowerCase())
+        : true,
     );
 
   const activeCount = spinProducts.filter((sp) => sp.is_active).length;
@@ -184,7 +184,10 @@ export default function SpinProductsManager() {
           </p>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => {
+            setShowAddModal(true);
+            fetchAvailableProducts();
+          }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
           + Бүтээгдэхүүн нэмэх
@@ -216,11 +219,11 @@ export default function SpinProductsManager() {
           <div className=" from-green-50 to-green-100 p-4 rounded-lg">
             <div className="text-sm text-green-600 font-medium">Орлого</div>
             <div className="text-2xl font-bold text-green-900 mt-1">
-              ₮{(statistics.total_revenue_mnt || 0).toLocaleString()} 
+              ₮{(statistics.total_revenue_mnt || 0).toLocaleString()}
             </div>
             <div className="text-xs text-green-700 mt-1">
               {statistics.unique_users} хэрэглэгч
-            </div>      
+            </div>
           </div>
           <div className=" from-purple-50 to-purple-100 p-4 rounded-lg">
             <div className="text-sm text-purple-600 font-medium">
@@ -229,14 +232,10 @@ export default function SpinProductsManager() {
             <div className="text-2xl font-bold text-purple-900 mt-1">
               {statistics.avg_spins_per_user.toFixed(1)}
             </div>
-            <div className="text-xs text-purple-700 mt-1">
-              хэрэглэгч тутамд
-            </div>
+            <div className="text-xs text-purple-700 mt-1">хэрэглэгч тутамд</div>
           </div>
           <div className=" from-orange-50 to-orange-100 p-4 rounded-lg">
-            <div className="text-sm text-orange-600 font-medium">
-              Идэвхтэй
-            </div>
+            <div className="text-sm text-orange-600 font-medium">Идэвхтэй</div>
             <div className="text-2xl font-bold text-orange-900 mt-1">
               {activeCount}
             </div>
@@ -264,19 +263,25 @@ export default function SpinProductsManager() {
               <div key={sp.id} className="p-4 hover:bg-gray-50">
                 <div className="flex items-center gap-4">
                   <img
-                    src={sp.image_url || sp.product?.image_url || '/placeholder.png'}
+                    src={
+                      sp.image_url ||
+                      sp.product?.image_url ||
+                      "/placeholder.png"
+                    }
                     alt=""
                     className="w-16 h-16 object-cover rounded-lg"
                   />
                   <div className="flex-1">
                     <div className="font-medium text-gray-900">
-                      {sp.display_name || sp.product?.name_mn || 'No name'}
+                      {sp.display_name || sp.product?.name_mn || "No name"}
                     </div>
                     <div className="text-sm text-gray-600">
-                      {sp.product?.brand} • ₮{(sp.product?.price || 0).toLocaleString()}
+                      {sp.product?.brand} • ₮
+                      {(sp.product?.price || 0).toLocaleString()}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      Нэмсэн: {new Date(sp.created_at).toLocaleDateString('mn-MN')}
+                      Нэмсэн:{" "}
+                      {new Date(sp.created_at).toLocaleDateString("mn-MN")}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -285,11 +290,11 @@ export default function SpinProductsManager() {
                       disabled={actionLoading}
                       className={`px-3 py-1 rounded-lg text-sm font-medium ${
                         sp.is_active
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {sp.is_active ? '✓ Идэвхтэй' : '✗ Идэвхгүй'}
+                      {sp.is_active ? "✓ Идэвхтэй" : "✗ Идэвхгүй"}
                     </button>
                     <button
                       onClick={() => handleDelete(sp.id)}
@@ -308,8 +313,8 @@ export default function SpinProductsManager() {
 
       {/* Add Product Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-gray-500/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <h3 className="text-xl font-bold text-gray-900">
                 Spin-д бүтээгдэхүүн нэмэх
@@ -346,12 +351,12 @@ export default function SpinProductsManager() {
                         key={product.id}
                         onClick={() => setSelectedProductId(product.id!)}
                         className={`p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 ${
-                          selectedProductId === product.id ? 'bg-blue-50' : ''
+                          selectedProductId === product.id ? "bg-blue-50" : ""
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <img
-                            src={product.image_url || '/placeholder.png'}
+                            src={product.image_url || "/placeholder.png"}
                             alt=""
                             className="w-12 h-12 object-cover rounded"
                           />
@@ -360,7 +365,8 @@ export default function SpinProductsManager() {
                               {product.name_mn}
                             </div>
                             <div className="text-sm text-gray-600">
-                              {product.brand} • ₮{(product.price || 0).toLocaleString()}
+                              {product.brand} • ₮
+                              {(product.price || 0).toLocaleString()}
                             </div>
                           </div>
                           {selectedProductId === product.id && (
@@ -405,9 +411,9 @@ export default function SpinProductsManager() {
               <button
                 onClick={() => {
                   setShowAddModal(false);
-                  setSelectedProductId('');
-                  setCustomName('');
-                  setCustomImage('');
+                  setSelectedProductId("");
+                  setCustomName("");
+                  setCustomImage("");
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
@@ -418,7 +424,7 @@ export default function SpinProductsManager() {
                 disabled={actionLoading || !selectedProductId}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
-                {actionLoading ? 'Нэмж байна...' : 'Нэмэх'}
+                {actionLoading ? "Нэмж байна..." : "Нэмэх"}
               </button>
             </div>
           </div>

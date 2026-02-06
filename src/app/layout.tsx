@@ -10,6 +10,7 @@ import { generateSEO } from "@/lib/seo";
 import MobileBottomNav from "@/components/Navigation/MobileBottomNav";
 import { ModalProvider } from "@/hooks/useModal";
 import ClientCartDrawer from "@/components/Cart/ClientCartDrawer";
+import { SpinModalProvider } from "@/contexts/SpinModalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +41,12 @@ export default function RootLayout({
             <CartProvider>
               <ToastProvider>
                 <ComparisonProvider>
-                  <div className="min-h-screen pb-16 md:pb-0">{children}</div>
-                  <MobileBottomNav />
-                  <ModalProvider />
-                  <ClientCartDrawer />
+                  <SpinModalProvider>
+                    <div className="min-h-screen pb-16 md:pb-0">{children}</div>
+                    <MobileBottomNav />
+                    <ModalProvider />
+                    <ClientCartDrawer />
+                  </SpinModalProvider>
                 </ComparisonProvider>
               </ToastProvider>
             </CartProvider>

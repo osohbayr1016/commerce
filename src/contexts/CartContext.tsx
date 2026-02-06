@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchCartFromServer,
@@ -9,6 +16,8 @@ import {
   removeItemFromServerCart,
   syncCartToServer,
 } from "@/lib/cart";
+
+export type CartProductType = "shoes" | "clothes" | "beauty";
 
 export interface CartItem {
   id: string;
@@ -22,13 +31,17 @@ export interface CartItem {
   brandColor?: string;
   images?: string[];
   size?: number;
+  productType?: CartProductType;
 }
 
 interface CartContextType {
   items: CartItem[];
   subtotal: number;
   totalItems: number;
-  addItem: (item: CartItem, quantity?: number) => Promise<{ ok: boolean; error?: string }>;
+  addItem: (
+    item: CartItem,
+    quantity?: number,
+  ) => Promise<{ ok: boolean; error?: string }>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   removeItem: (id: string) => void;
   clearCart: () => void;
@@ -67,7 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             console.error("Failed to fetch server cart", e);
           }
         }
-        
+
         const raw = localStorage.getItem(storageKey);
         let localItems: CartItem[] = [];
         try {
@@ -79,14 +92,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           console.error("Error parsing cart from localStorage", e);
           localItems = [];
         }
-        
+
         // If user is logged in, merge. If guest, just use local.
-        const mergedItems = user ? [...(Array.isArray(serverItems) ? serverItems : [])] : [...localItems];
-        
+        const mergedItems = user
+          ? [...(Array.isArray(serverItems) ? serverItems : [])]
+          : [...localItems];
+
         if (user) {
           localItems.forEach((localItem: CartItem) => {
             const exists = mergedItems.find(
-              (item) => item.id === localItem.id && item.size === localItem.size
+              (item) =>
+                item.id === localItem.id && item.size === localItem.size,
             );
             if (!exists) {
               mergedItems.push(localItem);
@@ -96,8 +112,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
         setItems(mergedItems);
         localStorage.setItem(storageKey, JSON.stringify(mergedItems));
-        
-        if (user && localItems.length > 0 && serverItems.length !== mergedItems.length) {
+
+        if (
+          user &&
+          localItems.length > 0 &&
+          serverItems.length !== mergedItems.length
+        ) {
           await syncCartToServer(mergedItems);
         }
       } catch (error) {
@@ -119,7 +139,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!storageKey || isInitialLoadRef.current) return;
-    
+
     // Only sync to server if user is logged in
     if (!user) return;
 
@@ -147,13 +167,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, user, storageKey]);
 
   const addItem = async (item: CartItem, quantity = 1) => {
-    // Check stock first
     try {
-      const response = await fetch(`/api/products/${item.id}/stock`);
+      const stockUrl =
+        item.size != null
+          ? `/api/products/${item.id}/variant-stock?size=${item.size}`
+          : `/api/products/${item.id}/stock`;
+      const response = await fetch(stockUrl);
       if (response.ok) {
         const stockData = await response.json();
         const currentQuantity =
-          items.find((i) => i.id === item.id && i.size === item.size)?.quantity || 0;
+          items.find((i) => i.id === item.id && i.size === item.size)
+            ?.quantity || 0;
         const requestedQuantity = currentQuantity + quantity;
 
         if (stockData.stock < requestedQuantity) {
@@ -166,12 +190,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           };
         }
       }
-    } catch (err) {
-    }
+    } catch (err) {}
 
     setItems((prev) => {
       const existing = prev.find(
-        (p) => p.id === item.id && p.size === item.size
+        (p) => p.id === item.id && p.size === item.size,
       );
       if (!existing) {
         return [...prev, { ...item, quantity }];
@@ -179,15 +202,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return prev.map((p) =>
         p.id === item.id && p.size === item.size
           ? { ...p, quantity: p.quantity + quantity }
-          : p
+          : p,
       );
     });
 
     if (user) {
       try {
         await addItemToServerCart(item.id, quantity, item.size);
-      } catch (error) {
-      }
+      } catch (error) {}
     }
 
     // Open the drawer when item is added
@@ -208,8 +230,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const adjustedQuantity = Math.min(stockData.stock, finalQuantity);
           setItems((prev) =>
             prev.map((i) =>
-              i.id === id ? { ...i, quantity: adjustedQuantity } : i
-            )
+              i.id === id ? { ...i, quantity: adjustedQuantity } : i,
+            ),
           );
           if (item && user) {
             await updateItemInServerCart(id, adjustedQuantity, item.size);
@@ -217,18 +239,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           return;
         }
       }
-    } catch (err) {
-    }
+    } catch (err) {}
 
     setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, quantity: finalQuantity } : i))
+      prev.map((i) => (i.id === id ? { ...i, quantity: finalQuantity } : i)),
     );
 
     if (item && user) {
       try {
         await updateItemInServerCart(id, finalQuantity, item.size);
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
 
@@ -239,8 +259,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (item && user) {
       try {
         await removeItemFromServerCart(id, item.size);
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
 
@@ -250,8 +269,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         for (const item of items) {
           await removeItemFromServerCart(item.id, item.size);
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     }
     setItems([]);
   };
@@ -260,12 +278,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeDrawer = () => setIsDrawerOpen(false);
 
   const subtotal = useMemo(
-    () => (items || []).reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items]
+    () =>
+      (items || []).reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [items],
   );
   const totalItems = useMemo(
     () => (items || []).reduce((sum, item) => sum + item.quantity, 0),
-    [items]
+    [items],
   );
 
   return (

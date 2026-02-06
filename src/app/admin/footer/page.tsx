@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/types";
-import { getDefaultFooterRows, type FooterContentRow } from "@/lib/footer-defaults";
+import {
+  getDefaultFooterRows,
+  type FooterContentRow,
+} from "@/lib/footer-defaults";
 
 export default function FooterPage() {
   const [contents, setContents] = useState<FooterContentRow[]>([]);
@@ -85,7 +88,9 @@ export default function FooterPage() {
 
   async function handleSubmit() {
     if (tableMissing) {
-      setMessage("Хүснэгт байхгүй тул хадгалах боломжгүй. Migration ажиллуулна уу.");
+      setMessage(
+        "Хүснэгт байхгүй тул хадгалах боломжгүй. Migration ажиллуулна уу.",
+      );
       return;
     }
     setLoading(true);
@@ -132,7 +137,13 @@ export default function FooterPage() {
     }
   }
 
-  const sections = ["company", "social", "help_menu", "contact", "bottom_links"];
+  const sections = [
+    "company",
+    "social",
+    "help_menu",
+    "contact",
+    "bottom_links",
+  ];
   const groupedContents = sections.map((section) => ({
     section,
     items: contents.filter((c) => c.section === section),
@@ -151,7 +162,8 @@ export default function FooterPage() {
 
       {tableMissing && (
         <div className="mb-6 p-4 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
-          <strong>footer_contents</strong> хүснэгт олдсонгүй. Supabase Dashboard → SQL Editor-ээр доорх SQL ажиллуулбал footer засварлагдах болно.
+          <strong>footer_contents</strong> хүснэгт олдсонгүй. Supabase Dashboard
+          → SQL Editor-ээр доорх SQL ажиллуулбал footer засварлагдах болно.
         </div>
       )}
       {message && (
@@ -233,7 +245,9 @@ export default function FooterPage() {
               <input
                 type="checkbox"
                 checked={formData.is_active}
-                onChange={(e) => handleFormChange("is_active", e.target.checked)}
+                onChange={(e) =>
+                  handleFormChange("is_active", e.target.checked)
+                }
                 className="rounded border-gray-300"
               />
               <label className="text-sm text-gray-700">Active</label>
@@ -260,7 +274,10 @@ export default function FooterPage() {
       </div>
 
       {groupedContents.map(({ section, items }) => (
-        <div key={section} className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <div
+          key={section}
+          className="bg-white border border-gray-200 rounded-lg p-6 mb-6"
+        >
           <h3 className="text-lg font-semibold text-gray-900 mb-4 capitalize">
             {section.replace("_", " ")}
           </h3>

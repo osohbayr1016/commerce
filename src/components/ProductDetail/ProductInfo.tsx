@@ -9,6 +9,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import CartAnimation from "./CartAnimation";
 import FireworkAnimation from "./FireworkAnimation";
+import VariantSelector from "@/components/Products/VariantSelector";
 
 interface ProductInfoProps {
   product: ProductDetail;
@@ -24,16 +25,18 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const [animateCart, setAnimateCart] = useState(false);
   const [showFirework, setShowFirework] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<number | undefined>(
+    undefined,
+  );
+  const needsSize =
+    product.productType !== "beauty" && (product.sizes?.length ?? 0) > 0;
+  const canAddToCart = !needsSize || selectedSize != null;
   const shortDescription =
     product.description ||
     "Манай дэлгүүр АНУ-аас бараагаа илгээдэг тул захиалга баталгаажсаны дараа 10–14 хоногийн дотор Монголд очих бөгөөд каргоны төлбөрийг тусад нь төлөхийг анхаарна уу.";
 
   const handleCartAction = (goToCheckout: boolean) => {
-    // Removed auth check
-    // if (!user) {
-    //   router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
-    //   return;
-    // }
+    if (!canAddToCart) return;
     addItem({
       id: String(product.id),
       name: product.nameEn,
@@ -45,22 +48,24 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       imageColor: product.imageColor,
       brandColor: product.brandColor,
       images: product.images || [],
+      ...(selectedSize != null && { size: selectedSize }),
+      ...(product.productType && { productType: product.productType }),
     });
-    
+
     if (!goToCheckout) {
       setShowFirework(true);
       setAnimateCart(true);
       setShowSuccess(true);
-      
+
       setTimeout(() => {
         setShowFirework(false);
       }, 1000);
-      
+
       setTimeout(() => {
         setShowSuccess(false);
       }, 3000);
     }
-    
+
     if (goToCheckout) {
       router.push("/checkout");
     }
@@ -111,8 +116,18 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </p>
       </div>
 
+      <VariantSelector
+        productType={product.productType}
+        sizes={product.sizes}
+        defaultSize={selectedSize}
+        onVariantChange={(v) => setSelectedSize(v.size)}
+      />
+
       <div className="flex flex-col sm:flex-row gap-3">
-        <FireworkAnimation trigger={showFirework} buttonRef={addToCartButtonRef} />
+        <FireworkAnimation
+          trigger={showFirework}
+          buttonRef={addToCartButtonRef}
+        />
         <CartAnimation
           trigger={animateCart}
           productImage={product.images?.[0]}
@@ -122,13 +137,16 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <button
           ref={addToCartButtonRef}
           onClick={() => handleCartAction(false)}
+          disabled={!canAddToCart}
           className={`flex-1 rounded-lg px-6 py-3 text-white text-base font-medium transition-all duration-500 ${
-            showSuccess
-              ? "bg-green-600 hover:bg-green-700 scale-105"
-              : "bg-gray-900 hover:bg-gray-800"
+            !canAddToCart
+              ? "bg-gray-400 cursor-not-allowed"
+              : showSuccess
+                ? "bg-green-600 hover:bg-green-700 scale-105"
+                : "bg-gray-900 hover:bg-gray-800"
           }`}
         >
-          {showSuccess ? (t("toast.success") || "Ажилттай") : "Сагслах"}
+          {showSuccess ? t("toast.success") || "Ажилттай" : "Сагслах"}
         </button>
         <button
           onClick={() => handleCartAction(true)}

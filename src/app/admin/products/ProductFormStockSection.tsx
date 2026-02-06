@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import type { ProductType } from '@/types';
-import { getSizesForType, CLOTHES_SIZE_LABELS } from '@/lib/product-types';
+import type { ProductType } from "@/types";
+import { getSizesForType, CLOTHES_SIZE_LABELS } from "@/lib/product-types";
 
 type Props = {
   productType: ProductType;
@@ -20,9 +20,9 @@ type Props = {
 };
 
 const PRODUCT_TYPE_OPTIONS: { value: ProductType; label: string }[] = [
-  { value: 'shoes', label: 'Гутал' },
-  { value: 'clothes', label: 'Хувцас' },
-  { value: 'beauty', label: 'Гоо сайхан' },
+  { value: "shoes", label: "Гутал" },
+  { value: "clothes", label: "Хувцас" },
+  { value: "beauty", label: "Гоо сайхан" },
 ];
 
 export default function ProductFormStockSection({
@@ -41,14 +41,14 @@ export default function ProductFormStockSection({
   categories,
 }: Props) {
   const sizes = getSizesForType(productType);
-  const isBeauty = productType === 'beauty';
+  const isBeauty = productType === "beauty";
 
   function setSizeStock(size: number, qty: number) {
     setSizeStocks({ ...sizeStocks, [size]: Math.max(0, qty) });
   }
 
   function labelFor(size: number): string {
-    if (productType === 'clothes' && size in CLOTHES_SIZE_LABELS) {
+    if (productType === "clothes" && size in CLOTHES_SIZE_LABELS) {
       return CLOTHES_SIZE_LABELS[size as keyof typeof CLOTHES_SIZE_LABELS];
     }
     return String(size);
@@ -59,7 +59,9 @@ export default function ProductFormStockSection({
       <h2 className="text-xl font-bold text-black mb-4">Ангилал & Нөөц</h2>
       <div className="grid grid-cols-2 gap-6">
         <div>
-          <label className="block text-base font-semibold text-black mb-2">Ангилал</label>
+          <label className="block text-base font-semibold text-black mb-2">
+            Ангилал
+          </label>
           <select
             value={categoryId}
             onChange={(e) => onCategoryChange(e.target.value)}
@@ -67,12 +69,16 @@ export default function ProductFormStockSection({
           >
             <option value="">Сонгоно уу</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-base font-semibold text-black mb-2">Дэд ангилал</label>
+          <label className="block text-base font-semibold text-black mb-2">
+            Дэд ангилал
+          </label>
           <input
             type="text"
             value={subcategory}
@@ -84,21 +90,27 @@ export default function ProductFormStockSection({
       </div>
 
       <div>
-        <label className="block text-base font-semibold text-black mb-2">Бүтээгдэхүүний төрөл</label>
+        <label className="block text-base font-semibold text-black mb-2">
+          Бүтээгдэхүүний төрөл
+        </label>
         <select
           value={productType}
           onChange={(e) => setProductType(e.target.value as ProductType)}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
         >
           {PRODUCT_TYPE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
       </div>
 
       {isBeauty && (
         <div>
-          <label className="block text-base font-semibold text-black mb-2">Нөөц *</label>
+          <label className="block text-base font-semibold text-black mb-2">
+            Нөөц *
+          </label>
           <input
             type="number"
             min={0}
@@ -112,7 +124,9 @@ export default function ProductFormStockSection({
 
       {!isBeauty && sizes.length > 0 && (
         <div>
-          <h3 className="text-base font-semibold text-black mb-3">Размер & тоо ширхэг</h3>
+          <h3 className="text-base font-semibold text-black mb-3">
+            Размер & тоо ширхэг
+          </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {sizes.map((size) => (
               <div key={size}>
@@ -123,7 +137,9 @@ export default function ProductFormStockSection({
                   type="number"
                   min={0}
                   value={sizeStocks[size] ?? 0}
-                  onChange={(e) => setSizeStock(size, parseInt(e.target.value, 10) || 0)}
+                  onChange={(e) =>
+                    setSizeStock(size, parseInt(e.target.value, 10) || 0)
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
                 />
               </div>
@@ -139,7 +155,9 @@ export default function ProductFormStockSection({
           onChange={(e) => onHasFinancingChange(e.target.checked)}
           className="w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-400"
         />
-        <label className="ml-3 text-base font-medium text-black">Зээлийн боломжтой</label>
+        <label className="ml-3 text-base font-medium text-black">
+          Зээлийн боломжтой
+        </label>
       </div>
     </div>
   );

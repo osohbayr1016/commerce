@@ -3,7 +3,10 @@
 export type FooterContentsMap = Record<string, Record<string, string>>;
 
 export const DEFAULT_FOOTER_MAP: FooterContentsMap = {
-  company: { title: "E-Commerce", description: "Онлайн худалдааг хөгжүүлэгч платформ" },
+  company: {
+    title: "E-Commerce",
+    description: "Онлайн худалдааг хөгжүүлэгч платформ",
+  },
   social: { facebook_url: "#", instagram_url: "#" },
   help_menu: {
     about_text: "Бидний тухай",
@@ -65,7 +68,8 @@ export function getDefaultFooterRows(): FooterContentRow[] {
     ["bottom_links", "profile_url", 5],
   ];
   for (const [section, key, display_order] of entries) {
-    const value = (DEFAULT_FOOTER_MAP[section] as Record<string, string>)?.[key] ?? "";
+    const value =
+      (DEFAULT_FOOTER_MAP[section] as Record<string, string>)?.[key] ?? "";
     rows.push({
       id: id++,
       section,

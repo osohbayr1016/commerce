@@ -1,8 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import type { ProductDetailType } from "@/data/mockProductDetail";
+import { CLOTHES_SIZE_LABELS } from "@/lib/product-types";
 
 interface VariantSelectorProps {
+  productType?: ProductDetailType;
   colors?: string[];
   materials?: string[];
   sizes?: number[];
@@ -17,6 +20,7 @@ interface VariantSelectorProps {
 }
 
 export default function VariantSelector({
+  productType,
   colors = [],
   materials = [],
   sizes = [],
@@ -25,9 +29,15 @@ export default function VariantSelector({
   defaultSize,
   onVariantChange,
 }: VariantSelectorProps) {
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(defaultColor);
-  const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>(defaultMaterial);
-  const [selectedSize, setSelectedSize] = useState<number | undefined>(defaultSize);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    defaultColor,
+  );
+  const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>(
+    defaultMaterial,
+  );
+  const [selectedSize, setSelectedSize] = useState<number | undefined>(
+    defaultSize,
+  );
 
   useEffect(() => {
     onVariantChange({
@@ -37,7 +47,8 @@ export default function VariantSelector({
     });
   }, [selectedColor, selectedMaterial, selectedSize, onVariantChange]);
 
-  const hasVariants = colors.length > 0 || materials.length > 0 || sizes.length > 0;
+  const showSizes = productType !== "beauty" && sizes.length > 0;
+  const hasVariants = colors.length > 0 || materials.length > 0 || showSizes;
 
   if (!hasVariants) {
     return null;
@@ -62,8 +73,8 @@ export default function VariantSelector({
                 onClick={() => setSelectedColor(color)}
                 className={`px-4 py-2 border rounded-lg text-sm font-medium transition ${
                   selectedColor === color
-                    ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    ? "border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600"
+                    : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
                 }`}
               >
                 {color}
@@ -90,8 +101,8 @@ export default function VariantSelector({
                 onClick={() => setSelectedMaterial(material)}
                 className={`px-4 py-2 border rounded-lg text-sm font-medium transition ${
                   selectedMaterial === material
-                    ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    ? "border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600"
+                    : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
                 }`}
               >
                 {material}
@@ -102,12 +113,20 @@ export default function VariantSelector({
       )}
 
       {/* Size Selection */}
-      {sizes.length > 0 && (
+      {showSizes && (
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-3">
             Size
-            {selectedSize && (
-              <span className="ml-2 text-gray-600">- {selectedSize}</span>
+            {selectedSize != null && (
+              <span className="ml-2 text-gray-600">
+                -{" "}
+                {productType === "clothes" &&
+                selectedSize in CLOTHES_SIZE_LABELS
+                  ? CLOTHES_SIZE_LABELS[
+                      selectedSize as keyof typeof CLOTHES_SIZE_LABELS
+                    ]
+                  : selectedSize}
+              </span>
             )}
           </label>
           <div className="flex flex-wrap gap-3">
@@ -118,11 +137,15 @@ export default function VariantSelector({
                 onClick={() => setSelectedSize(size)}
                 className={`px-4 py-2 border rounded-lg text-sm font-medium transition min-w-[60px] ${
                   selectedSize === size
-                    ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                    ? "border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-600"
+                    : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
                 }`}
               >
-                {size}
+                {productType === "clothes" && size in CLOTHES_SIZE_LABELS
+                  ? CLOTHES_SIZE_LABELS[
+                      size as keyof typeof CLOTHES_SIZE_LABELS
+                    ]
+                  : size}
               </button>
             ))}
           </div>
@@ -130,14 +153,25 @@ export default function VariantSelector({
       )}
 
       {/* Selected Variant Summary */}
-      {(selectedColor || selectedMaterial || selectedSize) && (
+      {(selectedColor || selectedMaterial || selectedSize != null) && (
         <div className="pt-4 border-t border-gray-200">
           <p className="text-sm text-gray-600">
-            Selected:{' '}
+            Selected:{" "}
             <span className="font-medium text-gray-900">
-              {[selectedColor, selectedMaterial, selectedSize]
+              {[
+                selectedColor,
+                selectedMaterial,
+                selectedSize != null
+                  ? productType === "clothes" &&
+                    selectedSize in CLOTHES_SIZE_LABELS
+                    ? CLOTHES_SIZE_LABELS[
+                        selectedSize as keyof typeof CLOTHES_SIZE_LABELS
+                      ]
+                    : selectedSize
+                  : null,
+              ]
                 .filter(Boolean)
-                .join(' / ')}
+                .join(" / ")}
             </span>
           </p>
         </div>

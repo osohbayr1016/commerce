@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSpinModal } from "@/contexts/SpinModalContext";
 import { Category } from "@/types";
 
 interface MobileMenuProps {
@@ -61,11 +62,13 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
     };
   }, [isOpen, phase]);
 
-  const navLinks = [
+  const { openSpinModal } = useSpinModal() ?? {};
+
+  const navLinks: { href?: string; label: string; spin?: boolean }[] = [
     { href: "/", label: "Нүүр" },
     { href: "/categories", label: "Ангилал" },
     { href: "/sale", label: "Хямдрал" },
-    { href: "/profile?tab=spin", label: "🎰 Spin" },
+    { label: "🎰 Spin", spin: true },
     { href: "/profile", label: "Профайл" },
   ];
 
@@ -136,16 +139,30 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
 
             <nav className="p-4">
               <div className="space-y-1">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => phase === "open" && setPhase("leaving")}
-                    className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  link.spin ? (
+                    <button
+                      key="spin"
+                      type="button"
+                      onClick={() => {
+                        openSpinModal?.();
+                        if (phase === "open") setPhase("leaving");
+                      }}
+                      className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href!}
+                      onClick={() => phase === "open" && setPhase("leaving")}
+                      className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                )}
               </div>
 
               {categories.length > 0 && (

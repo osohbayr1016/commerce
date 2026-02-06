@@ -1,8 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import type { SpinProduct, SpinEligibility, SpinResult, Product } from '@/types';
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import type {
+  SpinProduct,
+  SpinEligibility,
+  SpinResult,
+  Product,
+} from "@/types";
 
 export default function SpinWheel() {
   const { user, profile, refreshProfile } = useAuth();
@@ -22,22 +27,38 @@ export default function SpinWheel() {
   const fetchData = async () => {
     try {
       const [productsRes, eligibilityRes] = await Promise.all([
-        fetch('/api/admin/spin/products'),
-        fetch('/api/spin/eligibility'),
+        fetch("/api/spin/products"),
+        fetch("/api/spin/eligibility"),
       ]);
 
       if (productsRes.ok) {
         const data = await productsRes.json();
-        const active = data.filter((p: SpinProduct) => p.is_active);
+        const list = Array.isArray(data) ? data : (data?.products ?? []);
+        const active = list.filter((p: SpinProduct) => p.is_active !== false);
         setSpinProducts(active);
       }
 
       if (eligibilityRes.ok) {
         const data = await eligibilityRes.json();
         setEligibility(data);
+      } else {
+        setEligibility({
+          can_spin: false,
+          reason: "Төлөв шалгахад алдаа гарлаа. Дахин оролдоно уу.",
+          last_spin_at: null,
+          next_spin_at: null,
+          active_products_count: 0,
+        });
       }
     } catch (err) {
-      console.error('Error fetching data:', err);
+      console.error("Error fetching data:", err);
+      setEligibility({
+        can_spin: false,
+        reason: "Төлөв шалгахад алдаа гарлаа. Дахин оролдоно уу.",
+        last_spin_at: null,
+        next_spin_at: null,
+        active_products_count: 0,
+      });
     } finally {
       setLoading(false);
     }
@@ -54,9 +75,9 @@ export default function SpinWheel() {
       // Generate random session ID
       const sessionId = `spin_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
-      const res = await fetch('/api/spin/play', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/spin/play", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId }),
       });
 
@@ -65,20 +86,21 @@ export default function SpinWheel() {
       if (data.success && data.won_product) {
         // Calculate which segment was won
         const wonIndex = spinProducts.findIndex(
-          (p) => p.product_id === data.won_product!.id
+          (p) => p.product_id === data.won_product!.id,
         );
-        
+
         // Calculate rotation to land on that segment
         const segmentAngle = 360 / spinProducts.length;
         const targetAngle = wonIndex * segmentAngle;
-        
+
         // Add multiple full rotations for effect (5-8 full spins)
         const fullRotations = Math.floor(Math.random() * 3) + 5;
-        const totalRotation = rotation + (fullRotations * 360) + (360 - targetAngle);
-        
+        const totalRotation =
+          rotation + fullRotations * 360 + (360 - targetAngle);
+
         // Start spinning animation
         setRotation(totalRotation);
-        
+
         // Show result after animation completes (4 seconds)
         setTimeout(() => {
           setResult(data);
@@ -92,9 +114,9 @@ export default function SpinWheel() {
         setSpinning(false);
       }
     } catch (err) {
-      console.error('Error spinning:', err);
+      console.error("Error spinning:", err);
       setSpinning(false);
-      alert('Алдаа гарлаа. Дахин оролдоно уу.');
+      alert("Алдаа гарлаа. Дахин оролдоно уу.");
     }
   };
 
@@ -117,9 +139,7 @@ export default function SpinWheel() {
         <div className="text-lg font-medium text-yellow-900 mb-2">
           Нэвтрэх шаардлагатай
         </div>
-        <p className="text-yellow-700">
-          Spin эргүүлэхийн тулд нэвтэрнэ үү
-        </p>
+        <p className="text-yellow-700">Spin эргүүлэхийн тулд нэвтэрнэ үү</p>
       </div>
     );
   }
@@ -142,32 +162,36 @@ export default function SpinWheel() {
   return (
     <div className="space-y-6">
       {/* Eligibility Status */}
-      <div className={`rounded-lg p-4 ${
-        eligibility?.can_spin
-          ? 'bg-green-50 border border-green-200'
-          : 'bg-red-50 border border-red-200'
-      }`}>
+      <div
+        className={`rounded-lg p-4 ${
+          eligibility?.can_spin
+            ? "bg-green-50 border border-green-200"
+            : "bg-red-50 border border-red-200"
+        }`}
+      >
         <div className="flex items-center justify-between">
           <div>
-            <div className={`font-medium ${
-              eligibility?.can_spin ? 'text-green-900' : 'text-red-900'
-            }`}>
-              {eligibility?.reason}
+            <div
+              className={`font-medium ${
+                eligibility?.can_spin ? "text-green-900" : "text-red-900"
+              }`}
+            >
+              {eligibility?.reason || "Төлөв тодорхойгүй. Дахин оролдоно уу."}
             </div>
             {eligibility?.can_spin && (
               <div className="text-sm text-green-700 mt-1">
-                Үнэ: {eligibility.cost_coins} coin (₮{(eligibility.cost_coins || 0) * 1000})
+                Үнэ: {eligibility.cost_coins} coin (₮
+                {(eligibility.cost_coins || 0) * 1000})
               </div>
             )}
             {eligibility?.next_spin_at && (
               <div className="text-sm text-red-700 mt-1">
-                Дараагийн spin: {new Date(eligibility.next_spin_at).toLocaleString('mn-MN')}
+                Дараагийн spin:{" "}
+                {new Date(eligibility.next_spin_at).toLocaleString("mn-MN")}
               </div>
             )}
           </div>
-          <div className="text-2xl">
-            {eligibility?.can_spin ? '✅' : '❌'}
-          </div>
+          <div className="text-2xl">{eligibility?.can_spin ? "✅" : "❌"}</div>
         </div>
       </div>
 
@@ -198,20 +222,22 @@ export default function SpinWheel() {
             className="relative w-full h-full rounded-full shadow-2xl overflow-hidden border-8 border-gray-800"
             style={{
               transform: `rotate(${rotation}deg)`,
-              transition: spinning ? 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)' : 'none',
+              transition: spinning
+                ? "transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)"
+                : "none",
             }}
           >
             {spinProducts.map((sp, index) => {
               const startAngle = index * segmentAngle;
               const colors = [
-                'bg-red-500',
-                'bg-blue-500',
-                'bg-green-500',
-                'bg-yellow-500',
-                'bg-purple-500',
-                'bg-pink-500',
-                'bg-indigo-500',
-                'bg-orange-500',
+                "bg-red-500",
+                "bg-blue-500",
+                "bg-green-500",
+                "bg-yellow-500",
+                "bg-purple-500",
+                "bg-pink-500",
+                "bg-indigo-500",
+                "bg-orange-500",
               ];
               const color = colors[index % colors.length];
 
@@ -221,8 +247,8 @@ export default function SpinWheel() {
                   className={`absolute w-full h-full ${color} bg-opacity-90`}
                   style={{
                     clipPath: `polygon(50% 50%, 
-                      ${50 + 50 * Math.cos((startAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle - 90) * Math.PI / 180)}%, 
-                      ${50 + 50 * Math.cos((startAngle + segmentAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle + segmentAngle - 90) * Math.PI / 180)}%)`,
+                      ${50 + 50 * Math.cos(((startAngle - 90) * Math.PI) / 180)}% ${50 + 50 * Math.sin(((startAngle - 90) * Math.PI) / 180)}%, 
+                      ${50 + 50 * Math.cos(((startAngle + segmentAngle - 90) * Math.PI) / 180)}% ${50 + 50 * Math.sin(((startAngle + segmentAngle - 90) * Math.PI) / 180)}%)`,
                   }}
                 >
                   <div
@@ -233,16 +259,20 @@ export default function SpinWheel() {
                   >
                     <div
                       className="text-white text-center font-bold text-sm"
-                      style={{ transform: 'rotate(0deg)' }}
+                      style={{ transform: "rotate(0deg)" }}
                     >
                       <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-2 max-w-[80px]">
                         <img
-                          src={sp.image_url || sp.product?.image_url || '/placeholder.png'}
+                          src={
+                            sp.image_url ||
+                            sp.product?.image_url ||
+                            "/placeholder.png"
+                          }
                           alt=""
                           className="w-12 h-12 object-cover rounded mx-auto mb-1"
                         />
                         <div className="text-xs truncate">
-                          {sp.display_name || sp.product?.name_mn || 'Product'}
+                          {sp.display_name || sp.product?.name_mn || "Product"}
                         </div>
                       </div>
                     </div>
@@ -264,11 +294,11 @@ export default function SpinWheel() {
           disabled={!eligibility?.can_spin || spinning}
           className={`mt-8 px-8 py-4 rounded-full text-xl font-bold transition-all transform ${
             eligibility?.can_spin && !spinning
-              ? ' from-yellow-400 to-orange-500 text-white hover:scale-105 hover:shadow-2xl active:scale-95'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ? " from-yellow-400 to-orange-500 text-white hover:scale-105 hover:shadow-2xl active:scale-95"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >
-          {spinning ? '🎰 Эргэж байна...' : '🎰 SPIN ЭРГҮҮЛЭХ'}
+          {spinning ? "🎰 Эргэж байна..." : "🎰 SPIN ЭРГҮҮЛЭХ"}
         </button>
 
         {eligibility?.can_spin && !spinning && (
@@ -293,7 +323,7 @@ export default function SpinWheel() {
                 </p>
                 <div className=" from-yellow-50 to-orange-50 rounded-lg p-6 mb-6">
                   <img
-                    src={result.won_product?.image_url || '/placeholder.png'}
+                    src={result.won_product?.image_url || "/placeholder.png"}
                     alt={result.won_product?.name}
                     className="w-32 h-32 object-cover rounded-lg mx-auto mb-4"
                   />
@@ -326,7 +356,7 @@ export default function SpinWheel() {
                   Алдаа гарлаа
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  {result.error || 'Дахин оролдоно уу'}
+                  {result.error || "Дахин оролдоно уу"}
                 </p>
                 <button
                   onClick={closeResultModal}

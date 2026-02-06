@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 // =====================================================
 // GET /api/admin/spin/products
@@ -17,56 +17,82 @@ export async function GET(req: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Нэвтрэх шаардлагатай' },
-        { status: 401 }
+        { error: "Нэвтрэх шаардлагатай" },
+        { status: 401 },
       );
     }
 
     // Check if user is admin
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || profile.role !== "admin") {
       return NextResponse.json(
-        { error: 'Админ эрх шаардлагатай' },
-        { status: 403 }
+        { error: "Админ эрх шаардлагатай" },
+        { status: 403 },
       );
     }
 
-    // Fetch all spin products with product details
+    // Fetch all spin products with product details (products has images, not image_url)
     const { data: spinProducts, error } = await supabase
-      .from('spin_products')
-      .select(`
+      .from("spin_products")
+      .select(
+        `
         *,
         product:products (
           id,
           name_mn,
           name_en,
           price,
-          image_url,
+          images,
           stock,
           brand
         )
-      `)
-      .order('created_at', { ascending: false });
+      `,
+      )
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching spin products:', error);
+      const isTableMissing =
+        error.code === "PGRST205" ||
+        (error.message && error.message.includes("Could not find the table"));
+      if (isTableMissing) {
+        return NextResponse.json([], { status: 200 });
+      }
+      console.error("Error fetching spin products:", error);
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүн татах үед алдаа гарлаа' },
-        { status: 500 }
+        { error: "Spin бүтээгдэхүүн татах үед алдаа гарлаа" },
+        { status: 500 },
       );
     }
 
-    return NextResponse.json(spinProducts || [], { status: 200 });
+    const list = spinProducts || [];
+    const withImageUrl = list.map(
+      (sp: { product?: { images?: string[]; [k: string]: unknown } }) => {
+        const p = sp.product as
+          | { images?: string[]; image_url?: string }
+          | undefined;
+        if (
+          p &&
+          Array.isArray(p.images) &&
+          p.images.length > 0 &&
+          !p.image_url
+        ) {
+          return { ...sp, product: { ...p, image_url: p.images[0] } };
+        }
+        return sp;
+      },
+    );
+
+    return NextResponse.json(withImageUrl, { status: 200 });
   } catch (error) {
-    console.error('Error in GET /api/admin/spin/products:', error);
+    console.error("Error in GET /api/admin/spin/products:", error);
     return NextResponse.json(
-      { error: 'Серверийн алдаа гарлаа' },
-      { status: 500 }
+      { error: "Серверийн алдаа гарлаа" },
+      { status: 500 },
     );
   }
 }
@@ -87,22 +113,22 @@ export async function POST(req: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Нэвтрэх шаардлагатай' },
-        { status: 401 }
+        { error: "Нэвтрэх шаардлагатай" },
+        { status: 401 },
       );
     }
 
     // Check if user is admin
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || profile.role !== "admin") {
       return NextResponse.json(
-        { error: 'Админ эрх шаардлагатай' },
-        { status: 403 }
+        { error: "Админ эрх шаардлагатай" },
+        { status: 403 },
       );
     }
 
@@ -113,42 +139,42 @@ export async function POST(req: NextRequest) {
     // Validate required fields
     if (!product_id) {
       return NextResponse.json(
-        { error: 'Бүтээгдэхүүний ID шаардлагатай' },
-        { status: 400 }
+        { error: "Бүтээгдэхүүний ID шаардлагатай" },
+        { status: 400 },
       );
     }
 
     // Check if product exists
     const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('id, name_mn, name_en')
-      .eq('id', product_id)
+      .from("products")
+      .select("id, name_mn, name_en")
+      .eq("id", product_id)
       .single();
 
     if (productError || !product) {
       return NextResponse.json(
-        { error: 'Бүтээгдэхүүн олдсонгүй' },
-        { status: 404 }
+        { error: "Бүтээгдэхүүн олдсонгүй" },
+        { status: 404 },
       );
     }
 
     // Check if product is already in spin wheel
     const { data: existing } = await supabase
-      .from('spin_products')
-      .select('id')
-      .eq('product_id', product_id)
+      .from("spin_products")
+      .select("id")
+      .eq("product_id", product_id)
       .single();
 
     if (existing) {
       return NextResponse.json(
-        { error: 'Энэ бүтээгдэхүүн аль хэдийн spin wheel дээр байна' },
-        { status: 409 }
+        { error: "Энэ бүтээгдэхүүн аль хэдийн spin wheel дээр байна" },
+        { status: 409 },
       );
     }
 
-    // Insert new spin product
+    // Insert new spin product (products has images, not image_url)
     const { data: newSpinProduct, error: insertError } = await supabase
-      .from('spin_products')
+      .from("spin_products")
       .insert({
         product_id,
         display_name: display_name || null,
@@ -156,34 +182,60 @@ export async function POST(req: NextRequest) {
         is_active,
         added_by: user.id,
       })
-      .select(`
+      .select(
+        `
         *,
         product:products (
           id,
           name_mn,
           name_en,
           price,
-          image_url,
+          images,
           stock,
           brand
         )
-      `)
+      `,
+      )
       .single();
 
     if (insertError) {
-      console.error('Error inserting spin product:', insertError);
+      const isTableMissing =
+        insertError.code === "PGRST205" ||
+        (insertError.message &&
+          insertError.message.includes("Could not find the table"));
+      if (isTableMissing) {
+        return NextResponse.json(
+          {
+            error:
+              "Spin хүснэгт байхгүй байна. Supabase дээр migration 20260206000000_ensure_spin_tables ажиллуулна уу.",
+          },
+          { status: 503 },
+        );
+      }
+      console.error("Error inserting spin product:", insertError);
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүн нэмэх үед алдаа гарлаа' },
-        { status: 500 }
+        { error: "Spin бүтээгдэхүүн нэмэх үед алдаа гарлаа" },
+        { status: 500 },
       );
     }
 
-    return NextResponse.json(newSpinProduct, { status: 201 });
+    const out = newSpinProduct as {
+      product?: { images?: string[]; image_url?: string };
+    };
+    if (
+      out?.product &&
+      Array.isArray(out.product.images) &&
+      out.product.images.length > 0 &&
+      !out.product.image_url
+    ) {
+      out.product.image_url = out.product.images[0];
+    }
+    return NextResponse.json(out, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/admin/spin/products:', error);
+    console.error("Error in POST /api/admin/spin/products:", error);
     return NextResponse.json(
-      { error: 'Серверийн алдаа гарлаа' },
-      { status: 500 }
+      { error: "Серверийн алдаа гарлаа" },
+      { status: 500 },
     );
   }
 }
@@ -204,22 +256,22 @@ export async function PATCH(req: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Нэвтрэх шаардлагатай' },
-        { status: 401 }
+        { error: "Нэвтрэх шаардлагатай" },
+        { status: 401 },
       );
     }
 
     // Check if user is admin
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || profile.role !== "admin") {
       return NextResponse.json(
-        { error: 'Админ эрх шаардлагатай' },
-        { status: 403 }
+        { error: "Админ эрх шаардлагатай" },
+        { status: 403 },
       );
     }
 
@@ -229,8 +281,8 @@ export async function PATCH(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүний ID шаардлагатай' },
-        { status: 400 }
+        { error: "Spin бүтээгдэхүүний ID шаардлагатай" },
+        { status: 400 },
       );
     }
 
@@ -242,17 +294,18 @@ export async function PATCH(req: NextRequest) {
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json(
-        { error: 'Шинэчлэх өгөгдөл шаардлагатай' },
-        { status: 400 }
+        { error: "Шинэчлэх өгөгдөл шаардлагатай" },
+        { status: 400 },
       );
     }
 
     // Update spin product
     const { data: updated, error: updateError } = await supabase
-      .from('spin_products')
+      .from("spin_products")
       .update(updates)
-      .eq('id', id)
-      .select(`
+      .eq("id", id)
+      .select(
+        `
         *,
         product:products (
           id,
@@ -263,23 +316,24 @@ export async function PATCH(req: NextRequest) {
           stock,
           brand
         )
-      `)
+      `,
+      )
       .single();
 
     if (updateError) {
-      console.error('Error updating spin product:', updateError);
+      console.error("Error updating spin product:", updateError);
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүн шинэчлэх үед алдаа гарлаа' },
-        { status: 500 }
+        { error: "Spin бүтээгдэхүүн шинэчлэх үед алдаа гарлаа" },
+        { status: 500 },
       );
     }
 
     return NextResponse.json(updated, { status: 200 });
   } catch (error) {
-    console.error('Error in PATCH /api/admin/spin/products:', error);
+    console.error("Error in PATCH /api/admin/spin/products:", error);
     return NextResponse.json(
-      { error: 'Серверийн алдаа гарлаа' },
-      { status: 500 }
+      { error: "Серверийн алдаа гарлаа" },
+      { status: 500 },
     );
   }
 }
@@ -300,59 +354,59 @@ export async function DELETE(req: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Нэвтрэх шаардлагатай' },
-        { status: 401 }
+        { error: "Нэвтрэх шаардлагатай" },
+        { status: 401 },
       );
     }
 
     // Check if user is admin
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || profile.role !== "admin") {
       return NextResponse.json(
-        { error: 'Админ эрх шаардлагатай' },
-        { status: 403 }
+        { error: "Админ эрх шаардлагатай" },
+        { status: 403 },
       );
     }
 
     // Get ID from query params
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
+    const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүний ID шаардлагатай' },
-        { status: 400 }
+        { error: "Spin бүтээгдэхүүний ID шаардлагатай" },
+        { status: 400 },
       );
     }
 
     // Delete spin product
     const { error: deleteError } = await supabase
-      .from('spin_products')
+      .from("spin_products")
       .delete()
-      .eq('id', id);
+      .eq("id", id);
 
     if (deleteError) {
-      console.error('Error deleting spin product:', deleteError);
+      console.error("Error deleting spin product:", deleteError);
       return NextResponse.json(
-        { error: 'Spin бүтээгдэхүүн устгах үед алдаа гарлаа' },
-        { status: 500 }
+        { error: "Spin бүтээгдэхүүн устгах үед алдаа гарлаа" },
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
-      { message: 'Амжилттай устгагдлаа' },
-      { status: 200 }
+      { message: "Амжилттай устгагдлаа" },
+      { status: 200 },
     );
   } catch (error) {
-    console.error('Error in DELETE /api/admin/spin/products:', error);
+    console.error("Error in DELETE /api/admin/spin/products:", error);
     return NextResponse.json(
-      { error: 'Серверийн алдаа гарлаа' },
-      { status: 500 }
+      { error: "Серверийн алдаа гарлаа" },
+      { status: 500 },
     );
   }
 }

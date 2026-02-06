@@ -14,16 +14,13 @@ import CoinPurchase from "@/components/Profile/CoinPurchase";
 import PromoCodeManager from "@/components/Profile/PromoCodeManager";
 import ReferralStats from "@/components/Profile/ReferralStats";
 import BackButton from "@/components/ui/BackButton";
-import SpinWheel from "@/components/Spin/SpinWheel";
-
 type TabType =
   | "orders"
   | "wishlist"
   | "settings"
   | "referral"
   | "coins"
-  | "promo"
-  | "spin";
+  | "promo";
 
 export default function ProfilePageContent() {
   const { user, profile, loading } = useAuth();
@@ -44,7 +41,6 @@ export default function ProfilePageContent() {
         "referral",
         "coins",
         "promo",
-        "spin",
       ].includes(tab)
     ) {
       setActiveTab(tab);
@@ -170,17 +166,8 @@ export default function ProfilePageContent() {
                   💰 Монет
                 </button>
                 <button
-                  onClick={() => setActiveTab("spin")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
-                    activeTab === "spin"
-                      ? "bg-gray-900 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  🎰 Spin Wheel
-                </button>
-                <button
                   onClick={() => setActiveTab("promo")}
+                  type="button"
                   className={`px-4 py-2 text-sm font-medium rounded-full transition whitespace-nowrap ${
                     activeTab === "promo"
                       ? "bg-gray-900 text-white"
@@ -223,7 +210,6 @@ export default function ProfilePageContent() {
 
               {activeTab === "orders" && <OrderHistory />}
               {activeTab === "coins" && <CoinPurchase />}
-              {activeTab === "spin" && <SpinWheel />}
               {activeTab === "promo" && (
                 <div className="space-y-6">
                   <PromoCodeManager />

@@ -34,15 +34,19 @@ export async function GET(request: Request) {
           brand_color,
           image_color,
           images,
-          stock
+          stock,
+          product_type
         )
-      `
+      `,
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {
-      if (error.code === "PGRST205" && /cart_items/i.test(String(error.message))) {
+      if (
+        error.code === "PGRST205" &&
+        /cart_items/i.test(String(error.message))
+      ) {
         return NextResponse.json({ items: [] });
       }
       console.error("Cart API error:", error);
@@ -60,19 +64,24 @@ export async function GET(request: Request) {
       .map((item: any) => {
         try {
           const product = item.products;
-          const productName = product?.name_en || product?.title || product?.name_mn || "";
+          const productName =
+            product?.name_en || product?.title || product?.name_mn || "";
           return {
             id: item.product_id,
             name: productName,
             price: product?.price || 0,
             originalPrice: product?.original_price || product?.price || 0,
             quantity: item.quantity,
-            slug: `${product?.brand || ""}-${productName}`.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+            slug: `${product?.brand || ""}-${productName}`
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^a-z0-9-]/g, ""),
             brand: product?.brand,
             imageColor: product?.image_color,
             brandColor: product?.brand_color,
             images: product?.images || [],
-            size: item.size || undefined,
+            size: item.size ?? undefined,
+            productType: product?.product_type ?? undefined,
           };
         } catch (mapError) {
           console.error("Error mapping cart item:", mapError);
@@ -86,7 +95,7 @@ export async function GET(request: Request) {
     console.error("Cart API unexpected error:", err);
     return NextResponse.json(
       { error: err?.message || "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -109,13 +118,9 @@ export async function POST(request: Request) {
   const { product_id, quantity, size } = body;
 
   if (!product_id || !quantity || quantity < 1) {
-    return NextResponse.json(
-      { error: "Invalid request" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  
   const { data: product } = await supabase
     .from("products")
     .select("stock")
@@ -123,14 +128,9 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (!product || (product.stock ?? 0) < quantity) {
-    return NextResponse.json(
-      { error: "Insufficient stock" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Insufficient stock" }, { status: 400 });
   }
 
-  
-  
   const { data, error } = await supabase
     .from("cart_items")
     .upsert(
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
       },
       {
         onConflict: "user_id,product_id,size",
-      }
+      },
     )
     .select()
     .single();
@@ -172,13 +172,9 @@ export async function PUT(request: Request) {
   const { product_id, quantity, size } = body;
 
   if (!product_id || !quantity || quantity < 1) {
-    return NextResponse.json(
-      { error: "Invalid request" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  
   const { data: product } = await supabase
     .from("products")
     .select("stock")
@@ -186,13 +182,9 @@ export async function PUT(request: Request) {
     .maybeSingle();
 
   if (!product || (product.stock ?? 0) < quantity) {
-    return NextResponse.json(
-      { error: "Insufficient stock" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Insufficient stock" }, { status: 400 });
   }
 
-  
   const { data: existingItem } = await supabase
     .from("cart_items")
     .select("id")
@@ -202,10 +194,7 @@ export async function PUT(request: Request) {
     .maybeSingle();
 
   if (!existingItem) {
-    return NextResponse.json(
-      { error: "Cart item not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Cart item not found" }, { status: 404 });
   }
 
   const { data, error } = await supabase
@@ -241,10 +230,7 @@ export async function DELETE(request: Request) {
   const size = searchParams.get("size");
 
   if (!product_id) {
-    return NextResponse.json(
-      { error: "Product ID required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Product ID required" }, { status: 400 });
   }
 
   let query = supabase

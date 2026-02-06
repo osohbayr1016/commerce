@@ -75,8 +75,15 @@ export default function CategoriesPage() {
   }
 
   function getCategoryPayload(includeShowInHeader: boolean) {
-    const { name, name_en, name_mn, slug, is_active, display_order, show_in_header } =
-      formData;
+    const {
+      name,
+      name_en,
+      name_mn,
+      slug,
+      is_active,
+      display_order,
+      show_in_header,
+    } = formData;
     const payload: Record<string, unknown> = {
       name,
       name_en: name_en || null,
@@ -105,8 +112,13 @@ export default function CategoriesPage() {
       } else {
         const payload = getCategoryPayload(true);
         let result = await supabase.from("categories").insert([payload]);
-        if (result.error?.message?.includes("show_in_header") && result.error?.message?.includes("schema cache")) {
-          result = await supabase.from("categories").insert([getCategoryPayload(false)]);
+        if (
+          result.error?.message?.includes("show_in_header") &&
+          result.error?.message?.includes("schema cache")
+        ) {
+          result = await supabase
+            .from("categories")
+            .insert([getCategoryPayload(false)]);
         }
         if (result.error) throw result.error;
         setMessage("Category created successfully");
@@ -122,7 +134,9 @@ export default function CategoriesPage() {
 
   async function handleDelete(id: number) {
     try {
-      const res = await fetch(`/api/admin/categories/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "DELETE",
+      });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Delete failed");
       setMessage("Category deleted successfully");
@@ -150,8 +164,12 @@ export default function CategoriesPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">Ангилал удирдах</h1>
-        <p className="text-base text-gray-600">Бүтээгдэхүүний ангилал нэмэх, засах</p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+          Ангилал удирдах
+        </h1>
+        <p className="text-base text-gray-600">
+          Бүтээгдэхүүний ангилал нэмэх, засах
+        </p>
       </div>
 
       {message && (

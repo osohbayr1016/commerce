@@ -1,6 +1,6 @@
-import { createClient } from '@/lib/supabase/server';
-import ProductForm from '../../ProductForm';
-import { notFound } from 'next/navigation';
+import { createClient } from "@/lib/supabase/server";
+import ProductForm from "../../ProductForm";
+import { notFound } from "next/navigation";
 
 export default async function EditProductPage({
   params,
@@ -11,9 +11,9 @@ export default async function EditProductPage({
   const supabase = await createClient();
 
   const { data: product, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', id)
+    .from("products")
+    .select("*")
+    .eq("id", id)
     .single();
 
   if (error || !product) {
@@ -21,11 +21,11 @@ export default async function EditProductPage({
   }
 
   const { data: sizeOnlyVariants } = await supabase
-    .from('product_variants')
-    .select('id, product_id, color, material, size, stock')
-    .eq('product_id', id)
-    .is('color', null)
-    .is('material', null);
+    .from("product_variants")
+    .select("id, product_id, color, material, size, stock")
+    .eq("product_id", id)
+    .is("color", null)
+    .is("material", null);
 
   return (
     <div className="p-8">
@@ -38,7 +38,10 @@ export default async function EditProductPage({
         </p>
       </div>
 
-      <ProductForm product={product} productVariants={sizeOnlyVariants ?? undefined} />
+      <ProductForm
+        product={product}
+        productVariants={sizeOnlyVariants ?? undefined}
+      />
     </div>
   );
 }

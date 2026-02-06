@@ -8,6 +8,7 @@ import CartIconWithBadge from "./CartIconWithBadge";
 import WishlistIcon from "./WishlistIcon";
 import MobileMenu from "./MobileMenu";
 import CoinBalance from "./CoinBalance";
+import { useSpinModal } from "@/contexts/SpinModalContext";
 import { Category } from "@/types";
 
 interface MainNavClientProps {
@@ -20,6 +21,7 @@ export default function MainNavClient({
   headerCategories,
 }: MainNavClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { openSpinModal } = useSpinModal() ?? {};
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -76,12 +78,13 @@ export default function MainNavClient({
             >
               Хямдрал
             </a>
-            <a
-              href="/profile?tab=spin"
-              className="hover:text-gray-600 transition-colors flex items-center gap-1 whitespace-nowrap"
+            <button
+              type="button"
+              onClick={() => openSpinModal?.()}
+              className="hover:text-gray-600 transition-colors flex items-center gap-1 whitespace-nowrap font-semibold text-gray-900 bg-transparent border-0 cursor-pointer text-lg"
             >
               🎰 Spin
-            </a>
+            </button>
             <a
               href="/profile"
               className="hover:text-gray-600 transition-colors whitespace-nowrap"

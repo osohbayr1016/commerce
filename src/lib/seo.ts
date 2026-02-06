@@ -38,7 +38,11 @@ export function generateSEO({
     ],
     authors: [{ name: "MaayaaUvuu " }],
     metadataBase: new URL(siteUrl),
-    icons: { icon: DEFAULT_METADATA_IMAGE, shortcut: DEFAULT_METADATA_IMAGE, apple: DEFAULT_METADATA_IMAGE },
+    icons: {
+      icon: DEFAULT_METADATA_IMAGE,
+      shortcut: DEFAULT_METADATA_IMAGE,
+      apple: DEFAULT_METADATA_IMAGE,
+    },
     openGraph: {
       title,
       description,

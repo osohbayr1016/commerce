@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CartItem } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/Checkout/ProductImage";
+import { getSizeLabel } from "@/lib/product-types";
 
 interface CartItemRowProps {
   item: CartItem;
@@ -18,10 +19,9 @@ export default function CartItemRow({
   onDecrease,
   onRemove,
 }: CartItemRowProps) {
-
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 border border-gray-200 rounded-lg p-4">
-      <Link 
+      <Link
         href={`/products/${item.slug}`}
         className="relative w-20 h-20 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden"
       >
@@ -33,15 +33,21 @@ export default function CartItemRow({
         />
       </Link>
       <div className="flex-1 min-w-0">
-        <Link href={`/products/${item.slug}`} className="text-base font-semibold text-gray-900 hover:text-gray-700 block">
+        <Link
+          href={`/products/${item.slug}`}
+          className="text-base font-semibold text-gray-900 hover:text-gray-700 block"
+        >
           {item.name}
         </Link>
         {item.brand && (
           <p className="text-xs text-gray-500 mt-0.5">{item.brand}</p>
         )}
-        {item.size && (
+        {item.size != null && (
           <p className="text-xs text-gray-500 mt-1">
-            Хэмжээ: <span className="font-medium">{item.size}</span>
+            Хэмжээ:{" "}
+            <span className="font-medium">
+              {getSizeLabel(item.productType, item.size)}
+            </span>
           </p>
         )}
         <p className="text-sm text-gray-600 mt-2">
@@ -49,7 +55,9 @@ export default function CartItemRow({
         </p>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <span className="text-xs text-gray-500 whitespace-nowrap">Тоо ширхэг</span>
+        <span className="text-xs text-gray-500 whitespace-nowrap">
+          Тоо ширхэг
+        </span>
         <div className="flex items-center gap-2">
           <button
             onClick={onDecrease}
@@ -73,7 +81,7 @@ export default function CartItemRow({
           {item.quantity} × {formatPrice(item.price)} ₮
         </p>
       </div>
-      
+
       <div className="flex flex-col items-end gap-2">
         <div className="text-right">
           <p className="text-xs text-gray-500 mb-1">Нийт дүн</p>

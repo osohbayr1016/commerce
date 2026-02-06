@@ -1,21 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
-import { Product, Category, ProductVariant, getErrorMessage } from '@/types';
-import type { ProductType } from '@/types';
-import { getSizesForType } from '@/lib/product-types';
-import ImageUploader from '@/components/admin/ImageUploader';
-import ProductFormStockSection from './ProductFormStockSection';
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { Product, Category, ProductVariant, getErrorMessage } from "@/types";
+import type { ProductType } from "@/types";
+import { getSizesForType } from "@/lib/product-types";
+import ImageUploader from "@/components/admin/ImageUploader";
+import ProductFormStockSection from "./ProductFormStockSection";
 
 function buildInitialSizeStocks(
   productType: ProductType,
-  sizeOnlyVariants?: ProductVariant[]
+  sizeOnlyVariants?: ProductVariant[],
 ): Record<number, number> {
   const sizes = getSizesForType(productType);
   const out: Record<number, number> = {};
-  sizes.forEach((s) => { out[s] = 0; });
+  sizes.forEach((s) => {
+    out[s] = 0;
+  });
   if (sizeOnlyVariants?.length) {
     sizeOnlyVariants.forEach((v) => {
       if (v.size != null) out[v.size] = v.stock ?? 0;
@@ -31,31 +33,31 @@ export default function ProductForm({
   product?: Product;
   productVariants?: ProductVariant[];
 }) {
-  const productType = (product?.product_type as ProductType) || 'shoes';
+  const productType = (product?.product_type as ProductType) || "shoes";
   const [formData, setFormData] = useState({
-    name_en: product?.name_en || '',
-    name_mn: product?.name_mn || '',
-    brand: product?.brand || '',
-    sku: product?.sku || '',
+    name_en: product?.name_en || "",
+    name_mn: product?.name_mn || "",
+    brand: product?.brand || "",
+    sku: product?.sku || "",
     price: product?.price || 0,
     original_price: product?.original_price || 0,
     discount: product?.discount || 0,
     stock: product?.stock || 0,
-    description: product?.description || '',
-    subcategory: product?.subcategory || '',
-    category_id: product?.category_id?.toString() ?? '',
-    brand_color: product?.brand_color || '#F5F5F5',
-    image_color: product?.image_color || '#FAFAFA',
+    description: product?.description || "",
+    subcategory: product?.subcategory || "",
+    category_id: product?.category_id?.toString() ?? "",
+    brand_color: product?.brand_color || "#F5F5F5",
+    image_color: product?.image_color || "#FAFAFA",
     has_financing: product?.has_financing || false,
   });
   const [type, setType] = useState<ProductType>(productType);
   const [sizeStocks, setSizeStocks] = useState<Record<number, number>>(() =>
-    buildInitialSizeStocks(productType, productVariants)
+    buildInitialSizeStocks(productType, productVariants),
   );
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [images, setImages] = useState<string[]>(product?.images || []);
   const router = useRouter();
   const supabase = createClient();
@@ -67,28 +69,35 @@ export default function ProductForm({
   useEffect(() => {
     const sizes = getSizesForType(type);
     setSizeStocks((prev) =>
-      sizes.reduce((acc, s) => ({ ...acc, [s]: prev[s] ?? 0 }), {} as Record<number, number>)
+      sizes.reduce(
+        (acc, s) => ({ ...acc, [s]: prev[s] ?? 0 }),
+        {} as Record<number, number>,
+      ),
     );
   }, [type]);
 
   async function fetchCategories() {
     const { data } = await supabase
-      .from('categories')
-      .select('*')
-      .order('name', { ascending: true });
+      .from("categories")
+      .select("*")
+      .order("name", { ascending: true });
     if (data) setCategories(data);
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) {
     const { name, value, type } = e.target;
-    
-    if (type === 'checkbox') {
-      setFormData(prev => ({
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
         ...prev,
         [name]: (e.target as HTMLInputElement).checked,
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -98,15 +107,15 @@ export default function ProductForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
       const sizesArray = getSizesForType(type);
-      const isBeauty = type === 'beauty';
+      const isBeauty = type === "beauty";
       const stock = isBeauty ? parseInt(formData.stock.toString(), 10) : 0;
 
       const productData = {
-        title: formData.name_en || formData.name_mn || 'Untitled Product',
+        title: formData.name_en || formData.name_mn || "Untitled Product",
         name_en: formData.name_en,
         name_mn: formData.name_mn,
         brand: formData.brand,
@@ -119,7 +128,9 @@ export default function ProductForm({
         product_type: type,
         description: formData.description,
         subcategory: formData.subcategory,
-        category_id: formData.category_id ? parseInt(formData.category_id.toString(), 10) : null,
+        category_id: formData.category_id
+          ? parseInt(formData.category_id.toString(), 10)
+          : null,
         brand_color: formData.brand_color,
         image_color: formData.image_color,
         has_financing: formData.has_financing,
@@ -129,26 +140,26 @@ export default function ProductForm({
 
       if (product?.id) {
         const res = await fetch(`/api/admin/products/${product.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(productData),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || 'Update failed');
-        setMessage('Бүтээгдэхүүн амжилттай шинэчлэгдлээ!');
+        if (!res.ok) throw new Error(data.error || "Update failed");
+        setMessage("Бүтээгдэхүүн амжилттай шинэчлэгдлээ!");
       } else {
-        const res = await fetch('/api/admin/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/admin/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(productData),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || 'Create failed');
-        setMessage('Бүтээгдэхүүн амжилттай нэмэгдлээ!');
+        if (!res.ok) throw new Error(data.error || "Create failed");
+        setMessage("Бүтээгдэхүүн амжилттай нэмэгдлээ!");
       }
 
       setTimeout(() => {
-        router.push('/admin/products');
+        router.push("/admin/products");
         router.refresh();
       }, 1500);
     } catch (error) {
@@ -167,7 +178,7 @@ export default function ProductForm({
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
         <h2 className="text-xl font-bold text-black mb-4">Үндсэн мэдээлэл</h2>
-        
+
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-base font-semibold text-black mb-2">
@@ -178,7 +189,7 @@ export default function ProductForm({
               name="name_en"
               value={formData.name_en}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -192,7 +203,7 @@ export default function ProductForm({
               name="name_mn"
               value={formData.name_mn}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -208,7 +219,7 @@ export default function ProductForm({
               name="brand"
               value={formData.brand}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -222,7 +233,7 @@ export default function ProductForm({
               name="sku"
               value={formData.sku}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -237,14 +248,14 @@ export default function ProductForm({
             value={formData.description}
             onChange={handleChange}
             rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
         </div>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
         <h2 className="text-xl font-bold text-black mb-4">Үнийн мэдээлэл</h2>
-        
+
         <div className="grid grid-cols-3 gap-6">
           <div>
             <label className="block text-base font-semibold text-black mb-2">
@@ -255,7 +266,7 @@ export default function ProductForm({
               name="price"
               value={formData.price}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -269,7 +280,7 @@ export default function ProductForm({
               name="original_price"
               value={formData.original_price}
               onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
           </div>
@@ -285,7 +296,7 @@ export default function ProductForm({
               onChange={handleChange}
               min="0"
               max="100"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
         </div>
@@ -301,18 +312,22 @@ export default function ProductForm({
         categoryId={formData.category_id}
         onCategoryChange={(v) => setFormData((p) => ({ ...p, category_id: v }))}
         subcategory={formData.subcategory}
-        onSubcategoryChange={(v) => setFormData((p) => ({ ...p, subcategory: v }))}
+        onSubcategoryChange={(v) =>
+          setFormData((p) => ({ ...p, subcategory: v }))
+        }
         hasFinancing={formData.has_financing}
-        onHasFinancingChange={(v) => setFormData((p) => ({ ...p, has_financing: v }))}
+        onHasFinancingChange={(v) =>
+          setFormData((p) => ({ ...p, has_financing: v }))
+        }
         categories={categories}
       />
 
       {message && (
         <div
           className={`p-4 rounded-lg ${
-            message.includes('амжилттай')
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
+            message.includes("амжилттай")
+              ? "bg-green-50 text-green-800 border border-green-200"
+              : "bg-red-50 text-red-800 border border-red-200"
           }`}
         >
           {message}
@@ -325,11 +340,11 @@ export default function ProductForm({
           disabled={loading}
           className={`px-6 py-3 rounded-lg text-base font-medium transition-colors ${
             loading
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gray-900 text-white hover:bg-gray-800'
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-gray-900 text-white hover:bg-gray-800"
           }`}
         >
-          {loading ? 'Хадгалж байна...' : product?.id ? 'Шинэчлэх' : 'Нэмэх'}
+          {loading ? "Хадгалж байна..." : product?.id ? "Шинэчлэх" : "Нэмэх"}
         </button>
         <button
           type="button"

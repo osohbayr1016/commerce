@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import { DEFAULT_FOOTER_MAP, type FooterContentsMap } from "@/lib/footer-defaults";
+import {
+  DEFAULT_FOOTER_MAP,
+  type FooterContentsMap,
+} from "@/lib/footer-defaults";
 
 export const revalidate = 300;
 
@@ -15,10 +18,12 @@ async function getFooterContents(): Promise<FooterContentsMap> {
   if (error) return DEFAULT_FOOTER_MAP;
 
   const contents: FooterContentsMap = {};
-  data?.forEach((item: { section: string; key: string; value: string | null }) => {
-    if (!contents[item.section]) contents[item.section] = {};
-    contents[item.section][item.key] = item.value ?? "";
-  });
+  data?.forEach(
+    (item: { section: string; key: string; value: string | null }) => {
+      if (!contents[item.section]) contents[item.section] = {};
+      contents[item.section][item.key] = item.value ?? "";
+    },
+  );
 
   if (Object.keys(contents).length === 0) return DEFAULT_FOOTER_MAP;
   return contents;

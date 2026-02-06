@@ -1,4 +1,3 @@
-
 export interface Category {
   id: number;
   name: string;
@@ -12,7 +11,7 @@ export interface Category {
   updated_at?: string;
 }
 
-export type ProductType = 'shoes' | 'clothes' | 'beauty';
+export type ProductType = "shoes" | "clothes" | "beauty";
 
 export interface Product {
   id?: string;
@@ -61,7 +60,7 @@ export interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   xp: number;
   tier_level: number;
   email: string | null;
@@ -80,7 +79,7 @@ export interface CoinTransaction {
   id: string;
   user_id: string;
   amount: number;
-  transaction_type: 'purchase' | 'spend' | 'refund';
+  transaction_type: "purchase" | "spend" | "refund";
   description: string | null;
   order_id: string | null;
   created_at: string;
@@ -90,7 +89,7 @@ export interface Order {
   id: string;
   user_id: string;
   total_amount: number;
-  status: 'pending' | 'confirmed' | 'delivered' | 'cancelled';
+  status: "pending" | "confirmed" | "delivered" | "cancelled";
   earned_xp: number;
   full_name?: string | null;
   phone?: string | null;
@@ -206,7 +205,7 @@ export interface SpinHistory {
   spin_product_id: string;
   product_id: string;
   amount_paid: number;
-  payment_method: 'mnt' | 'coin';
+  payment_method: "mnt" | "coin";
   won_at: string;
   added_to_cart: boolean;
   cart_id: string | null;
@@ -272,17 +271,17 @@ export interface DatabaseError extends Error {
   hint?: string;
 }
 
-
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return error;
   }
-  if (error && typeof error === 'object') {
-    if ('message' in error) return String((error as { message: unknown }).message);
-    if ('msg' in error) return String((error as { msg: unknown }).msg);
+  if (error && typeof error === "object") {
+    if ("message" in error)
+      return String((error as { message: unknown }).message);
+    if ("msg" in error) return String((error as { msg: unknown }).msg);
   }
-  return 'Тодорхойгүй алдаа гарлаа';
+  return "Тодорхойгүй алдаа гарлаа";
 }

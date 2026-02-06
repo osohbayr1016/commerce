@@ -25,9 +25,9 @@ interface ProductPageProps {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const supabase = await createClient();
-  
+
   const uuidMatch = slug.match(
-    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
   );
   const numericMatch = slug.match(/\d+$/);
   const lookupId = uuidMatch?.[0] || numericMatch?.[0];
@@ -48,7 +48,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const category = dbProduct.categories as any;
 
-  
   const productImages =
     Array.isArray(dbProduct.images) && dbProduct.images.length > 0
       ? dbProduct.images
@@ -67,7 +66,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     originalPrice: dbProduct.original_price || dbProduct.price || 0,
     discount: dbProduct.discount || 0,
     savings: (dbProduct.original_price || 0) - (dbProduct.price || 0),
-    sizes: dbProduct.sizes || [35, 36, 37, 38, 39, 40],
+    sizes: dbProduct.sizes ?? [36, 37, 38, 39],
+    productType:
+      (dbProduct.product_type as ProductDetail["productType"]) || "shoes",
     description: dbProduct.description,
     images: productImages,
     brandColor: dbProduct.brand_color || "#F5F5F5",
@@ -78,7 +79,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const [relatedProductsResult, reviewStatsResult] = await Promise.all([
     supabase
       .from("products")
-      .select("id, brand, name_en, title, name_mn, subcategory, price, original_price, discount, brand_color, image_color, images")
+      .select(
+        "id, brand, name_en, title, name_mn, subcategory, price, original_price, discount, brand_color, image_color, images",
+      )
       .eq("subcategory", dbProduct.subcategory)
       .neq("id", dbProduct.id)
       .order("created_at", { ascending: false })
@@ -86,7 +89,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     supabase
       .from("product_reviews")
       .select("rating")
-      .eq("product_id", dbProduct.id)
+      .eq("product_id", dbProduct.id),
   ]);
 
   let relatedProducts: Product[] = [];
@@ -109,26 +112,39 @@ export default async function ProductPage({ params }: ProductPageProps) {
       sizes: [],
       brandColor: item.brand_color || "#F5F5F5",
       imageColor: item.image_color || "#FAFAFA",
-      images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [],
+      images:
+        Array.isArray(item.images) && item.images.length > 0 ? item.images : [],
     }));
   }
 
   if (reviewStatsResult.data && reviewStatsResult.data.length > 0) {
     totalReviews = reviewStatsResult.data.length;
     averageRating =
-      reviewStatsResult.data.reduce((sum: number, r: any) => sum + r.rating, 0) / totalReviews;
+      reviewStatsResult.data.reduce(
+        (sum: number, r: any) => sum + r.rating,
+        0,
+      ) / totalReviews;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <MainNav />
-      
+
       <main className="flex-1 py-8 md:py-12">
         <Breadcrumb
           items={[
             { label: "Нүүр", href: "/" },
             ...(category
-              ? [{ label: category.name_mn || category.name_en || category.name || "Ангилал", href: `/categories/${category.slug}` }]
+              ? [
+                  {
+                    label:
+                      category.name_mn ||
+                      category.name_en ||
+                      category.name ||
+                      "Ангилал",
+                    href: `/categories/${category.slug}`,
+                  },
+                ]
               : []),
             { label: product.nameEn || product.nameMn || "Бүтээгдэхүүн" },
           ]}
@@ -145,13 +161,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 productName={product.nameEn}
               />
             </div>
-            
+
             <div className="space-y-4">
               <ProductInfo product={product} />
               <CompareButton product={product} />
             </div>
           </div>
-          
+
           <div className="max-w-4xl">
             <ProductDescription
               description={product.description}
@@ -179,7 +195,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ProductRecommendations productId={product.id} />
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
