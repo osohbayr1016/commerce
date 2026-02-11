@@ -6,12 +6,12 @@ import { Language } from "@/i18n/translations";
 export default function LanguageSelector() {
   const { language, setLanguage, t } = useLanguage();
 
-  const languages: { code: Language; name: string; nativeName: string }[] = [
-    { code: "en", name: "English", nativeName: "English" },
-    { code: "mn", name: "Mongolian", nativeName: "Монгол" },
-    { code: "ru", name: "Russian", nativeName: "Русский" },
-    { code: "zh", name: "Chinese", nativeName: "中文" },
-    { code: "it", name: "Italian", nativeName: "Italiano" },
+  const languages: { code: Language; nativeName: string; nameKey: string }[] = [
+    { code: "en", nativeName: "English", nameKey: "profile.english" },
+    { code: "mn", nativeName: "Монгол", nameKey: "profile.mongolian" },
+    { code: "ru", nativeName: "Русский", nameKey: "profile.russian" },
+    { code: "zh", nativeName: "中文", nameKey: "profile.chinese" },
+    { code: "it", nativeName: "Italiano", nameKey: "profile.italian" },
   ];
 
   return (
@@ -47,7 +47,7 @@ export default function LanguageSelector() {
               </div>
               <div className="text-left">
                 <p className="font-medium text-gray-900">{lang.nativeName}</p>
-                <p className="text-sm text-gray-500">{lang.name}</p>
+                <p className="text-sm text-gray-500">{t(lang.nameKey)}</p>
               </div>
             </div>
             {language === lang.code && (

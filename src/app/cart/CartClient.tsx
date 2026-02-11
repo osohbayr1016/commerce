@@ -76,7 +76,7 @@ export default function CartClient() {
                   <span className="font-semibold text-gray-900">
                     {(items || []).reduce(
                       (sum, item) => sum + item.quantity,
-                      0
+                      0,
                     )}{" "}
                     ширхэг
                   </span>{" "}
@@ -90,7 +90,7 @@ export default function CartClient() {
                   item={item}
                   onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
                   onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
-                  onRemove={() => removeItem(item.id)}
+                  onRemove={() => removeItem(item.id, item.size)}
                 />
               ))}
 
@@ -102,7 +102,7 @@ export default function CartClient() {
                       <span className="font-medium text-gray-900">
                         {(items || []).reduce(
                           (sum, item) => sum + item.quantity,
-                          0
+                          0,
                         )}{" "}
                         ширхэг
                       </span>

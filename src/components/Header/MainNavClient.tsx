@@ -9,6 +9,7 @@ import WishlistIcon from "./WishlistIcon";
 import MobileMenu from "./MobileMenu";
 import CoinBalance from "./CoinBalance";
 import { useSpinModal } from "@/contexts/SpinModalContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Category } from "@/types";
 
 interface MainNavClientProps {
@@ -22,6 +23,7 @@ export default function MainNavClient({
 }: MainNavClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { openSpinModal } = useSpinModal() ?? {};
+  const { t } = useLanguage();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -64,32 +66,32 @@ export default function MainNavClient({
               href="/"
               className="hover:text-gray-600 transition-colors whitespace-nowrap"
             >
-              Нүүр
+              {t("nav.home")}
             </a>
             <a
               href="/categories"
               className="hover:text-gray-600 transition-colors whitespace-nowrap"
             >
-              Ангилал
+              {t("nav.categories")}
             </a>
             <a
               href="/sale"
               className="hover:text-gray-600 transition-colors whitespace-nowrap"
             >
-              Хямдрал
+              {t("nav.sale")}
             </a>
             <button
               type="button"
               onClick={() => openSpinModal?.()}
               className="hover:text-gray-600 transition-colors flex items-center gap-1 whitespace-nowrap font-semibold text-gray-900 bg-transparent border-0 cursor-pointer text-lg"
             >
-              🎰 Spin
+              🎰 {t("nav.spin")}
             </button>
             <a
               href="/profile"
               className="hover:text-gray-600 transition-colors whitespace-nowrap"
             >
-              Профайл
+              {t("nav.profile")}
             </a>
           </nav>
 
@@ -122,7 +124,7 @@ export default function MainNavClient({
           }}
         >
           <span className="text-xs md:text-sm text-gray-500 font-medium whitespace-nowrap shrink-0">
-            Ангилал:
+            {t("nav.categoriesLabel")}
           </span>
           <div className="flex items-center gap-2 md:gap-2.5">
             {headerCategories?.length > 0 ? (
@@ -145,19 +147,19 @@ export default function MainNavClient({
                   href="/categories"
                   className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
                 >
-                  Бүгд
+                  {t("nav.all")}
                 </a>
                 <a
                   href="/categories/us-order"
                   className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
                 >
-                  Америк захиалга
+                  {t("nav.usOrder")}
                 </a>
                 <a
                   href="/categories/local-stock"
                   className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
                 >
-                  Монгол дахь бэлэн бараа
+                  {t("nav.localStock")}
                 </a>
               </>
             )}

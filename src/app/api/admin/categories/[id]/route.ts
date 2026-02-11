@@ -47,9 +47,23 @@ export async function PATCH(
     if (!id)
       return NextResponse.json({ error: "ID шаардлагатай" }, { status: 400 });
     const body = await req.json().catch(() => ({}));
+    const allowedKeys = [
+      "name",
+      "name_en",
+      "name_mn",
+      "slug",
+      "is_active",
+      "display_order",
+    ] as const;
+    const updatePayload: Record<string, unknown> = {};
+    for (const key of allowedKeys) {
+      if (body[key] !== undefined) updatePayload[key] = body[key];
+    }
+    if (Object.keys(updatePayload).length === 0)
+      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
     const { error } = await auth
       .adminClient!.from("categories")
-      .update(body)
+      .update(updatePayload)
       .eq("id", parseInt(id, 10))
       .select()
       .single();

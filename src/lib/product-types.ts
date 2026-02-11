@@ -24,3 +24,9 @@ export function getSizesForType(type: ProductType): number[] {
   if (type === "clothes") return [...CLOTHES_SIZES];
   return [];
 }
+
+export function getDefaultSizeForType(type: ProductType): number {
+  if (type === "shoes") return 36;
+  if (type === "clothes") return 1;
+  return 0;
+}

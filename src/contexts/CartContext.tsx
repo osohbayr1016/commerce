@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
   useRef,
@@ -43,12 +44,26 @@ interface CartContextType {
     quantity?: number,
   ) => Promise<{ ok: boolean; error?: string }>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
-  removeItem: (id: string) => void;
+  removeItem: (id: string, size?: number) => void;
   clearCart: () => void;
   syncing: boolean;
   isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
+}
+
+const CART_GUEST_KEY = "cart:guest";
+
+function readCartFromStorage(key: string): CartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -60,8 +75,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
+  const hasHydratedRef = useRef(false);
 
-  const storageKey = user ? `cart:${user.id}` : "cart:guest";
+  const storageKey = user ? `cart:${user.id}` : CART_GUEST_KEY;
+
+  const persistToStorage = (nextItems: CartItem[], key: string) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(key, JSON.stringify(nextItems));
+    } catch (e) {
+      console.error("Failed to persist cart", e);
+    }
+  };
+
+  // Restore cart from localStorage before paint (useLayoutEffect runs before useEffect).
+  // Prevents the persist effect from running with items=[] and wiping storage.
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    hasHydratedRef.current = true;
+    const stored = readCartFromStorage(storageKey);
+    if (stored.length > 0) {
+      setItems(stored);
+    }
+    isInitialLoadRef.current = false;
+  }, [storageKey]);
 
   useEffect(() => {
     if (!storageKey) {
@@ -69,60 +106,67 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Guest: cart is restored by the hydration effect; don't run loadCart
+    // so we never overwrite with a stale/empty read.
+    if (!user) {
+      isInitialLoadRef.current = false;
+      setSyncing(false);
+      return;
+    }
+
     const loadCart = async () => {
       setSyncing(true);
       try {
         let serverItems: CartItem[] = [];
-        if (user) {
-          try {
-            serverItems = await fetchCartFromServer();
-          } catch (e) {
-            console.error("Failed to fetch server cart", e);
-          }
+        try {
+          serverItems = await fetchCartFromServer();
+        } catch (e) {
+          console.error("Failed to fetch server cart", e);
         }
 
-        const raw = localStorage.getItem(storageKey);
+        const raw =
+          typeof window !== "undefined"
+            ? localStorage.getItem(storageKey)
+            : null;
         let localItems: CartItem[] = [];
         try {
           const parsed = raw ? JSON.parse(raw) : [];
-          if (Array.isArray(parsed)) {
-            localItems = parsed;
-          }
+          if (Array.isArray(parsed)) localItems = parsed;
         } catch (e) {
           console.error("Error parsing cart from localStorage", e);
-          localItems = [];
         }
 
-        // If user is logged in, merge. If guest, just use local.
-        const mergedItems = user
-          ? [...(Array.isArray(serverItems) ? serverItems : [])]
-          : [...localItems];
-
-        if (user) {
-          localItems.forEach((localItem: CartItem) => {
-            const exists = mergedItems.find(
-              (item) =>
-                item.id === localItem.id && item.size === localItem.size,
-            );
-            if (!exists) {
-              mergedItems.push(localItem);
-            }
-          });
-        }
+        const mergedItems = [
+          ...(Array.isArray(serverItems) ? serverItems : []),
+        ];
+        localItems.forEach((localItem: CartItem) => {
+          const exists = mergedItems.find(
+            (item) => item.id === localItem.id && item.size === localItem.size,
+          );
+          if (!exists) mergedItems.push(localItem);
+        });
 
         setItems(mergedItems);
-        localStorage.setItem(storageKey, JSON.stringify(mergedItems));
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(mergedItems));
+          } catch {}
+        }
 
         if (
-          user &&
           localItems.length > 0 &&
           serverItems.length !== mergedItems.length
         ) {
           await syncCartToServer(mergedItems);
         }
       } catch (error) {
-        const raw = localStorage.getItem(storageKey);
-        setItems(raw ? JSON.parse(raw) : []);
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (raw) {
+            const fallback = JSON.parse(raw);
+            if (Array.isArray(fallback)) setItems(fallback);
+          }
+        } catch {}
       } finally {
         setSyncing(false);
         isInitialLoadRef.current = false;
@@ -132,9 +176,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadCart();
   }, [user, storageKey]);
 
+  // Persist to localStorage whenever items change so cart survives refresh.
+  // Never write [] during initial load (would wipe saved cart before hydration runs).
   useEffect(() => {
-    if (!storageKey || isInitialLoadRef.current) return;
-    localStorage.setItem(storageKey, JSON.stringify(items));
+    if (typeof window === "undefined" || !storageKey) return;
+    if (items.length === 0 && isInitialLoadRef.current) return;
+    if (!hasHydratedRef.current && items.length === 0) return;
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(items));
+    } catch (e) {
+      console.error("Failed to persist cart", e);
+    }
   }, [items, storageKey]);
 
   useEffect(() => {
@@ -196,14 +248,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.find(
         (p) => p.id === item.id && p.size === item.size,
       );
-      if (!existing) {
-        return [...prev, { ...item, quantity }];
-      }
-      return prev.map((p) =>
-        p.id === item.id && p.size === item.size
-          ? { ...p, quantity: p.quantity + quantity }
-          : p,
-      );
+      const next = existing
+        ? prev.map((p) =>
+            p.id === item.id && p.size === item.size
+              ? { ...p, quantity: p.quantity + quantity }
+              : p,
+          )
+        : [...prev, { ...item, quantity }];
+      persistToStorage(next, storageKey);
+      return next;
     });
 
     if (user) {
@@ -228,11 +281,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const stockData = await response.json();
         if (stockData.stock < finalQuantity) {
           const adjustedQuantity = Math.min(stockData.stock, finalQuantity);
-          setItems((prev) =>
-            prev.map((i) =>
+          setItems((prev) => {
+            const next = prev.map((i) =>
               i.id === id ? { ...i, quantity: adjustedQuantity } : i,
-            ),
-          );
+            );
+            persistToStorage(next, storageKey);
+            return next;
+          });
           if (item && user) {
             await updateItemInServerCart(id, adjustedQuantity, item.size);
           }
@@ -241,9 +296,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {}
 
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, quantity: finalQuantity } : i)),
-    );
+    setItems((prev) => {
+      const next = prev.map((i) =>
+        i.id === id ? { ...i, quantity: finalQuantity } : i,
+      );
+      persistToStorage(next, storageKey);
+      return next;
+    });
 
     if (item && user) {
       try {
@@ -252,9 +311,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const removeItem = async (id: string) => {
-    const item = items.find((i) => i.id === id);
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = async (id: string, size?: number) => {
+    const item = items.find((i) => i.id === id && i.size === size);
+    setItems((prev) => {
+      const next = prev.filter(
+        (i) => !(i.id === id && (size === undefined || i.size === size)),
+      );
+      persistToStorage(next, storageKey);
+      return next;
+    });
 
     if (item && user) {
       try {
@@ -271,7 +336,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {}
     }
-    setItems([]);
+    const empty: CartItem[] = [];
+    persistToStorage(empty, storageKey);
+    setItems(empty);
   };
 
   const openDrawer = () => setIsDrawerOpen(true);

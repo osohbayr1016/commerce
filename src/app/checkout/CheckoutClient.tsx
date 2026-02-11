@@ -36,17 +36,20 @@ export default function CheckoutClient() {
       phone: profile?.phone_number || "",
       email: user?.email || "",
     }),
-    [profile, user]
+    [profile, user],
   );
 
   const referralDiscountAmount = Math.floor(
-    (subtotal * referralDiscountPercent) / 100
+    (subtotal * referralDiscountPercent) / 100,
   );
   const finalTotal = subtotal - promoDiscount - referralDiscountAmount;
 
-  const handleSuccess = () => {
+  const handleSuccess = (orderId: string, paymentMethod: string) => {
     clearCart();
-    router.push("/profile?tab=orders");
+    const params = new URLSearchParams();
+    if (orderId) params.set("orderId", orderId);
+    if (paymentMethod) params.set("method", paymentMethod);
+    router.push(`/checkout/success?${params.toString()}`);
   };
 
   if (loading) {

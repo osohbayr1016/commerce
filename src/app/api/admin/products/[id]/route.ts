@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { pickProductPayload } from "../route";
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -47,10 +48,11 @@ export async function PATCH(
     if (!id)
       return NextResponse.json({ error: "ID шаардлагатай" }, { status: 400 });
     const body = await req.json().catch(() => ({}));
-    const { sizeStocks, ...productFields } = body;
+    const { sizeStocks } = body;
+    const productPayload = pickProductPayload(body);
     const { error } = await auth
       .adminClient!.from("products")
-      .update(productFields)
+      .update(productPayload)
       .eq("id", id)
       .select()
       .single();

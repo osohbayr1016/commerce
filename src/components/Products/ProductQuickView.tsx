@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Product } from "@/data/mockProducts";
 import { generateSlug } from "@/lib/utils";
@@ -14,10 +15,16 @@ interface ProductQuickViewProps {
   onClose: () => void;
 }
 
-export default function ProductQuickView({ product, isOpen, onClose }: ProductQuickViewProps) {
+export default function ProductQuickView({
+  product,
+  isOpen,
+  onClose,
+}: ProductQuickViewProps) {
   const router = useRouter();
   const [stock, setStock] = useState<number | null>(null);
-  const slug = product.id ? generateSlug(`${product.brand} ${product.nameEn}`, product.id) : "";
+  const slug = product.id
+    ? generateSlug(`${product.brand} ${product.nameEn}`, product.id)
+    : "";
 
   useEffect(() => {
     if (product.id) {
@@ -50,24 +57,38 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
     onClose();
   };
 
-  return (
+  const modal = (
     <>
       <div
-        className="fixed inset-0 bg-white z-40"
+        className="fixed inset-0 bg-black/50"
         onClick={onClose}
+        aria-hidden
       />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      <div className="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
         <div
           className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="quick-view-title"
         >
           <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-            <h2 className="text-xl font-semibold text-gray-900">Бүтээгдэхүүний мэдээлэл</h2>
+            <h2
+              id="quick-view-title"
+              className="text-xl font-semibold text-gray-900"
+            >
+              Бүтээгдэхүүний мэдээлэл
+            </h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -81,7 +102,9 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                {product.images && product.images.length > 0 && product.images[0] ? (
+                {product.images &&
+                product.images.length > 0 &&
+                product.images[0] ? (
                   <div className="w-full aspect-square rounded border border-gray-200 overflow-hidden relative">
                     <Image
                       src={product.images[0]}
@@ -109,7 +132,9 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
                     <p className="text-gray-600 mb-2">{product.nameMn}</p>
                     <p className="text-sm text-gray-500">{product.brand}</p>
                   </div>
-                  {product.id && <WishlistButton productId={String(product.id)} />}
+                  {product.id && (
+                    <WishlistButton productId={String(product.id)} />
+                  )}
                 </div>
 
                 <div className="mb-6">
@@ -149,4 +174,9 @@ export default function ProductQuickView({ product, isOpen, onClose }: ProductQu
       </div>
     </>
   );
+
+  if (typeof document !== "undefined") {
+    return createPortal(modal, document.body);
+  }
+  return null;
 }

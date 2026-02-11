@@ -1,13 +1,15 @@
 "use client";
 
 import type { ProductType } from "@/types";
-import { getSizesForType, CLOTHES_SIZE_LABELS } from "@/lib/product-types";
+import { CLOTHES_SIZE_LABELS } from "@/lib/product-types";
 
 type Props = {
   productType: ProductType;
   setProductType: (t: ProductType) => void;
   sizeStocks: Record<number, number>;
-  setSizeStocks: (s: Record<number, number>) => void;
+  setSizeStocks: React.Dispatch<React.SetStateAction<Record<number, number>>>;
+  onAddSize: () => void;
+  onRemoveSize: (size: number) => void;
   stock: number;
   onStockChange: (v: number) => void;
   categoryId: string;
@@ -30,6 +32,8 @@ export default function ProductFormStockSection({
   setProductType,
   sizeStocks,
   setSizeStocks,
+  onAddSize,
+  onRemoveSize,
   stock,
   onStockChange,
   categoryId,
@@ -40,11 +44,25 @@ export default function ProductFormStockSection({
   onHasFinancingChange,
   categories,
 }: Props) {
-  const sizes = getSizesForType(productType);
   const isBeauty = productType === "beauty";
+  const entries = Object.entries(sizeStocks)
+    .map(([size, stockQty]) => ({ size: Number(size), stock: stockQty }))
+    .filter((e) => !isNaN(e.size))
+    .sort((a, b) => a.size - b.size);
 
   function setSizeStock(size: number, qty: number) {
     setSizeStocks({ ...sizeStocks, [size]: Math.max(0, qty) });
+  }
+
+  function handleSizeChange(oldSize: number, newSizeRaw: number) {
+    const newSize = Math.max(0, Math.floor(newSizeRaw));
+    if (newSize === oldSize) return;
+    setSizeStocks((prev: Record<number, number>) => {
+      const next: Record<number, number> = { ...prev };
+      delete next[oldSize];
+      next[newSize] = prev[oldSize] ?? 0;
+      return next;
+    });
   }
 
   function labelFor(size: number): string {
@@ -122,29 +140,83 @@ export default function ProductFormStockSection({
         </div>
       )}
 
-      {!isBeauty && sizes.length > 0 && (
+      {!isBeauty && (
         <div>
           <h3 className="text-base font-semibold text-black mb-3">
             Размер & тоо ширхэг
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {sizes.map((size) => (
-              <div key={size}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {labelFor(size)}
-                </label>
-                <input
-                  type="number"
-                  min={0}
-                  value={sizeStocks[size] ?? 0}
-                  onChange={(e) =>
-                    setSizeStock(size, parseInt(e.target.value, 10) || 0)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
+          {entries.length === 0 ? (
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-sm text-gray-600">
+                Размер нэмэх товч дарж размер болон тоо ширхэг оруулна уу.
+              </p>
+              <button
+                type="button"
+                onClick={onAddSize}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Размер нэмэх
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                {entries.map(({ size, stock: stockQty }) => (
+                  <div
+                    key={size}
+                    className="flex flex-wrap items-center gap-3 gap-y-2"
+                  >
+                    <div className="flex items-center gap-2 min-w-[120px]">
+                      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                        Размер
+                      </label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={size}
+                        onChange={(e) =>
+                          handleSizeChange(
+                            size,
+                            parseInt(e.target.value, 10) || 0,
+                          )
+                        }
+                        className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 min-w-[120px]">
+                      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                        Тоо ширхэг
+                      </label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={stockQty}
+                        onChange={(e) =>
+                          setSizeStock(size, parseInt(e.target.value, 10) || 0)
+                        }
+                        className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveSize(size)}
+                      className="text-sm text-red-600 hover:text-red-800"
+                      aria-label="Remove size"
+                    >
+                      Устгах
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+              <button
+                type="button"
+                onClick={onAddSize}
+                className="mt-3 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Размер нэмэх
+              </button>
+            </>
+          )}
         </div>
       )}
 

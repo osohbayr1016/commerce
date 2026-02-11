@@ -89,7 +89,7 @@ export default function ReviewList({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h3 className="text-xl font-semibold text-gray-900">
             Үнэлгээ ба сэтгэгдэл
@@ -109,7 +109,7 @@ export default function ReviewList({
         {user && !userReview && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium"
+            className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium md:w-auto shrink-0"
           >
             {showForm ? "Цуцлах" : "Үнэлгээ нэмэх"}
           </button>

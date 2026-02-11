@@ -80,15 +80,44 @@ export async function GET(_req: NextRequest) {
   }
 }
 
+const PRODUCT_INSERT_COLUMNS = [
+  "name_en",
+  "name_mn",
+  "title",
+  "brand",
+  "sku",
+  "price",
+  "original_price",
+  "discount",
+  "stock",
+  "sizes",
+  "description",
+  "subcategory",
+  "category_id",
+  "brand_color",
+  "image_color",
+  "has_financing",
+  "images",
+] as const;
+
+export function pickProductPayload(body: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const key of PRODUCT_INSERT_COLUMNS) {
+    if (body[key] !== undefined) out[key] = body[key];
+  }
+  return out;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const auth = await requireAdmin();
     if (auth.error) return auth.error;
     const body = await req.json().catch(() => ({}));
-    const { sizeStocks, ...productFields } = body;
+    const { sizeStocks } = body;
+    const productPayload = pickProductPayload(body);
     const { data: product, error } = await auth
       .adminClient!.from("products")
-      .insert(productFields)
+      .insert(productPayload)
       .select("id")
       .single();
     if (error) {

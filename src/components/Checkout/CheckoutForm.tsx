@@ -15,7 +15,7 @@ export interface CheckoutFormValues {
 interface CheckoutFormProps {
   items: CartItem[];
   defaultValues: CheckoutFormValues;
-  onSuccess: () => void;
+  onSuccess: (orderId: string, paymentMethod: PaymentMethod) => void;
 }
 
 type PaymentMethod = "qpay" | "bank" | "coins";
@@ -176,11 +176,19 @@ export default function CheckoutForm({
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Захиалга үүсгэхэд алдаа гарлаа");
+        const data = await response.json().catch(() => ({}));
+        throw new Error(
+          data.error || data.details || "Захиалга үүсгэхэд алдаа гарлаа",
+        );
       }
 
-      onSuccess();
+      const data = await response.json().catch(() => ({}));
+      const orderId = data.orderId;
+      if (orderId) {
+        onSuccess(orderId, paymentMethod);
+      } else {
+        onSuccess("", paymentMethod);
+      }
     } catch (err: any) {
       setError(err.message || "Захиалга үүсгэхэд алдаа гарлаа");
     } finally {

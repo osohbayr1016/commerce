@@ -1,29 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Product, Category, ProductVariant, getErrorMessage } from "@/types";
 import type { ProductType } from "@/types";
-import { getSizesForType } from "@/lib/product-types";
+import { getDefaultSizeForType } from "@/lib/product-types";
 import ImageUploader from "@/components/admin/ImageUploader";
 import ProductFormStockSection from "./ProductFormStockSection";
 
 function buildInitialSizeStocks(
-  productType: ProductType,
+  _productType: ProductType,
   sizeOnlyVariants?: ProductVariant[],
 ): Record<number, number> {
-  const sizes = getSizesForType(productType);
-  const out: Record<number, number> = {};
-  sizes.forEach((s) => {
-    out[s] = 0;
-  });
   if (sizeOnlyVariants?.length) {
+    const out: Record<number, number> = {};
     sizeOnlyVariants.forEach((v) => {
       if (v.size != null) out[v.size] = v.stock ?? 0;
     });
+    return out;
   }
-  return out;
+  return {};
 }
 
 export default function ProductForm({
@@ -61,25 +58,39 @@ export default function ProductForm({
   const [images, setImages] = useState<string[]>(product?.images || []);
   const router = useRouter();
   const supabase = createClient();
+  const prevTypeRef = useRef(type);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    const sizes = getSizesForType(type);
-    setSizeStocks((prev) =>
-      sizes.reduce(
-        (acc, s) => ({ ...acc, [s]: prev[s] ?? 0 }),
-        {} as Record<number, number>,
-      ),
-    );
+    if (prevTypeRef.current !== type) {
+      prevTypeRef.current = type;
+      setSizeStocks({});
+    }
   }, [type]);
+
+  function handleAddSize() {
+    const nextSize =
+      Object.keys(sizeStocks).length === 0
+        ? getDefaultSizeForType(type)
+        : Math.max(0, ...Object.keys(sizeStocks).map(Number), 0) + 1;
+    setSizeStocks((prev) => ({ ...prev, [nextSize]: 0 }));
+  }
+
+  function handleRemoveSize(size: number) {
+    setSizeStocks((prev) => {
+      const next = { ...prev };
+      delete next[size];
+      return next;
+    });
+  }
 
   async function fetchCategories() {
     const { data } = await supabase
       .from("categories")
-      .select("*")
+      .select("id, name, slug")
       .order("name", { ascending: true });
     if (data) setCategories(data);
   }
@@ -110,8 +121,13 @@ export default function ProductForm({
     setMessage("");
 
     try {
-      const sizesArray = getSizesForType(type);
       const isBeauty = type === "beauty";
+      const sizesArray = isBeauty
+        ? []
+        : Object.keys(sizeStocks)
+            .map(Number)
+            .filter((n) => !isNaN(n) && n >= 0)
+            .sort((a, b) => a - b);
       const stock = isBeauty ? parseInt(formData.stock.toString(), 10) : 0;
 
       const productData = {
@@ -307,6 +323,8 @@ export default function ProductForm({
         setProductType={setType}
         sizeStocks={sizeStocks}
         setSizeStocks={setSizeStocks}
+        onAddSize={handleAddSize}
+        onRemoveSize={handleRemoveSize}
         stock={formData.stock}
         onStockChange={(v) => setFormData((p) => ({ ...p, stock: v }))}
         categoryId={formData.category_id}

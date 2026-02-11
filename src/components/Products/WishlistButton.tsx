@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/ToastContainer";
 
 interface WishlistButtonProps {
@@ -10,33 +10,40 @@ interface WishlistButtonProps {
   className?: string;
 }
 
-export default function WishlistButton({ productId, className = "" }: WishlistButtonProps) {
+export default function WishlistButton({
+  productId,
+  className = "",
+}: WishlistButtonProps) {
   const { user } = useAuth();
   const { showToast } = useToast();
+  const router = useRouter();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+
+  const checkWishlist = useCallback(async () => {
+    if (!user || !productId) return;
+    try {
+      const res = await fetch(
+        `/api/wishlist?product_id=${encodeURIComponent(productId.trim())}`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setIsInWishlist(!!data.inWishlist);
+      } else {
+        setIsInWishlist(false);
+      }
+    } catch {
+      setIsInWishlist(false);
+    }
+  }, [user, productId]);
 
   useEffect(() => {
     if (user && productId) {
       checkWishlist();
-    }
-  }, [user, productId]);
-
-  const checkWishlist = async () => {
-    if (!user) return;
-    try {
-      const { data } = await supabase
-        .from("wishlist")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("product_id", productId)
-        .single();
-      setIsInWishlist(!!data);
-    } catch {
+    } else {
       setIsInWishlist(false);
     }
-  };
+  }, [user, productId, checkWishlist]);
 
   const toggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -44,35 +51,53 @@ export default function WishlistButton({ productId, className = "" }: WishlistBu
 
     if (!user) {
       showToast("Эхлээд нэвтэрнэ үү", "info");
+      router.push(
+        `/auth/login?redirect=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/")}`,
+      );
+      return;
+    }
+
+    const pid = typeof productId === "string" ? productId.trim() : "";
+    if (!pid) {
+      showToast("Бүтээгдэхүүн олдсонгүй", "error");
       return;
     }
 
     setLoading(true);
     try {
       if (isInWishlist) {
-        const { error } = await supabase
-          .from("wishlist")
-          .delete()
-          .eq("user_id", user.id)
-          .eq("product_id", productId);
-
-        if (error) throw error;
+        const res = await fetch(
+          `/api/wishlist?product_id=${encodeURIComponent(pid)}`,
+          { method: "DELETE" }
+        );
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showToast(data.error || "Хасахад алдаа гарлаа", "error");
+          return;
+        }
         setIsInWishlist(false);
         showToast("Хадгалсан бүтээгдэхүүнээс хасав", "success");
       } else {
-        const { error } = await supabase
-          .from("wishlist")
-          .insert({
-            user_id: user.id,
-            product_id: productId,
-          });
-
-        if (error) throw error;
+        const res = await fetch("/api/wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ product_id: pid }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showToast(
+            data.error === "Product not found"
+              ? "Бүтээгдэхүүн олдсонгүй"
+              : data.error || "Хадгалахад алдаа гарлаа",
+            "error"
+          );
+          return;
+        }
         setIsInWishlist(true);
         showToast("Хадгалсан бүтээгдэхүүнд нэмэгдлээ", "success");
       }
-    } catch (error) {
-      showToast("Алдаа гарлаа", "error");
+    } catch {
+      showToast("Хадгалахад алдаа гарлаа. Дахин оролдоно уу.", "error");
     } finally {
       setLoading(false);
     }
@@ -80,14 +105,19 @@ export default function WishlistButton({ productId, className = "" }: WishlistBu
 
   return (
     <button
+      type="button"
       onClick={toggleWishlist}
       disabled={loading}
-      className={`${className} transition-colors ${
+      className={`${className} transition-colors relative z-10 ${
         isInWishlist
           ? "text-red-500 hover:text-red-600"
           : "text-gray-400 hover:text-red-500"
       } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-      aria-label={isInWishlist ? "Хадгалсан бүтээгдэхүүнээс хасах" : "Хадгалсан бүтээгдэхүүнд нэмэх"}
+      aria-label={
+        isInWishlist
+          ? "Хадгалсан бүтээгдэхүүнээс хасах"
+          : "Хадгалсан бүтээгдэхүүнд нэмэх"
+      }
     >
       <svg
         className="w-5 h-5"

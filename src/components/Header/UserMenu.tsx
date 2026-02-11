@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, profile, signOut, isAdmin } = useAuth();
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -36,7 +38,7 @@ export default function UserMenu() {
         href="/auth/login"
         className="hidden md:inline-flex text-gray-700 hover:text-gray-900 text-sm md:text-base whitespace-nowrap font-medium"
       >
-        нэвтрэх/бүртгүүлэх
+        {t("nav.signInOrSignUp")}
       </Link>
     );
   }
@@ -71,7 +73,7 @@ export default function UserMenu() {
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
           <div className="px-4 py-3 border-b border-gray-200">
             <p className="text-sm font-medium text-gray-900">
-              {profile?.full_name || "Хэрэглэгч"}
+              {profile?.full_name || t("profile.defaultUser")}
             </p>
             <p className="text-xs text-gray-500 mt-1">
               {user.user_metadata?.phone_number ||
@@ -80,7 +82,7 @@ export default function UserMenu() {
             </p>
             {isAdmin && (
               <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
-                Админ
+                {t("profile.adminBadge")}
               </span>
             )}
           </div>
@@ -91,21 +93,21 @@ export default function UserMenu() {
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
-              👤 Миний профайл
+              👤 {t("profile.myProfile")}
             </Link>
             <Link
               href="/profile?tab=orders"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
-              📦 Миний захиалга
+              📦 {t("profile.myOrders")}
             </Link>
             <Link
               href="/profile?tab=wishlist"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
-              ❤️ Хадгалсан
+              ❤️ {t("profile.wishlist")}
             </Link>
             {isAdmin && (
               <Link
@@ -113,7 +115,7 @@ export default function UserMenu() {
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 onClick={() => setIsOpen(false)}
               >
-                Админ самбар
+                {t("profile.adminDashboard")}
               </Link>
             )}
           </div>
@@ -123,7 +125,7 @@ export default function UserMenu() {
               onClick={handleSignOut}
               className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
             >
-              Гарах
+              {t("nav.signOut")}
             </button>
           </div>
         </div>

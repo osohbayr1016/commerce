@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSpinModal } from "@/contexts/SpinModalContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Category } from "@/types";
 
 interface MobileMenuProps {
@@ -63,13 +64,14 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
   }, [isOpen, phase]);
 
   const { openSpinModal } = useSpinModal() ?? {};
+  const { t } = useLanguage();
 
   const navLinks: { href?: string; label: string; spin?: boolean }[] = [
-    { href: "/", label: "Нүүр" },
-    { href: "/categories", label: "Ангилал" },
-    { href: "/sale", label: "Хямдрал" },
-    { label: "🎰 Spin", spin: true },
-    { href: "/profile", label: "Профайл" },
+    { href: "/", label: t("nav.home") },
+    { href: "/categories", label: t("nav.categories") },
+    { href: "/sale", label: t("nav.sale") },
+    { label: `🎰 ${t("nav.spin")}`, spin: true },
+    { href: "/profile", label: t("nav.profile") },
   ];
 
   return (
@@ -77,7 +79,7 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
       <button
         onClick={() => setIsOpen(true)}
         className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors duration-200 ease-out"
-        aria-label="Цэс нээх"
+        aria-label={t("common.openMenu")}
       >
         <svg
           className="w-5 h-5"
@@ -115,11 +117,11 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Цэс</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t("common.menu")}</h2>
               <button
                 onClick={() => phase === "open" && setPhase("leaving")}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Хаах"
+                aria-label={t("common.close")}
               >
                 <svg
                   className="w-6 h-6"
@@ -168,7 +170,7 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
               {categories.length > 0 && (
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Ангилал
+                    {t("nav.categories")}
                   </h3>
                   <div className="space-y-1">
                     {categories.map((category) => {

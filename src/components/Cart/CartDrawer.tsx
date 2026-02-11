@@ -113,7 +113,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   item={item}
                   onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
                   onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
-                  onRemove={() => removeItem(item.id)}
+                  onRemove={() => removeItem(item.id, item.size)}
                 />
               ))}
             </div>

@@ -55,7 +55,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     
     const { data: categoryData, error: categoryError } = await supabase
       .from("categories")
-      .select("*")
+      .select("id, name, name_en, name_mn, slug, is_active, display_order")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
