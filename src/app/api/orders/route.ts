@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { CartItem } from "@/contexts/CartContext";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
     if (rateLimitResponse) return rateLimitResponse;
 
     const supabase = await createClient();
+    const adminClient = createAdminClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -78,7 +80,7 @@ export async function POST(request: Request) {
       const { coinsUsed } = payload.coinPayment;
 
       // Check if user has enough coins
-      const { data: profile, error: profileError } = await supabase
+      const { data: profile, error: profileError } = await adminClient
         .from("profiles")
         .select("coin_balance")
         .eq("id", user.id)
@@ -99,7 +101,7 @@ export async function POST(request: Request) {
       }
 
       // Deduct coins using the function (negative amount for spending)
-      const { error: coinError } = await supabase.rpc("update_coin_balance", {
+      const { error: coinError } = await adminClient.rpc("update_coin_balance", {
         p_user_id: user.id,
         p_amount: -coinsUsed,
         p_transaction_type: "spend",
@@ -115,7 +117,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const { data: order, error: orderError } = await supabase
+    const { data: order, error: orderError } = await adminClient
       .from("orders")
       .insert({
         user_id: isGuest ? null : user.id,
@@ -143,7 +145,7 @@ export async function POST(request: Request) {
         payload.coinPayment &&
         !isGuest
       ) {
-        await supabase.rpc("update_coin_balance", {
+        await adminClient.rpc("update_coin_balance", {
           p_user_id: user.id,
           p_amount: payload.coinPayment.coinsUsed,
           p_transaction_type: "refund",
@@ -161,7 +163,7 @@ export async function POST(request: Request) {
 
     // Update transaction with order_id if paid with coins
     if (payload.paymentMethod === "coins" && payload.coinPayment && !isGuest) {
-      await supabase
+      await adminClient
         .from("coin_transactions")
         .update({ order_id: order.id })
         .eq("user_id", user.id)
@@ -176,9 +178,10 @@ export async function POST(request: Request) {
       product_id: String(item.id),
       quantity: Math.max(1, Math.floor(Number(item.quantity))),
       price_at_purchase: Math.max(0, Math.round(Number(item.price))),
+      size: item.size ?? null,
     }));
 
-    const { error: itemsError } = await supabase
+    const { error: itemsError } = await adminClient
       .from("order_items")
       .insert(itemsPayload);
 
@@ -193,11 +196,52 @@ export async function POST(request: Request) {
       );
     }
 
+    // Decrement product (or variant) stock for each order line
+    for (const item of itemsPayload) {
+      const { error: rpcError } = await adminClient.rpc(
+        "decrement_product_stock_on_order",
+        {
+          p_product_id: item.product_id,
+          p_size: item.size ?? null,
+          p_quantity: item.quantity,
+        },
+      );
+
+      if (rpcError) {
+        console.error(
+          "Stock decrement RPC error for product",
+          item.product_id,
+          rpcError.message,
+        );
+        // Fallback: decrement products.stock directly (e.g. when migration not run)
+        try {
+          const { data: product } = await adminClient
+            .from("products")
+            .select("stock")
+            .eq("id", item.product_id)
+            .single();
+          if (product && typeof product.stock === "number") {
+            const newStock = Math.max(0, product.stock - item.quantity);
+            await adminClient
+              .from("products")
+              .update({ stock: newStock })
+              .eq("id", item.product_id);
+          }
+        } catch (fallbackErr) {
+          console.error(
+            "Stock decrement fallback error for product",
+            item.product_id,
+            fallbackErr,
+          );
+        }
+      }
+    }
+
     // Award referral discount to referrer if applicable
     if (!isGuest && user) {
       try {
         const { data: referralResult, error: referralError } =
-          await supabase.rpc("award_referral_discount", {
+          await adminClient.rpc("award_referral_discount", {
             p_buyer_user_id: user.id,
             p_order_id: order.id,
             p_purchase_amount: totalAmount,

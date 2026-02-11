@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { createClient } from "@/lib/supabase/client";
 import { useModal } from "@/hooks/useModal";
 
@@ -37,6 +38,7 @@ export default function OrderHistory() {
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const supabase = createClient();
   const modal = useModal();
+  const { t } = useLanguage();
 
   const fetchOrders = useCallback(async () => {
     if (!user) return;
@@ -116,46 +118,30 @@ export default function OrderHistory() {
     );
   };
 
-  const statusFilters = [
-    { id: "all" as OrderStatus, label: "Бүгд" },
-    { id: "pending" as OrderStatus, label: "Хүлээгдэж буй" },
-    { id: "confirmed" as OrderStatus, label: "Баталгаажсан" },
-    { id: "delivered" as OrderStatus, label: "Хүргэгдсэн" },
-    { id: "cancelled" as OrderStatus, label: "Цуцалсан" },
+  const statusFilters: { id: OrderStatus; labelKey: string }[] = [
+    { id: "all", labelKey: "orders.filterAll" },
+    { id: "pending", labelKey: "orders.statusPending" },
+    { id: "confirmed", labelKey: "orders.statusConfirmed" },
+    { id: "delivered", labelKey: "orders.statusDelivered" },
+    { id: "cancelled", labelKey: "orders.statusCancelled" },
   ];
 
   const getStatusBadge = (status: string) => {
     const statusMap: Record<
       string,
-      { icon: string; text: string; label: string }
+      { icon: string; text: string; labelKey: string }
     > = {
-      pending: {
-        icon: "🟡",
-        text: "text-yellow-700",
-        label: "Хүлээгдэж буй",
-      },
-      confirmed: {
-        icon: "🔵",
-        text: "text-blue-700",
-        label: "Баталгаажсан",
-      },
-      delivered: {
-        icon: "🟢",
-        text: "text-green-700",
-        label: "Хүргэгдсэн",
-      },
-      cancelled: {
-        icon: "🔴",
-        text: "text-red-700",
-        label: "Цуцалсан",
-      },
+      pending: { icon: "🟡", text: "text-yellow-700", labelKey: "orders.statusPending" },
+      confirmed: { icon: "🔵", text: "text-blue-700", labelKey: "orders.statusConfirmed" },
+      delivered: { icon: "🟢", text: "text-green-700", labelKey: "orders.statusDelivered" },
+      cancelled: { icon: "🔴", text: "text-red-700", labelKey: "orders.statusCancelled" },
     };
 
     const style = statusMap[status] || statusMap.pending;
     return (
       <span className={`text-xs font-medium ${style.text} flex items-center gap-1`}>
         <span>{style.icon}</span>
-        <span>{style.label}</span>
+        <span>{t(style.labelKey)}</span>
       </span>
     );
   };
@@ -198,7 +184,7 @@ export default function OrderHistory() {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            {filter.label}
+            {t(filter.labelKey)}
           </button>
         ))}
       </div>
