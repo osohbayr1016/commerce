@@ -1,4 +1,4 @@
-name = "maayaauvuu"
+name = "commerce"
 routes = [
 	{ pattern = "maayaauvuu.com", custom_domain = true },
 	{ pattern = "www.maayaauvuu.com", custom_domain = true }
