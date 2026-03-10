@@ -101,57 +101,117 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  // Apply rate limiting - 30 requests per minute
-  const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
-  if (rateLimitResponse) return rateLimitResponse;
+  try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STANDARD);
+    if (rateLimitResponse) return rateLimitResponse;
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let body: { product_id?: string; quantity?: number; size?: number } = {};
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const { product_id, quantity, size } = body;
+
+    if (!product_id || !quantity || quantity < 1) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+
+    let availableStock = 0;
+    const sizeNum =
+      size != null && !Number.isNaN(Number(size)) ? Number(size) : null;
+    if (sizeNum != null && !Number.isNaN(sizeNum)) {
+      const { data: variants } = await supabase
+        .from("product_variants")
+        .select("stock")
+        .eq("product_id", product_id)
+        .eq("size", sizeNum)
+        .eq("is_active", true);
+      availableStock =
+        (variants ?? []).reduce((sum, v) => sum + (v.stock ?? 0), 0) || 0;
+    }
+    if (availableStock === 0) {
+      const { data: product } = await supabase
+        .from("products")
+        .select("stock")
+        .eq("id", product_id)
+        .maybeSingle();
+      availableStock = product?.stock ?? 0;
+    }
+    if (availableStock < quantity) {
+      return NextResponse.json(
+        { error: availableStock === 0 ? "Бэлэн бараа байхгүй" : "Insufficient stock" },
+        { status: 400 }
+      );
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (!profile) {
+      return NextResponse.json(
+        { error: "Profile not found. Please complete your account setup." },
+        { status: 403 }
+      );
+    }
+
+    const sizeVal = sizeNum;
+    const { data, error } = await supabase
+      .from("cart_items")
+      .upsert(
+        {
+          user_id: user.id,
+          product_id,
+          quantity,
+          size: sizeVal,
+        },
+        {
+          onConflict: "user_id,product_id,size",
+        }
+      )
+      .select()
+      .single();
+
+    if (error) {
+      if (
+        error.code === "PGRST205" &&
+        /cart_items/i.test(String(error.message))
+      ) {
+        console.error(
+          'Cart POST error: cart_items table missing. Run Supabase migrations to create "public.cart_items".',
+        );
+        return NextResponse.json(
+          {
+            error:
+              "Cart is not configured in the database. Please run the latest Supabase migrations to create the cart_items table.",
+          },
+          { status: 500 },
+        );
+      }
+      console.error("Cart POST error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ item: data });
+  } catch (err: unknown) {
+    console.error("Cart POST unexpected error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  const body = await request.json();
-  const { product_id, quantity, size } = body;
-
-  if (!product_id || !quantity || quantity < 1) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
-
-  const { data: product } = await supabase
-    .from("products")
-    .select("stock")
-    .eq("id", product_id)
-    .maybeSingle();
-
-  if (!product || (product.stock ?? 0) < quantity) {
-    return NextResponse.json({ error: "Insufficient stock" }, { status: 400 });
-  }
-
-  const { data, error } = await supabase
-    .from("cart_items")
-    .upsert(
-      {
-        user_id: user.id,
-        product_id,
-        quantity,
-        size: size || null,
-      },
-      {
-        onConflict: "user_id,product_id,size",
-      },
-    )
-    .select()
-    .single();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ item: data });
 }
 
 export async function PUT(request: Request) {

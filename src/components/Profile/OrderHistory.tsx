@@ -35,7 +35,9 @@ export default function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeStatus, setActiveStatus] = useState<OrderStatus>("all");
-  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(
+    null,
+  );
   const supabase = createClient();
   const modal = useModal();
   const { t } = useLanguage();
@@ -57,7 +59,7 @@ export default function OrderHistory() {
               brand
             )
           )
-        `
+        `,
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -82,39 +84,38 @@ export default function OrderHistory() {
 
   const handleCancelOrder = async (orderId: string) => {
     modal.showConfirm(
-      'Захиалга цуцлах',
-      'Та энэ захиалгыг цуцлахдаа итгэлтэй байна уу?',
+      "Захиалга цуцлах",
+      "Та энэ захиалгыг цуцлахдаа итгэлтэй байна уу?",
       async () => {
         setCancellingOrderId(orderId);
         try {
           const response = await fetch(`/api/orders/${orderId}/cancel`, {
-            method: 'POST',
+            method: "POST",
           });
 
           const data = await response.json();
 
           if (!response.ok) {
-            throw new Error(data.error || 'Failed to cancel order');
+            throw new Error(data.error || "Failed to cancel order");
           }
 
-          modal.showSuccess(
-            'Амжилттай',
-            'Захиалга амжилттай цуцлагдлаа'
-          );
-          
+          modal.showSuccess("Амжилттай", "Захиалга амжилттай цуцлагдлаа");
+
           // Refresh orders
           await fetchOrders();
         } catch (error) {
           modal.showError(
-            'Алдаа',
-            error instanceof Error ? error.message : 'Захиалга цуцлахад алдаа гарлаа'
+            "Алдаа",
+            error instanceof Error
+              ? error.message
+              : "Захиалга цуцлахад алдаа гарлаа",
           );
         } finally {
           setCancellingOrderId(null);
         }
       },
-      'Цуцлах',
-      'Болих'
+      "Цуцлах",
+      "Болих",
     );
   };
 
@@ -131,15 +132,33 @@ export default function OrderHistory() {
       string,
       { icon: string; text: string; labelKey: string }
     > = {
-      pending: { icon: "🟡", text: "text-yellow-700", labelKey: "orders.statusPending" },
-      confirmed: { icon: "🔵", text: "text-blue-700", labelKey: "orders.statusConfirmed" },
-      delivered: { icon: "🟢", text: "text-green-700", labelKey: "orders.statusDelivered" },
-      cancelled: { icon: "🔴", text: "text-red-700", labelKey: "orders.statusCancelled" },
+      pending: {
+        icon: "🟡",
+        text: "text-yellow-700",
+        labelKey: "orders.statusPending",
+      },
+      confirmed: {
+        icon: "🔵",
+        text: "text-blue-700",
+        labelKey: "orders.statusConfirmed",
+      },
+      delivered: {
+        icon: "🟢",
+        text: "text-green-700",
+        labelKey: "orders.statusDelivered",
+      },
+      cancelled: {
+        icon: "🔴",
+        text: "text-red-700",
+        labelKey: "orders.statusCancelled",
+      },
     };
 
     const style = statusMap[status] || statusMap.pending;
     return (
-      <span className={`text-xs font-medium ${style.text} flex items-center gap-1`}>
+      <span
+        className={`text-xs font-medium ${style.text} flex items-center gap-1`}
+      >
         <span>{style.icon}</span>
         <span>{t(style.labelKey)}</span>
       </span>
@@ -159,7 +178,7 @@ export default function OrderHistory() {
   };
 
   const canCancelOrder = (status: string) => {
-    return status === 'pending';
+    return status === "pending";
   };
 
   if (loading) {
@@ -261,7 +280,9 @@ export default function OrderHistory() {
                         disabled={cancellingOrderId === order.id}
                         className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {cancellingOrderId === order.id ? 'Цуцлаж байна...' : 'Цуцлах'}
+                        {cancellingOrderId === order.id
+                          ? "Цуцлаж байна..."
+                          : "Цуцлах"}
                       </button>
                     ) : (
                       <span className="text-xs text-gray-400">-</span>

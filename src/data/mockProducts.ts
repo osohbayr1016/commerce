@@ -3,7 +3,11 @@ export interface Product {
   brand: string;
   nameEn: string;
   nameMn: string;
+  nameRu?: string;
+  nameZh?: string;
+  nameIt?: string;
   category: 'boots' | 'bag';
+  categoryPath?: string;
   price: number;
   originalPrice: number;
   discount?: number;

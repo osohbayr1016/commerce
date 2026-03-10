@@ -22,6 +22,10 @@ export const translations = {
     nav: {
       home: "Home",
       categories: "Categories",
+      male: "Male",
+      female: "Female",
+      accessory: "Accessory",
+      perfume: "Perfume",
       sale: "Sale",
       newArrivals: "New Arrivals",
       profile: "My Account",
@@ -287,6 +291,10 @@ export const translations = {
     nav: {
       home: "Нүүр",
       categories: "Ангилал",
+      male: "Эрэгтэй",
+      female: "Эмэгтэй",
+      accessory: "Дагалдах хэрэгсэл",
+      perfume: "Үнэртэй ус",
       sale: "Хямдрал",
       newArrivals: "Шинэ бүтээгдэхүүн",
       profile: "Миний хэсэг",
@@ -475,7 +483,8 @@ export const translations = {
       reviewAdded: "Үнэлгээ нэмэгдлээ",
       reviewUpdated: "Үнэлгээ шинэчлэгдлээ",
       reviewDeleted: "Үнэлгээ устгагдлаа",
-      mustPurchase: "Үнэлгээ үлдээхийн тулд бүтээгдэхүүн худалдаж авсан байх ёстой",
+      mustPurchase:
+        "Үнэлгээ үлдээхийн тулд бүтээгдэхүүн худалдаж авсан байх ёстой",
       averageRating: "5-аас {{rating}}",
       totalReviews: "{{count}} үнэлгээ",
       noReviews: "Үнэлгээ байхгүй",
@@ -520,7 +529,8 @@ export const translations = {
       cart: "Сагс хоосон байна",
       cartDescription: "Сагсанд бүтээгдэхүүн нэмээд захиалга өгөх боломжтой",
       wishlist: "Хадгалсан бүтээгдэхүүн байхгүй",
-      wishlistDescription: "Таалагдсан бүтээгдэхүүнүүдээ хадгалсан бүтээгдэхүүнд нэмээд хадгална уу",
+      wishlistDescription:
+        "Таалагдсан бүтээгдэхүүнүүдээ хадгалсан бүтээгдэхүүнд нэмээд хадгална уу",
       orders: "Захиалга байхгүй",
       ordersDescription: "Дэлгүүр хэсч эхнийхээ захиалгаа өгөөрэй",
       search: "Илэрц олдсонгүй",
@@ -552,6 +562,10 @@ export const translations = {
     nav: {
       home: "Главная",
       categories: "Категории",
+      male: "Мужчины",
+      female: "Женщины",
+      accessory: "Аксессуары",
+      perfume: "Парфюмерия",
       sale: "Распродажа",
       newArrivals: "Новинки",
       profile: "Мой аккаунт",
@@ -817,6 +831,10 @@ export const translations = {
     nav: {
       home: "首页",
       categories: "分类",
+      male: "男",
+      female: "女",
+      accessory: "配饰",
+      perfume: "香水",
       sale: "促销",
       newArrivals: "新品",
       profile: "我的账户",
@@ -1082,6 +1100,10 @@ export const translations = {
     nav: {
       home: "Home",
       categories: "Categorie",
+      male: "Uomo",
+      female: "Donna",
+      accessory: "Accessori",
+      perfume: "Profumo",
       sale: "Saldi",
       newArrivals: "Nuovi arrivi",
       profile: "Il mio account",
@@ -1202,7 +1224,8 @@ export const translations = {
       paymentMethod: "Metodo di pagamento",
       orderItems: "Articoli dell'ordine",
       noOrders: "Nessun ordine ancora",
-      startShopping: "Inizia a fare acquisti per effettuare il tuo primo ordine",
+      startShopping:
+        "Inizia a fare acquisti per effettuare il tuo primo ordine",
       filterAll: "Tutti",
       statusPending: "In attesa",
       statusConfirmed: "Confermato",
@@ -1315,9 +1338,11 @@ export const translations = {
       cart: "Il tuo carrello è vuoto",
       cartDescription: "Aggiungi prodotti al carrello per effettuare un ordine",
       wishlist: "La tua lista dei desideri è vuota",
-      wishlistDescription: "Salva i tuoi prodotti preferiti nella lista dei desideri",
+      wishlistDescription:
+        "Salva i tuoi prodotti preferiti nella lista dei desideri",
       orders: "Nessun ordine ancora",
-      ordersDescription: "Inizia a fare acquisti per effettuare il tuo primo ordine",
+      ordersDescription:
+        "Inizia a fare acquisti per effettuare il tuo primo ordine",
       search: "Nessun risultato trovato",
       searchDescription: "Prova a cercare con parole chiave diverse",
       category: "Nessun prodotto in questa categoria",

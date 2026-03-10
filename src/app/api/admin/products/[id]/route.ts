@@ -48,7 +48,7 @@ export async function PATCH(
     if (!id)
       return NextResponse.json({ error: "ID шаардлагатай" }, { status: 400 });
     const body = await req.json().catch(() => ({}));
-    const { sizeStocks } = body;
+    const { sizeStocks, colorSizeStocks } = body;
     const productPayload = pickProductPayload(body);
     const { error } = await auth
       .adminClient!.from("products")
@@ -63,22 +63,72 @@ export async function PATCH(
     await auth
       .adminClient!.from("product_variants")
       .delete()
-      .eq("product_id", id)
-      .is("color", null)
-      .is("material", null);
+      .eq("product_id", id);
     const productType = body.product_type as string | undefined;
-    if (
-      (productType === "shoes" || productType === "clothes") &&
-      sizeStocks &&
-      typeof sizeStocks === "object"
-    ) {
-      const rows = Object.entries(sizeStocks).map(([size, stock]) => ({
-        product_id: id,
-        color: null,
-        material: null,
-        size: parseInt(size, 10),
-        stock: Math.max(0, Number(stock) || 0),
-      }));
+    type Row = {
+      product_id: string;
+      color: string | null;
+      material: null;
+      size: number;
+      stock: number;
+    };
+    const withVariants =
+      productType === "shoes" ||
+      productType === "clothes" ||
+      productType === "other";
+    if (withVariants) {
+      let rows: Row[] = [];
+      if (
+        productType === "other" &&
+        colorSizeStocks &&
+        typeof colorSizeStocks === "object" &&
+        Object.keys(colorSizeStocks).length > 0
+      ) {
+        for (const [color, sizeMap] of Object.entries(colorSizeStocks)) {
+          const stock =
+            sizeMap && typeof sizeMap === "object"
+              ? Math.max(
+                  0,
+                  Number((sizeMap as Record<number, unknown>)[0]) || 0,
+                )
+              : 0;
+          rows.push({
+            product_id: id,
+            color,
+            material: null,
+            size: 0,
+            stock,
+          });
+        }
+      } else if (productType === "shoes" || productType === "clothes") {
+        if (
+          colorSizeStocks &&
+          typeof colorSizeStocks === "object" &&
+          Object.keys(colorSizeStocks).length > 0
+        ) {
+          for (const [color, sizeMap] of Object.entries(colorSizeStocks)) {
+            if (sizeMap && typeof sizeMap === "object") {
+              for (const [size, stock] of Object.entries(sizeMap)) {
+                rows.push({
+                  product_id: id,
+                  color,
+                  material: null,
+                  size: parseInt(size, 10),
+                  stock: Math.max(0, Number(stock) || 0),
+                });
+              }
+            }
+          }
+        } else if (sizeStocks && typeof sizeStocks === "object") {
+          rows = Object.entries(sizeStocks).map(([size, stock]) => ({
+            product_id: id,
+            color: null,
+            material: null,
+            size: parseInt(size, 10),
+            stock: Math.max(0, Number(stock) || 0),
+          }));
+        }
+      }
       if (rows.length) {
         const { error: insErr } = await auth
           .adminClient!.from("product_variants")

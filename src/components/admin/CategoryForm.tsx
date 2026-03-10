@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Category } from "@/types";
-import { createClient } from "@/lib/supabase/client";
 
 interface CategoryFormProps {
   editing: number | null;
@@ -11,11 +9,14 @@ interface CategoryFormProps {
     name_en: string;
     name_mn: string;
     slug: string;
+    parent_id: number | null;
+    level: number;
     is_active: boolean;
     display_order: number;
     show_in_header: boolean;
   };
-  onFormChange: (field: string, value: any) => void;
+  categories: Category[];
+  onFormChange: (field: string, value: unknown) => void;
   onSubmit: () => Promise<void>;
   onCancel: () => void;
   loading: boolean;
@@ -24,6 +25,7 @@ interface CategoryFormProps {
 export default function CategoryForm({
   editing,
   formData,
+  categories,
   onFormChange,
   onSubmit,
   onCancel,
@@ -89,6 +91,28 @@ export default function CategoryForm({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Parent Category
+            </label>
+            <select
+              value={formData.parent_id ?? ""}
+              onChange={(e) =>
+                onFormChange("parent_id", e.target.value === "" ? null : Number(e.target.value))
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">None (root)</option>
+              {categories
+                .filter((c) => c.id !== editing)
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name_mn || c.name_en || c.name}
+                  </option>
+                ))}
+            </select>
           </div>
 
           <div>

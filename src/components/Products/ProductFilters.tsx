@@ -2,9 +2,25 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedName } from "@/lib/localize";
+
+interface SubcategoryItem {
+  id: number;
+  slug: string;
+  name: string;
+  name_en?: string;
+  name_mn?: string;
+  name_ru?: string;
+  name_zh?: string;
+  name_it?: string;
+}
 
 interface ProductFiltersProps {
   brands?: string[];
+  subcategories?: SubcategoryItem[];
+  selectedSubcategory?: string;
+  rootSlug?: string;
   availableSizes?: number[];
   minPrice?: number;
   maxPrice?: number;
@@ -12,16 +28,23 @@ interface ProductFiltersProps {
 
 export default function ProductFilters({
   brands = [],
+  subcategories = [],
+  selectedSubcategory,
+  rootSlug,
   availableSizes = [],
   minPrice = 0,
   maxPrice = 1000000,
 }: ProductFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+  const { language } = useLanguage();
+
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<number[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    minPrice,
+    maxPrice,
+  ]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,19 +62,27 @@ export default function ProductFilters({
       setSelectedSizes(sizesParam.split(",").map(Number).filter(Boolean));
     }
     if (minPriceParam) {
-      setPriceRange([Number(minPriceParam), priceRange[1]]);
+      setPriceRange((prev) => [Number(minPriceParam), prev[1]]);
     }
     if (maxPriceParam) {
-      setPriceRange([priceRange[0], Number(maxPriceParam)]);
+      setPriceRange((prev) => [prev[0], Number(maxPriceParam)]);
     }
     if (stockParam === "true") {
       setInStockOnly(true);
     }
   }, [searchParams]);
 
+  const setSubcategory = (slug: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (slug) params.set("subcategory", slug);
+    else params.delete("subcategory");
+    params.delete("page");
+    router.push(`?${params.toString()}`);
+  };
+
   const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     if (selectedBrands.length > 0) {
       params.set("brands", selectedBrands.join(","));
     } else {
@@ -95,29 +126,35 @@ export default function ProductFilters({
     router.push(`?${params.toString()}`);
   };
 
+  const hasSubcategory = !!selectedSubcategory;
   const hasActiveFilters = useMemo(() => {
     return (
+      hasSubcategory ||
       selectedBrands.length > 0 ||
       selectedSizes.length > 0 ||
       priceRange[0] > minPrice ||
       priceRange[1] < maxPrice ||
       inStockOnly
     );
-  }, [selectedBrands, selectedSizes, priceRange, minPrice, maxPrice, inStockOnly]);
+  }, [
+    hasSubcategory,
+    selectedBrands,
+    selectedSizes,
+    priceRange,
+    minPrice,
+    maxPrice,
+    inStockOnly,
+  ]);
 
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
-      prev.includes(brand)
-        ? prev.filter((b) => b !== brand)
-        : [...prev, brand]
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand],
     );
   };
 
   const toggleSize = (size: number) => {
     setSelectedSizes((prev) =>
-      prev.includes(size)
-        ? prev.filter((s) => s !== size)
-        : [...prev, size]
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
   };
 
@@ -145,6 +182,7 @@ export default function ProductFilters({
           {hasActiveFilters && (
             <span className="ml-2 px-2 py-0.5 bg-gray-900 text-white text-xs rounded-full">
               {[
+                hasSubcategory ? 1 : 0,
                 selectedBrands.length,
                 selectedSizes.length,
                 priceRange[0] > minPrice || priceRange[1] < maxPrice ? 1 : 0,
@@ -167,10 +205,45 @@ export default function ProductFilters({
 
       {isOpen && (
         <div className="space-y-6">
+          {/* Subcategory */}
+          {subcategories.length > 0 && rootSlug && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Дэд ангилал
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSubcategory(null)}
+                  className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                    !selectedSubcategory
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  Бүгд
+                </button>
+                {subcategories.map((sc) => (
+                  <button
+                    key={sc.id}
+                    onClick={() => setSubcategory(sc.slug)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      selectedSubcategory === sc.slug
+                        ? "bg-gray-900 text-white border-gray-900"
+                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    {getLocalizedName(sc, language) || sc.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Price Range */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Үнэ: {priceRange[0].toLocaleString()}₮ - {priceRange[1].toLocaleString()}₮
+              Үнэ: {priceRange[0].toLocaleString()}₮ -{" "}
+              {priceRange[1].toLocaleString()}₮
             </label>
             <div className="flex gap-4">
               <input
@@ -279,9 +352,7 @@ export default function ProductFilters({
                 onChange={(e) => setInStockOnly(e.target.checked)}
                 className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
               />
-              <span className="text-sm text-gray-700">
-                Зөвхөн бэлэн бараа
-              </span>
+              <span className="text-sm text-gray-700">Зөвхөн бэлэн бараа</span>
             </label>
           </div>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { ProductDetailType } from "@/data/mockProductDetail";
 import { CLOTHES_SIZE_LABELS } from "@/lib/product-types";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface VariantSelectorProps {
   productType?: ProductDetailType;
@@ -38,6 +39,7 @@ export default function VariantSelector({
   const [selectedSize, setSelectedSize] = useState<number | undefined>(
     defaultSize,
   );
+  const { t } = useLanguage();
 
   useEffect(() => {
     onVariantChange({
@@ -47,7 +49,8 @@ export default function VariantSelector({
     });
   }, [selectedColor, selectedMaterial, selectedSize, onVariantChange]);
 
-  const showSizes = productType !== "beauty" && sizes.length > 0;
+  const showSizes =
+    productType !== "beauty" && productType !== "other" && sizes.length > 0;
   const hasVariants = colors.length > 0 || materials.length > 0 || showSizes;
 
   if (!hasVariants) {
@@ -60,7 +63,7 @@ export default function VariantSelector({
       {colors.length > 0 && (
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-3">
-            Color
+            {t("color") || "Өнгө"}
             {selectedColor && (
               <span className="ml-2 text-gray-600">- {selectedColor}</span>
             )}

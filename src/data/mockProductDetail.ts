@@ -1,4 +1,4 @@
-export type ProductDetailType = "shoes" | "clothes" | "beauty";
+export type ProductDetailType = "shoes" | "clothes" | "beauty" | "other";
 
 export interface ProductDetail {
   id: string;
@@ -6,6 +6,9 @@ export interface ProductDetail {
   brand: string;
   nameEn: string;
   nameMn: string;
+  nameRu?: string;
+  nameZh?: string;
+  nameIt?: string;
   sku: string;
   category: string;
   subcategory: string;
@@ -14,12 +17,19 @@ export interface ProductDetail {
   discount: number;
   savings: number;
   sizes: number[];
+  colors?: string[];
   productType?: ProductDetailType;
   description?: string;
+  descriptionEn?: string;
+  descriptionMn?: string;
+  descriptionRu?: string;
+  descriptionZh?: string;
+  descriptionIt?: string;
   images: string[];
   brandColor: string;
   imageColor: string;
   hasFinancing: boolean;
+  availabilityStatus?: "order" | "in_stock";
 }
 
 export const mockProductDetail: ProductDetail = {

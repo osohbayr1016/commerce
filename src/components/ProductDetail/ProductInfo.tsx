@@ -7,6 +7,8 @@ import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedNameFromProduct, getLocalizedDescription } from "@/lib/localize";
+import { getAvailabilityStatusLabel } from "@/lib/availability-status";
 import CartAnimation from "./CartAnimation";
 import FireworkAnimation from "./FireworkAnimation";
 import VariantSelector from "@/components/Products/VariantSelector";
@@ -18,7 +20,8 @@ interface ProductInfoProps {
 export default function ProductInfo({ product }: ProductInfoProps) {
   const { user } = useAuth();
   const { addItem } = useCart();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const displayName = getLocalizedNameFromProduct(product, language, "Product");
   const router = useRouter();
   const pathname = usePathname();
   const addToCartButtonRef = useRef<HTMLButtonElement>(null);
@@ -28,10 +31,26 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const [selectedSize, setSelectedSize] = useState<number | undefined>(
     undefined,
   );
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    undefined,
+  );
+  const hasColors = (product.colors?.length ?? 0) > 0;
   const needsSize =
-    product.productType !== "beauty" && (product.sizes?.length ?? 0) > 0;
-  const canAddToCart = !needsSize || selectedSize != null;
+    product.productType !== "beauty" &&
+    product.productType !== "other" &&
+    (product.sizes?.length ?? 0) > 0;
+  const canAddToCart =
+    (!needsSize || selectedSize != null) &&
+    (!hasColors || selectedColor != null);
+  const descObj = {
+    description_en: product.descriptionEn,
+    description_mn: product.descriptionMn,
+    description_ru: product.descriptionRu,
+    description_zh: product.descriptionZh,
+    description_it: product.descriptionIt,
+  };
   const shortDescription =
+    getLocalizedDescription(descObj, language) ||
     product.description ||
     "Манай дэлгүүр АНУ-аас бараагаа илгээдэг тул захиалга баталгаажсаны дараа 10–14 хоногийн дотор Монголд очих бөгөөд каргоны төлбөрийг тусад нь төлөхийг анхаарна уу.";
 
@@ -39,7 +58,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     if (!canAddToCart) return;
     addItem({
       id: String(product.id),
-      name: product.nameEn,
+      name: displayName,
       price: product.price,
       originalPrice: product.originalPrice,
       quantity: 1,
@@ -49,6 +68,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       brandColor: product.brandColor,
       images: product.images || [],
       ...(selectedSize != null && { size: selectedSize }),
+      ...(selectedColor != null && { color: selectedColor }),
       ...(product.productType && { productType: product.productType }),
     });
 
@@ -78,8 +98,19 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <p className="text-sm text-gray-500">brand {product.brand}</p>
         )}
         <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mt-2">
-          {product.nameEn}
+          {displayName}
         </h1>
+        {product.availabilityStatus && (
+          <span
+            className={`inline-block mt-2 rounded-full px-2.5 py-1 text-sm font-medium ${
+              product.availabilityStatus === "in_stock"
+                ? "bg-green-50 text-green-700"
+                : "bg-amber-50 text-amber-700"
+            }`}
+          >
+            {getAvailabilityStatusLabel(product.availabilityStatus, language)}
+          </span>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -118,9 +149,14 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       <VariantSelector
         productType={product.productType}
+        colors={product.colors}
         sizes={product.sizes}
+        defaultColor={selectedColor}
         defaultSize={selectedSize}
-        onVariantChange={(v) => setSelectedSize(v.size)}
+        onVariantChange={(v) => {
+          if (v.size !== undefined) setSelectedSize(v.size);
+          if (v.color !== undefined) setSelectedColor(v.color);
+        }}
       />
 
       <div className="flex flex-col sm:flex-row gap-3">

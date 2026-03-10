@@ -2,37 +2,57 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import UserMenu from "./UserMenu";
 import SearchButton from "./SearchButton";
 import CartIconWithBadge from "./CartIconWithBadge";
 import WishlistIcon from "./WishlistIcon";
 import MobileMenu from "./MobileMenu";
 import CoinBalance from "./CoinBalance";
-import { useSpinModal } from "@/contexts/SpinModalContext";
+import HeaderLanguageDropdown from "./HeaderLanguageDropdown";
+import NavItemWithDropdown from "./NavItemWithDropdown";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedName } from "@/lib/localize";
 import { Category } from "@/types";
+
+const SLUG_TO_KEY: Record<string, string> = {
+  male: "nav.male",
+  female: "nav.female",
+  accessory: "nav.accessory",
+  perfume: "nav.perfume",
+};
+
+const FALLBACK_NAV = [
+  { slug: "male", key: "nav.male" },
+  { slug: "female", key: "nav.female" },
+  { slug: "accessory", key: "nav.accessory" },
+  { slug: "perfume", key: "nav.perfume" },
+];
 
 interface MainNavClientProps {
   siteName: string;
-  headerCategories: Category[];
+  navItems: Category[];
 }
 
 export default function MainNavClient({
   siteName,
-  headerCategories,
+  navItems,
 }: MainNavClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { openSpinModal } = useSpinModal() ?? {};
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const getLabel = (cat: Category) => {
+    const key = SLUG_TO_KEY[cat.slug];
+    return key ? t(key) : getLocalizedName(cat, language) || cat.name;
+  };
+
+  const useFallback = navItems.length === 0;
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-        {/* Main Navigation Bar */}
         <div className="relative flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
-          {/* Left: Logo - shrink-0 so search bar expansion doesn't squash it */}
           <div
-            className={`flex items-center shrink-0 z-10 transition-opacity duration-300 ${
+            className={`flex items-center gap-4 shrink-0 z-10 transition-opacity duration-300 ${
               isSearchOpen ? "opacity-70" : "opacity-100"
             }`}
           >
@@ -49,53 +69,53 @@ export default function MainNavClient({
                 priority
               />
             </a>
+            <div className="hidden lg:block">
+              <HeaderLanguageDropdown />
+            </div>
           </div>
 
-          {/* Center: Desktop Navigation */}
           <nav
             className={`hidden lg:flex items-center gap-7 xl:gap-8 text-lg font-semibold text-gray-900 absolute left-1/2 transform transition-all duration-300 ease-out ${
               isSearchOpen
                 ? "-translate-x-1/2 opacity-0 pointer-events-none scale-95"
                 : "-translate-x-1/2 opacity-100 pointer-events-auto scale-100"
             }`}
-            style={{
-              transitionProperty: "opacity, transform, scale",
-            }}
+            style={{ transitionProperty: "opacity, transform, scale" }}
           >
-            <a
-              href="/"
-              className="hover:text-gray-600 transition-colors whitespace-nowrap"
-            >
-              {t("nav.home")}
-            </a>
-            <a
-              href="/categories"
-              className="hover:text-gray-600 transition-colors whitespace-nowrap"
-            >
-              {t("nav.categories")}
-            </a>
-            <a
-              href="/sale"
-              className="hover:text-gray-600 transition-colors whitespace-nowrap"
-            >
-              {t("nav.sale")}
-            </a>
-            <button
-              type="button"
-              onClick={() => openSpinModal?.()}
-              className="hover:text-gray-600 transition-colors flex items-center gap-1 whitespace-nowrap font-semibold text-gray-900 bg-transparent border-0 cursor-pointer text-lg"
-            >
-              🎰 {t("nav.spin")}
-            </button>
-            <a
-              href="/profile"
-              className="hover:text-gray-600 transition-colors whitespace-nowrap"
-            >
-              {t("nav.profile")}
-            </a>
+            {useFallback
+              ? FALLBACK_NAV.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/categories/${item.slug}`}
+                    className="hover:text-gray-600 transition-colors whitespace-nowrap"
+                  >
+                    {t(item.key)}
+                  </Link>
+                ))
+              : navItems.map((cat) => {
+                  const children = cat.children || [];
+                  if (children.length > 0) {
+                    return (
+                      <NavItemWithDropdown
+                        key={cat.id}
+                        category={cat}
+                        label={getLabel(cat)}
+                        children={children}
+                      />
+                    );
+                  }
+                  return (
+                    <Link
+                      key={cat.id}
+                      href={`/categories/${cat.slug}`}
+                      className="hover:text-gray-600 transition-colors whitespace-nowrap"
+                    >
+                      {getLabel(cat)}
+                    </Link>
+                  );
+                })}
           </nav>
 
-          {/* Right: Actions - on mobile when search open, only SearchButton shows */}
           <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 z-10 flex-1 md:flex-initial min-w-0 md:min-w-0 justify-end">
             <SearchButton onToggle={setIsSearchOpen} />
             <div
@@ -109,60 +129,8 @@ export default function MainNavClient({
                 <CoinBalance />
               </div>
               <UserMenu />
-              <MobileMenu categories={headerCategories} />
+              <MobileMenu />
             </div>
-          </div>
-        </div>
-
-        {/* Category Pills Row - Hidden on small mobile, visible on tablet+ */}
-        <div
-          className="hidden sm:flex items-center gap-2 md:gap-3 pb-2.5 md:pb-3 overflow-x-auto"
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
-          <span className="text-xs md:text-sm text-gray-500 font-medium whitespace-nowrap shrink-0">
-            {t("nav.categoriesLabel")}
-          </span>
-          <div className="flex items-center gap-2 md:gap-2.5">
-            {headerCategories?.length > 0 ? (
-              headerCategories.map((category) => {
-                const displayName =
-                  category.name_mn || category.name_en || category.name;
-                return (
-                  <a
-                    key={category.id}
-                    href={`/categories/${category.slug}`}
-                    className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
-                  >
-                    {displayName}
-                  </a>
-                );
-              })
-            ) : (
-              <>
-                <a
-                  href="/categories"
-                  className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
-                >
-                  {t("nav.all")}
-                </a>
-                <a
-                  href="/categories/us-order"
-                  className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
-                >
-                  {t("nav.usOrder")}
-                </a>
-                <a
-                  href="/categories/local-stock"
-                  className="px-2.5 md:px-3 py-1 text-xs md:text-sm rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:border-gray-400 hover:shadow-sm transition-all whitespace-nowrap"
-                >
-                  {t("nav.localStock")}
-                </a>
-              </>
-            )}
           </div>
         </div>
       </div>

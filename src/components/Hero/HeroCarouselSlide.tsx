@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export interface HeroBanner {
@@ -27,10 +28,13 @@ export default function HeroCarouselSlide({
           <span className="text-gray-500 text-lg font-medium">E-Commerce</span>
         </div>
       ) : (
-        <img
+        <Image
           src={banner.image_url}
           alt={banner.title || "Banner"}
-          className="w-full h-full object-cover"
+          fill
+          sizes="100vw"
+          className="object-cover"
+          priority
           referrerPolicy="no-referrer"
           onError={onError}
         />

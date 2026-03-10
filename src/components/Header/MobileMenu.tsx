@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useSpinModal } from "@/contexts/SpinModalContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Category } from "@/types";
 
-interface MobileMenuProps {
-  categories: Category[];
-}
+const MAIN_NAV_ITEMS = [
+  { slug: "male", labelKey: "nav.male" },
+  { slug: "female", labelKey: "nav.female" },
+  { slug: "accessory", labelKey: "nav.accessory" },
+  { slug: "perfume", labelKey: "nav.perfume" },
+] as const;
 
-export default function MobileMenu({ categories }: MobileMenuProps) {
+export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [phase, setPhase] = useState<"entering" | "open" | "leaving">("entering");
   const menuRef = useRef<HTMLDivElement>(null);
@@ -63,16 +64,7 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
     };
   }, [isOpen, phase]);
 
-  const { openSpinModal } = useSpinModal() ?? {};
   const { t } = useLanguage();
-
-  const navLinks: { href?: string; label: string; spin?: boolean }[] = [
-    { href: "/", label: t("nav.home") },
-    { href: "/categories", label: t("nav.categories") },
-    { href: "/sale", label: t("nav.sale") },
-    { label: `🎰 ${t("nav.spin")}`, spin: true },
-    { href: "/profile", label: t("nav.profile") },
-  ];
 
   return (
     <>
@@ -141,55 +133,17 @@ export default function MobileMenu({ categories }: MobileMenuProps) {
 
             <nav className="p-4">
               <div className="space-y-1">
-                {navLinks.map((link) =>
-                  link.spin ? (
-                    <button
-                      key="spin"
-                      type="button"
-                      onClick={() => {
-                        openSpinModal?.();
-                        if (phase === "open") setPhase("leaving");
-                      }}
-                      className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                    >
-                      {link.label}
-                    </button>
-                  ) : (
-                    <Link
-                      key={link.href}
-                      href={link.href!}
-                      onClick={() => phase === "open" && setPhase("leaving")}
-                      className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                )}
+                {MAIN_NAV_ITEMS.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/categories/${item.slug}`}
+                    onClick={() => phase === "open" && setPhase("leaving")}
+                    className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                ))}
               </div>
-
-              {categories.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    {t("nav.categories")}
-                  </h3>
-                  <div className="space-y-1">
-                    {categories.map((category) => {
-                      const displayName =
-                        category.name_mn || category.name_en || category.name;
-                      return (
-                        <Link
-                          key={category.id}
-                          href={`/categories/${category.slug}`}
-                          onClick={() => phase === "open" && setPhase("leaving")}
-                          className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                        >
-                          {displayName}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
             </nav>
           </div>
         </div>

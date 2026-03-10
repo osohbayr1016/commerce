@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CartItem } from "@/contexts/CartContext";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
+import { createQpayInvoice } from "@/lib/qpay";
 
 interface OrderPayload {
   items: CartItem[];
@@ -68,6 +69,13 @@ export async function POST(request: Request) {
 
     const isGuest = !user;
 
+    if (isGuest) {
+      return NextResponse.json(
+        { error: "Захиалга хийхийн тулд нэвтэрч орно уу" },
+        { status: 401 },
+      );
+    }
+
     // Handle coin payment (only for logged-in users)
     if (payload.paymentMethod === "coins" && payload.coinPayment) {
       if (isGuest) {
@@ -101,12 +109,15 @@ export async function POST(request: Request) {
       }
 
       // Deduct coins using the function (negative amount for spending)
-      const { error: coinError } = await adminClient.rpc("update_coin_balance", {
-        p_user_id: user.id,
-        p_amount: -coinsUsed,
-        p_transaction_type: "spend",
-        p_description: `Захиалга #pending - ${coinsUsed} монет ашигласан`,
-      });
+      const { error: coinError } = await adminClient.rpc(
+        "update_coin_balance",
+        {
+          p_user_id: user.id,
+          p_amount: -coinsUsed,
+          p_transaction_type: "spend",
+          p_description: `Захиалга #pending - ${coinsUsed} монет ашигласан`,
+        },
+      );
 
       if (coinError) {
         console.error("Error deducting coins:", coinError);
@@ -117,10 +128,12 @@ export async function POST(request: Request) {
       }
     }
 
+    const paymentMethod = payload.paymentMethod ?? "bank";
+
     const { data: order, error: orderError } = await adminClient
       .from("orders")
       .insert({
-        user_id: isGuest ? null : user.id,
+        user_id: user.id,
         total_amount: totalAmount,
         status: "pending",
         earned_xp: 0,
@@ -132,6 +145,8 @@ export async function POST(request: Request) {
         district: customer.district ?? null,
         zip: customer.zip ?? null,
         note: customer.note ?? null,
+        payment_method: paymentMethod,
+        payment_status: paymentMethod === "coins" ? "paid" : "pending",
       })
       .select("id")
       .single();
@@ -162,7 +177,7 @@ export async function POST(request: Request) {
     }
 
     // Update transaction with order_id if paid with coins
-    if (payload.paymentMethod === "coins" && payload.coinPayment && !isGuest) {
+    if (paymentMethod === "coins" && payload.coinPayment) {
       await adminClient
         .from("coin_transactions")
         .update({ order_id: order.id })
@@ -258,6 +273,59 @@ export async function POST(request: Request) {
       } catch (referralErr) {
         console.error("Exception in referral award:", referralErr);
         // Don't fail the order
+      }
+    }
+    if (paymentMethod === "qpay") {
+      if (totalAmount < 1) {
+        return NextResponse.json(
+          {
+            error: "QPay төлбөрийн дүн 0 байж болохгүй. Хөнгөлөлтөө шалгана уу.",
+          },
+          { status: 400 },
+        );
+      }
+      try {
+        const description = `Захиалга #${order.id} - ${customer.fullName}`;
+        const qpayInvoice = await createQpayInvoice({
+          amount: totalAmount,
+          senderInvoiceNo: String(order.id),
+          description,
+          callbackUrl: undefined,
+          customerCode: undefined,
+          customerName: customer.fullName,
+          customerEmail: customer.email,
+          customerPhone: customer.phone,
+        });
+
+        await adminClient
+          .from("orders")
+          .update({
+            payment_method: "qpay",
+            payment_status: "pending",
+            qpay_invoice_id: qpayInvoice.invoice_id,
+          })
+          .eq("id", order.id);
+
+        return NextResponse.json(
+          {
+            orderId: order.id,
+            qpay: qpayInvoice,
+          },
+          { status: 200 },
+        );
+      } catch (qpayError) {
+        const message =
+          qpayError instanceof Error
+            ? qpayError.message
+            : "Unknown QPay error";
+        console.error("QPay invoice create error:", qpayError);
+        return NextResponse.json(
+          {
+            error: "QPay нэхэмжлэл үүсгэхэд алдаа гарлаа",
+            details: message,
+          },
+          { status: 502 },
+        );
       }
     }
 

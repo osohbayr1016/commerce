@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Product } from "@/types";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedName } from "@/lib/localize";
 
 interface ViewedProduct {
   id: string;
@@ -16,6 +18,7 @@ interface ViewedProduct {
 
 export default function RecentlyViewed() {
   const { user } = useAuth();
+  const { language } = useLanguage();
   const [viewedProducts, setViewedProducts] = useState<ViewedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -30,7 +33,7 @@ export default function RecentlyViewed() {
           `
           *,
           products (*)
-        `
+        `,
         )
         .eq("user_id", user.id)
         .order("viewed_at", { ascending: false })
@@ -38,10 +41,10 @@ export default function RecentlyViewed() {
 
       if (error) throw error;
 
-      
       const uniqueProducts = data?.filter(
         (item: any, index: number, self: any[]) =>
-          index === self.findIndex((t: any) => t.product_id === item.product_id)
+          index ===
+          self.findIndex((t: any) => t.product_id === item.product_id),
       );
 
       setViewedProducts(uniqueProducts || []);
@@ -68,8 +71,7 @@ export default function RecentlyViewed() {
 
       if (error) throw error;
       setViewedProducts([]);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const formatDate = (dateString: string) => {
@@ -155,11 +157,11 @@ export default function RecentlyViewed() {
               className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300 transition"
             >
               {/* Product Image */}
-              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden relative flex-shrink-0">
+              <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden relative ">
                 {item.products.images && item.products.images.length > 0 ? (
                   <Image
                     src={item.products.images[0]}
-                    alt={item.products.name_mn || item.products.name_en || "Product"}
+                    alt={getLocalizedName(item.products, language, "Product")}
                     fill
                     sizes="96px"
                     className="object-cover"
@@ -178,7 +180,7 @@ export default function RecentlyViewed() {
                   {item.products.brand}
                 </p>
                 <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
-                  {item.products.name_mn || item.products.name_en}
+                  {getLocalizedName(item.products, language, "Product")}
                 </h3>
                 <div className="flex items-center space-x-3">
                   <span className="text-lg font-bold text-gray-900">

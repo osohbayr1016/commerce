@@ -2,6 +2,22 @@
 
 export type FooterContentsMap = Record<string, Record<string, string>>;
 
+export const FOOTER_BLOCKS: Array<{
+  id: string;
+  title: string;
+  section: string;
+  key: string;
+}> = [
+  { id: "1", title: "Компанийн нэр", section: "company", key: "title" },
+  { id: "2", title: "Компанийн тайлбар", section: "company", key: "description" },
+  { id: "3", title: "Facebook холбоос", section: "social", key: "facebook_url" },
+  { id: "4", title: "Instagram холбоос", section: "social", key: "instagram_url" },
+  { id: "11", title: "Хаяг", section: "contact", key: "address" },
+  { id: "12", title: "Утас", section: "contact", key: "phone" },
+  { id: "13", title: "И-мэйл", section: "contact", key: "email" },
+  { id: "14", title: "Зохиогчийн эрх", section: "bottom_links", key: "copyright" },
+];
+
 export const DEFAULT_FOOTER_MAP: FooterContentsMap = {
   company: {
     title: "E-Commerce",

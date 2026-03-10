@@ -4,19 +4,29 @@ export interface Category {
   slug: string;
   name_en?: string;
   name_mn?: string;
+  name_ru?: string;
+  name_zh?: string;
+  name_it?: string;
+  parent_id?: number | null;
+  level?: number;
+  path?: string | null;
   display_order?: number;
   is_active?: boolean;
   show_in_header?: boolean;
   created_at?: string;
   updated_at?: string;
+  children?: Category[];
 }
 
-export type ProductType = "shoes" | "clothes" | "beauty";
+export type ProductType = "shoes" | "clothes" | "beauty" | "other";
 
 export interface Product {
   id?: string;
   name_en?: string;
   name_mn?: string;
+  name_ru?: string;
+  name_zh?: string;
+  name_it?: string;
   brand?: string;
   sku?: string;
   price?: number;
@@ -30,6 +40,11 @@ export interface Product {
   default_color?: string;
   default_material?: string;
   description?: string;
+  description_en?: string;
+  description_mn?: string;
+  description_ru?: string;
+  description_zh?: string;
+  description_it?: string;
   subcategory?: string;
   category_id?: number;
   brand_color?: string;
@@ -37,6 +52,8 @@ export interface Product {
   has_financing?: boolean;
   images?: string[];
   image_url?: string; // Single image URL (for queries that select single image)
+  availability_status?: "order" | "in_stock" | null;
+  default_rating?: number | null;
   created_at?: string;
   updated_at?: string;
 }

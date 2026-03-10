@@ -59,6 +59,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     brand: dbProduct.brand || "",
     nameEn: dbProduct.name_en || dbProduct.title || "",
     nameMn: dbProduct.name_mn || "",
+    nameRu: dbProduct.name_ru || "",
+    nameZh: dbProduct.name_zh || "",
+    nameIt: dbProduct.name_it || "",
     sku: dbProduct.sku || "",
     category: "Эмэгтэй",
     subcategory: dbProduct.subcategory || "Гутал",
@@ -67,20 +70,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
     discount: dbProduct.discount || 0,
     savings: (dbProduct.original_price || 0) - (dbProduct.price || 0),
     sizes: dbProduct.sizes ?? [36, 37, 38, 39],
+    colors: Array.isArray(dbProduct.colors) ? dbProduct.colors : [],
     productType:
       (dbProduct.product_type as ProductDetail["productType"]) || "shoes",
     description: dbProduct.description,
+    descriptionEn: dbProduct.description_en || "",
+    descriptionMn: dbProduct.description_mn || "",
+    descriptionRu: dbProduct.description_ru || "",
+    descriptionZh: dbProduct.description_zh || "",
+    descriptionIt: dbProduct.description_it || "",
     images: productImages,
     brandColor: dbProduct.brand_color || "#F5F5F5",
     imageColor: dbProduct.image_color || "#FAFAFA",
     hasFinancing: dbProduct.has_financing || false,
+    availabilityStatus:
+      dbProduct.availability_status === "order" ||
+      dbProduct.availability_status === "in_stock"
+        ? dbProduct.availability_status
+        : undefined,
   };
 
   const [relatedProductsResult, reviewStatsResult] = await Promise.all([
     supabase
       .from("products")
       .select(
-        "id, brand, name_en, title, name_mn, subcategory, price, original_price, discount, brand_color, image_color, images",
+        "id, brand, name_en, name_mn, name_ru, name_zh, name_it, title, subcategory, price, original_price, discount, brand_color, image_color, images",
       )
       .eq("subcategory", dbProduct.subcategory)
       .neq("id", dbProduct.id)
@@ -102,6 +116,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       brand: item.brand || "",
       nameEn: item.name_en || item.title || "",
       nameMn: item.name_mn || "",
+      nameRu: item.name_ru || "",
+      nameZh: item.name_zh || "",
+      nameIt: item.name_it || "",
       category: item.subcategory?.toLowerCase().includes("цүнх")
         ? "bag"
         : "boots",
@@ -124,6 +141,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
         (sum: number, r: any) => sum + r.rating,
         0,
       ) / totalReviews;
+  } else if (
+    dbProduct.default_rating != null &&
+    dbProduct.default_rating >= 1 &&
+    dbProduct.default_rating <= 5
+  ) {
+    averageRating = Number(dbProduct.default_rating);
   }
 
   return (
@@ -133,20 +156,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <main className="flex-1 py-8 md:py-12">
         <Breadcrumb
           items={[
-            { label: "Нүүр", href: "/" },
+            { labelKey: "nav.home", href: "/" },
             ...(category
               ? [
                   {
-                    label:
-                      category.name_mn ||
-                      category.name_en ||
-                      category.name ||
-                      "Ангилал",
-                    href: `/categories/${category.slug}`,
+                    category,
+                    href: `/categories/${category.path ?? category.slug}`,
                   },
                 ]
               : []),
-            { label: product.nameEn || product.nameMn || "Бүтээгдэхүүн" },
+            { product },
           ]}
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -158,7 +177,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <ProductImageGallery
                 images={product.images}
                 imageColor={product.imageColor}
-                productName={product.nameEn}
+                productName={product.nameEn || product.nameMn || "Product"}
               />
             </div>
 
@@ -169,10 +188,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           <div className="max-w-4xl">
-            <ProductDescription
-              description={product.description}
-              nameMn={product.nameMn}
-            />
+            <ProductDescription product={product} />
           </div>
 
           <div className="max-w-4xl mt-12 border-t border-gray-200 pt-8">

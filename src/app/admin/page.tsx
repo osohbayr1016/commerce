@@ -62,7 +62,9 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">Нийт орлого</p>
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
+              Нийт орлого
+            </p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
                 analytics.overview.revenueGrowth >= 0
@@ -73,14 +75,19 @@ export default async function AdminDashboard() {
               {formatPercent(analytics.overview.revenueGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate" title={formatCurrency(analytics.overview.totalRevenue)}>
+          <p
+            className="text-xl sm:text-2xl font-semibold text-gray-900 truncate"
+            title={formatCurrency(analytics.overview.totalRevenue)}
+          >
             {formatCurrency(analytics.overview.totalRevenue)}
           </p>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">Нийт захиалга</p>
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
+              Нийт захиалга
+            </p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
                 analytics.overview.ordersGrowth >= 0
@@ -98,7 +105,9 @@ export default async function AdminDashboard() {
 
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">Дундаж захиалга</p>
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
+              Дундаж захиалга
+            </p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
                 analytics.overview.avgOrderGrowth >= 0
@@ -109,14 +118,19 @@ export default async function AdminDashboard() {
               {formatPercent(analytics.overview.avgOrderGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate" title={formatCurrency(analytics.overview.avgOrderValue)}>
+          <p
+            className="text-xl sm:text-2xl font-semibold text-gray-900 truncate"
+            title={formatCurrency(analytics.overview.avgOrderValue)}
+          >
             {formatCurrency(analytics.overview.avgOrderValue)}
           </p>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">Нийт хэрэглэгч</p>
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
+              Нийт хэрэглэгч
+            </p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
                 analytics.overview.usersGrowth >= 0
@@ -134,7 +148,9 @@ export default async function AdminDashboard() {
 
         <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">Нийт бүтээгдэхүүн</p>
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
+              Нийт бүтээгдэхүүн
+            </p>
             <span
               className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
                 analytics.overview.productsGrowth >= 0
@@ -296,7 +312,7 @@ export default async function AdminDashboard() {
               Ангилал удирдах
             </h3>
             <p className="text-xs sm:text-sm text-gray-600">
-              Ангилал нэмэх, засах
+              Male, Female, Accessory, Perfume болон дэд ангилал
             </p>
           </a>
 

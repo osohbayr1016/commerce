@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Product } from "@/types";
+import { getCategoryDescendantIds } from "@/lib/categories";
 
 export interface ProductFilters {
   brands?: string[];
@@ -23,10 +24,15 @@ export async function getProductsWithFilters(
   filters: ProductFilters = {},
   sort: SortOption = "newest",
   limit?: number,
-  offset?: number
+  offset?: number,
 ) {
   const supabase = await createClient();
-  let query = supabase.from("products").select("id, brand, name_en, name_mn, title, price, original_price, discount, stock, sizes, subcategory, brand_color, image_color, images, created_at, category_id, categories(slug)", { count: "exact" });
+  let query = supabase
+    .from("products")
+    .select(
+      "id, brand, name_en, name_mn, name_ru, name_zh, name_it, title, price, original_price, discount, stock, sizes, subcategory, brand_color, image_color, images, created_at, category_id, categories(slug, path)",
+      { count: "exact" },
+    );
 
   if (filters.brands && filters.brands.length > 0) {
     query = query.in("brand", filters.brands);
@@ -49,12 +55,13 @@ export async function getProductsWithFilters(
   }
 
   if (filters.categoryId) {
-    query = query.eq("category_id", filters.categoryId);
+    const categoryIds = await getCategoryDescendantIds(filters.categoryId);
+    query = query.in("category_id", categoryIds);
   }
 
   if (filters.searchQuery) {
     query = query.or(
-      `name_en.ilike.%${filters.searchQuery}%,name_mn.ilike.%${filters.searchQuery}%,title.ilike.%${filters.searchQuery}%,brand.ilike.%${filters.searchQuery}%`
+      `name_en.ilike.%${filters.searchQuery}%,name_mn.ilike.%${filters.searchQuery}%,name_ru.ilike.%${filters.searchQuery}%,name_zh.ilike.%${filters.searchQuery}%,name_it.ilike.%${filters.searchQuery}%,title.ilike.%${filters.searchQuery}%,brand.ilike.%${filters.searchQuery}%`,
     );
   }
 
@@ -94,20 +101,25 @@ export async function getProductsWithFilters(
   }
 
   const products: Product[] = (data || []).map((p: any) => {
-    let category: 'boots' | 'bag' = 'boots';
-    
+    let category: "boots" | "bag" = "boots";
+
     if (p.categories?.slug) {
-      category = p.categories.slug === 'bags' ? 'bag' : 'boots';
+      category = p.categories.slug === "bags" ? "bag" : "boots";
     } else if (p.subcategory) {
       category = p.subcategory.toLowerCase().includes("цүнх") ? "bag" : "boots";
     }
-    
+
+    const catPath = p.categories?.path ?? p.categories?.slug;
     return {
       id: p.id,
       brand: p.brand || "",
       nameEn: p.name_en || p.title || "",
       nameMn: p.name_mn || "",
+      nameRu: p.name_ru || "",
+      nameZh: p.name_zh || "",
+      nameIt: p.name_it || "",
       category,
+      categoryPath: catPath ?? "",
       price: p.price || 0,
       originalPrice: p.original_price || p.price || 0,
       discount: p.discount,
@@ -133,19 +145,17 @@ export async function getUniqueBrands() {
 
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("products")
-    .select("brand")
-    .not("brand", "is", null)
-    .limit(1000);
+    .from("brands")
+    .select("name")
+    .order("display_order", { ascending: true });
 
   if (error) {
     return brandsCache?.data || [];
   }
 
-  const brands = Array.from(
-    new Set((data || []).map((p: any) => p.brand).filter(Boolean))
-  ).sort() as string[];
-
+  const brands = (data || [])
+    .map((b: { name: string }) => b.name)
+    .filter(Boolean);
   brandsCache = { data: brands, timestamp: now };
   return brands;
 }
@@ -180,7 +190,10 @@ export async function getAvailableSizes() {
   return sizes;
 }
 
-let priceRangeCache: { data: { min: number; max: number }; timestamp: number } | null = null;
+let priceRangeCache: {
+  data: { min: number; max: number };
+  timestamp: number;
+} | null = null;
 
 export async function getPriceRange() {
   const now = Date.now();

@@ -40,4 +40,12 @@ export const env = {
   site: {
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://maayaauvuu.com",
   },
+  qpay: {
+    baseUrl:
+      process.env.QPAY_BASE_URL ||
+      "https://merchant-sandbox.qpay.mn/v2",
+    clientId: getEnvVar("QPAY_CLIENT_ID"),
+    clientSecret: getEnvVar("QPAY_CLIENT_SECRET"),
+    invoiceCode: getEnvVar("QPAY_INVOICE_CODE"),
+  },
 } as const;

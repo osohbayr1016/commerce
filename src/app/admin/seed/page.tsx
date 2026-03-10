@@ -40,23 +40,19 @@ export default function SeedDataPage() {
       logs.push('1. Ангилал шалгаж байна...');
       setDetails([...logs]);
 
-      const categories = [
-        { name: 'Boots', name_en: 'Boots', name_mn: 'Гутал', slug: 'boots', display_order: 1, is_active: true },
-        { name: 'Bags', name_en: 'Bags', name_mn: 'Цүнх', slug: 'bags', display_order: 2, is_active: true },
-      ];
-
-      const { data: createdCategories, error: catError } = await supabase
+      const { data: navCategories, error: catError } = await supabase
         .from('categories')
-        .upsert(categories, { onConflict: 'slug', ignoreDuplicates: false })
-        .select();
+        .select('id, slug')
+        .in('slug', ['male', 'female', 'accessory', 'perfume']);
 
-      if (catError) throw new Error(`Ангилал үүсгэхэд алдаа: ${catError.message}`);
-      logs.push(`✓ ${createdCategories?.length || 0} ангилал бэлэн байна`);
+      if (catError) throw new Error(`Ангилал унших алдаа: ${catError.message}`);
+      const femaleCat = navCategories?.find((c: any) => c.slug === 'female');
+      const accessoryCat = navCategories?.find((c: any) => c.slug === 'accessory');
+      if (!femaleCat || !accessoryCat) {
+        throw new Error('male, female, accessory, perfume ангилалууд байх ёстой. Migration ажиллуулна уу.');
+      }
+      logs.push(`✓ Nav ангилалууд олдлоо (female, accessory)`);
       setDetails([...logs]);
-
-      
-      const bootsCategory = createdCategories?.find((c: any) => c.slug === 'boots');
-      const bagsCategory = createdCategories?.find((c: any) => c.slug === 'bags');
 
       
       logs.push('2. Одоогийн бүтээгдэхүүнүүдийг шалгаж байна...');
@@ -86,7 +82,7 @@ export default function SeedDataPage() {
           sizes: [35, 36, 37, 38, 39, 40],
           description: `${product.nameMn} - ${product.brand}`,
           subcategory: product.category === 'boots' ? 'Гутал' : 'Цүнх',
-          category_id: product.category === 'boots' ? bootsCategory?.id : bagsCategory?.id,
+          category_id: product.category === 'boots' ? femaleCat?.id : accessoryCat?.id,
           brand_color: product.brandColor,
           image_color: product.imageColor,
           has_financing: true,
@@ -165,7 +161,7 @@ export default function SeedDataPage() {
             <li>✓ Энэ үйлдэл ЗӨВХӨН шинэ бүтээгдэхүүн нэмнэ</li>
             <li>✓ Одоогийн бүтээгдэхүүн хэвээр үлдэнэ</li>
             <li>✓ Mock өгөгдлөөс {mockProducts.length} бүтээгдэхүүн байна</li>
-            <li>✓ Ангилал: Boots ба Bags автоматаар үүснэ</li>
+            <li>✓ Ангилал: male, female, accessory, perfume (migration) шаардлагатай</li>
             <li>✓ Давхар бүтээгдэхүүн нэмэгдэхгүй</li>
           </ul>
 

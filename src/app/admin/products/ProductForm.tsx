@@ -8,14 +8,20 @@ import type { ProductType } from "@/types";
 import { getDefaultSizeForType } from "@/lib/product-types";
 import ImageUploader from "@/components/admin/ImageUploader";
 import ProductFormStockSection from "./ProductFormStockSection";
+import ProductFormNameSection from "./ProductFormNameSection";
+import ProductFormDescriptionSection from "./ProductFormDescriptionSection";
+import { getLocalizedName } from "@/lib/localize";
 
 function buildInitialSizeStocks(
   _productType: ProductType,
   sizeOnlyVariants?: ProductVariant[],
 ): Record<number, number> {
-  if (sizeOnlyVariants?.length) {
+  const noColor = sizeOnlyVariants?.filter(
+    (v) => v.color == null || v.color === "",
+  );
+  if (noColor?.length) {
     const out: Record<number, number> = {};
-    sizeOnlyVariants.forEach((v) => {
+    noColor.forEach((v) => {
       if (v.size != null) out[v.size] = v.stock ?? 0;
     });
     return out;
@@ -31,21 +37,31 @@ export default function ProductForm({
   productVariants?: ProductVariant[];
 }) {
   const productType = (product?.product_type as ProductType) || "shoes";
+  const p = product as Record<string, unknown> | undefined;
   const [formData, setFormData] = useState({
     name_en: product?.name_en || "",
     name_mn: product?.name_mn || "",
+    name_ru: product?.name_ru || "",
+    name_zh: product?.name_zh || "",
+    name_it: product?.name_it || "",
     brand: product?.brand || "",
     sku: product?.sku || "",
     price: product?.price || 0,
     original_price: product?.original_price || 0,
     discount: product?.discount || 0,
     stock: product?.stock || 0,
-    description: product?.description || "",
+    description_en: (p?.description_en as string) || (p?.description as string) || "",
+    description_mn: (p?.description_mn as string) || (p?.description as string) || "",
+    description_ru: (p?.description_ru as string) || "",
+    description_zh: (p?.description_zh as string) || "",
+    description_it: (p?.description_it as string) || "",
     subcategory: product?.subcategory || "",
     category_id: product?.category_id?.toString() ?? "",
     brand_color: product?.brand_color || "#F5F5F5",
     image_color: product?.image_color || "#FAFAFA",
     has_financing: product?.has_financing || false,
+    availability_status: product?.availability_status ?? "",
+    default_rating: product?.default_rating ?? "",
   });
   const [type, setType] = useState<ProductType>(productType);
   const [sizeStocks, setSizeStocks] = useState<Record<number, number>>(() =>
@@ -53,15 +69,34 @@ export default function ProductForm({
   );
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [images, setImages] = useState<string[]>(product?.images || []);
+  const [colors, setColors] = useState<string[]>(product?.colors || []);
+  const [colorInput, setColorInput] = useState("");
+  const [colorSizeStocks, setColorSizeStocks] = useState<
+    Record<string, Record<number, number>>
+  >(() => {
+    const withColor = productVariants?.filter(
+      (v) => v.color != null && v.color !== "",
+    );
+    if (!withColor?.length) return {};
+    const byColor: Record<string, Record<number, number>> = {};
+    for (const v of withColor) {
+      const color = v.color!;
+      if (!byColor[color]) byColor[color] = {};
+      if (v.size != null) byColor[color][v.size] = v.stock ?? 0;
+    }
+    return byColor;
+  });
   const router = useRouter();
   const supabase = createClient();
   const prevTypeRef = useRef(type);
 
   useEffect(() => {
     fetchCategories();
+    fetchBrands();
   }, []);
 
   useEffect(() => {
@@ -90,9 +125,15 @@ export default function ProductForm({
   async function fetchCategories() {
     const { data } = await supabase
       .from("categories")
-      .select("id, name, slug")
-      .order("name", { ascending: true });
+      .select("id, name, name_en, name_mn, name_ru, name_zh, name_it, slug, parent_id, display_order")
+      .order("display_order", { ascending: true });
     if (data) setCategories(data);
+  }
+
+  async function fetchBrands() {
+    const res = await fetch("/api/admin/brands");
+    const data = await res.json().catch(() => []);
+    if (Array.isArray(data)) setBrands(data);
   }
 
   function handleChange(
@@ -121,19 +162,29 @@ export default function ProductForm({
     setMessage("");
 
     try {
-      const isBeauty = type === "beauty";
-      const sizesArray = isBeauty
+      const isNoSize = type === "beauty" || type === "other";
+      const sizesArray = isNoSize
         ? []
         : Object.keys(sizeStocks)
             .map(Number)
             .filter((n) => !isNaN(n) && n >= 0)
             .sort((a, b) => a - b);
-      const stock = isBeauty ? parseInt(formData.stock.toString(), 10) : 0;
+      const stock = isNoSize ? parseInt(formData.stock.toString(), 10) : 0;
 
+      const title =
+        formData.name_en ||
+        formData.name_mn ||
+        formData.name_ru ||
+        formData.name_zh ||
+        formData.name_it ||
+        "Untitled Product";
       const productData = {
-        title: formData.name_en || formData.name_mn || "Untitled Product",
+        title,
         name_en: formData.name_en,
         name_mn: formData.name_mn,
+        name_ru: formData.name_ru || null,
+        name_zh: formData.name_zh || null,
+        name_it: formData.name_it || null,
         brand: formData.brand,
         sku: formData.sku,
         price: parseInt(formData.price.toString(), 10),
@@ -142,16 +193,39 @@ export default function ProductForm({
         stock,
         sizes: sizesArray,
         product_type: type,
-        description: formData.description,
-        subcategory: formData.subcategory,
+        description_en: formData.description_en || null,
+        description_mn: formData.description_mn || null,
+        description_ru: formData.description_ru || null,
+        description_zh: formData.description_zh || null,
+        description_it: formData.description_it || null,
+        subcategory: (() => {
+          if (!formData.category_id || !categories.length)
+            return formData.subcategory;
+          const c = categories.find(
+            (x) => x.id === parseInt(formData.category_id, 10),
+          );
+          return c
+            ? getLocalizedName(c, "mn") || c.name || formData.subcategory
+            : formData.subcategory;
+        })(),
         category_id: formData.category_id
           ? parseInt(formData.category_id.toString(), 10)
           : null,
         brand_color: formData.brand_color,
         image_color: formData.image_color,
         has_financing: formData.has_financing,
+        availability_status: formData.availability_status || null,
+        default_rating:
+          formData.default_rating !== ""
+            ? parseFloat(String(formData.default_rating))
+            : null,
         images,
-        ...(isBeauty ? {} : { sizeStocks }),
+        colors: colors.length > 0 ? colors : undefined,
+        ...(colors.length > 0
+          ? { colorSizeStocks }
+          : isNoSize
+            ? {}
+            : { sizeStocks }),
       };
 
       if (product?.id) {
@@ -195,49 +269,37 @@ export default function ProductForm({
       <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
         <h2 className="text-xl font-bold text-black mb-4">Үндсэн мэдээлэл</h2>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Нэр (Англи) *
-            </label>
-            <input
-              type="text"
-              name="name_en"
-              value={formData.name_en}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
+        <ProductFormNameSection
+          values={formData}
+          onChange={(name, value) =>
+            setFormData((p) => ({ ...p, [name]: value }))
+          }
+        />
 
-          <div>
-            <label className="block text-base font-semibold text-black mb-2">
-              Нэр (Монгол) *
-            </label>
-            <input
-              type="text"
-              name="name_mn"
-              value={formData.name_mn}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>
             <label className="block text-base font-semibold text-black mb-2">
               Брэнд *
             </label>
-            <input
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
+            {brands.length > 0 ? (
+              <select
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              >
+                <option value="">Сонгоно уу</option>
+                {brands.map((b) => (
+                  <option key={b.id} value={b.name}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="px-4 py-3 border border-gray-300 rounded-lg text-gray-500 bg-gray-50">
+                Брэнд байхгүй. Админ → Брэнд хэсгээс нэмнэ үү.
+              </div>
+            )}
           </div>
 
           <div>
@@ -253,19 +315,132 @@ export default function ProductForm({
               required
             />
           </div>
+
+          <div>
+            <label className="block text-base font-semibold text-black mb-2">
+              Бэлэн байдал
+            </label>
+            <select
+              name="availability_status"
+              value={formData.availability_status}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >
+              <option value="">Сонгоно уу</option>
+              <option value="order">Захиалгаар ирэх</option>
+              <option value="in_stock">бэлэн байгаа</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-base font-semibold text-black mb-2">
+              Үнэлгээ (1-5)
+            </label>
+            <select
+              name="default_rating"
+              value={formData.default_rating}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >
+              <option value="">Сонгоно уу</option>
+              <option value="1">1 од</option>
+              <option value="2">2 од</option>
+              <option value="3">3 од</option>
+              <option value="4">4 од</option>
+              <option value="5">5 од</option>
+            </select>
+          </div>
         </div>
 
         <div>
           <label className="block text-base font-semibold text-black mb-2">
             Тайлбар
           </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+          <ProductFormDescriptionSection
+            values={formData}
+            onChange={(name, value) =>
+              setFormData((p) => ({ ...p, [name]: value }))
+            }
           />
+        </div>
+
+        <div>
+          <label className="block text-base font-semibold text-black mb-2">
+            Өнгө
+          </label>
+          <div className="flex gap-2 flex-wrap items-center">
+            <input
+              type="text"
+              value={colorInput}
+              onChange={(e) => setColorInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const v = colorInput.trim();
+                  if (v && !colors.includes(v)) {
+                    setColors((c) => [...c, v]);
+                    setColorSizeStocks((prev) => ({
+                      ...prev,
+                      [v]:
+                        productType === "other"
+                          ? { 0: 0 }
+                          : ({} as Record<number, number>),
+                    }));
+                    setColorInput("");
+                  }
+                }
+              }}
+              placeholder="Өнгөний нэр бичиж нэмнэ"
+              className="flex-1 min-w-[180px] px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const v = colorInput.trim();
+                if (v && !colors.includes(v)) {
+                  setColors((c) => [...c, v]);
+                  setColorSizeStocks((prev) => ({
+                    ...prev,
+                    [v]:
+                      productType === "other"
+                        ? { 0: 0 }
+                        : ({} as Record<number, number>),
+                  }));
+                  setColorInput("");
+                }
+              }}
+              className="px-4 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 whitespace-nowrap"
+            >
+              Нэмэх
+            </button>
+          </div>
+          {colors.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {colors.map((c) => (
+                <span
+                  key={c}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-800 rounded-lg text-sm"
+                >
+                  {c}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setColors((arr) => arr.filter((x) => x !== c));
+                      setColorSizeStocks((prev) => {
+                        const next = { ...prev };
+                        delete next[c];
+                        return next;
+                      });
+                    }}
+                    className="text-gray-500 hover:text-red-600 ml-0.5"
+                    aria-label={`${c} устгах`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -338,6 +513,9 @@ export default function ProductForm({
           setFormData((p) => ({ ...p, has_financing: v }))
         }
         categories={categories}
+        colors={colors}
+        colorSizeStocks={colorSizeStocks}
+        setColorSizeStocks={setColorSizeStocks}
       />
 
       {message && (

@@ -72,10 +72,17 @@ R2_BUCKET_NAME = "commerceq"
 #      Example: https://pub-4cd9628710df4d9285813065e654a9c7.r2.dev/products/your-banner.jpg
 #
 #    R2 (for uploads and hero image URLs):
+#    - CLOUDFLARE_ACCOUNT_ID: Your Cloudflare Account ID
+#    - R2_ACCESS_KEY_ID: R2 API token access key
+#    - R2_SECRET_ACCESS_KEY: R2 API token secret (add as Encrypted secret)
 #    - R2_PUBLIC_URL: Your R2 bucket Public URL (see R2 → bucket → Public Development URL)
 #    - R2_BUCKET_NAME: Your bucket name (e.g. commerceq)
 #
-# Note: For sensitive values (API tokens), use "Encrypted" secrets in the dashboard.
+#    GMAIL OTP (for passwordless login):
+#    - GMAIL_USER: Your Gmail address
+#    - GMAIL_APP_PASSWORD: Gmail app password (add as Encrypted secret)
+#
+# Note: For sensitive values (API tokens, keys), use "Encrypted" secrets in the dashboard.
 #
 # For local development, create a .env.local file with these values.
 # Never commit .env.local to git!

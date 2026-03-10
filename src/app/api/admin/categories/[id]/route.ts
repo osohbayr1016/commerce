@@ -51,7 +51,12 @@ export async function PATCH(
       "name",
       "name_en",
       "name_mn",
+      "name_ru",
+      "name_zh",
+      "name_it",
       "slug",
+      "parent_id",
+      "level",
       "is_active",
       "display_order",
     ] as const;

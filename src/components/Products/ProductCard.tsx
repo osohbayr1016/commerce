@@ -1,49 +1,35 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { Product } from "@/data/mockProducts";
 import { generateSlug } from "@/lib/utils";
-import AddToCartButton from "./AddToCartButton";
 import WishlistButton from "./WishlistButton";
-import ProductQuickView from "./ProductQuickView";
-import { useCart } from "@/contexts/CartContext";
+import ProductCardImage from "./ProductCardImage";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedNameFromProduct } from "@/lib/localize";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { closeDrawer } = useCart();
   const [stock, setStock] = useState<number | null>(null);
-  const [showQuickView, setShowQuickView] = useState(false);
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("mn-MN").format(price);
-  };
+  const { t, language } = useLanguage();
 
   const slug = product.id
     ? generateSlug(`${product.brand} ${product.nameEn}`, product.id)
     : "";
 
-  const handleImageClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    closeDrawer();
-    setShowQuickView(true);
-  };
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("mn-MN").format(price);
 
   useEffect(() => {
     if (product.id) {
       fetch(`/api/products/${product.id}/stock`)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return { stock: null };
-        })
+        .then((res) => (res.ok ? res.json() : { stock: null }))
         .then((data) => {
-          if (data && typeof data.stock === "number") {
-            setStock(data.stock);
-          }
+          if (data && typeof data.stock === "number") setStock(data.stock);
         })
         .catch(() => {});
     }
@@ -51,94 +37,63 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const isOutOfStock = stock !== null && stock === 0;
   const isLowStock = stock !== null && stock > 0 && stock < 5;
+  const displayName = getLocalizedNameFromProduct(product, language, "Product");
 
   return (
     <div
-      className={`group border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white flex flex-col h-full relative ${isOutOfStock ? "opacity-75" : ""}`}
+      className={`group flex flex-col h-full relative bg-white ${
+        isOutOfStock ? "opacity-75" : ""
+      }`}
     >
       {product.id && (
-        <div className="absolute top-4 right-4 z-20 shrink-0">
+        <div className="absolute top-2 right-2 z-20 shrink-0">
           <WishlistButton productId={String(product.id)} />
         </div>
       )}
-      <a href={`/products/${slug}`} className="flex flex-col flex-1 min-w-0">
-        <div className="mb-3 relative">
-          <div
-            className="w-16 h-8 rounded border border-gray-200 bg-gray-50"
-            style={{ backgroundColor: product.brandColor }}
+      <Link href={`/products/${slug}`} className="flex flex-col flex-1 min-w-0">
+        <div className="relative mb-3">
+          <ProductCardImage
+            images={product.images}
+            alt={displayName}
+            imageColor={product.imageColor}
           />
-          {isOutOfStock && (
-            <span className="absolute top-0 right-0 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded">
-              Бэлэн бараа байхгүй
+          {isOutOfStock ? (
+            <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium">
+              {t("products.outOfStock")}
             </span>
-          )}
-          {isLowStock && !isOutOfStock && (
-            <span className="absolute top-0 right-0 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium rounded">
-              {stock} ширхэг үлдсэн
+          ) : isLowStock ? (
+            <span className="absolute top-2 left-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium">
+              {t("products.lowStock", { count: stock })}
             </span>
-          )}
-        </div>
-        <div
-          className="mb-4 relative w-full aspect-square rounded border border-gray-200 overflow-hidden cursor-pointer group/image"
-          onClick={handleImageClick}
-        >
-          {product.images && product.images.length > 0 && product.images[0] ? (
-            <>
-              <Image
-                src={product.images[0]}
-                alt={product.nameEn || product.nameMn || "Product"}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-cover"
-                loading="lazy"
-              />
-              <div
-                className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-200 group-hover/image:bg-black/30"
-                aria-hidden
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover/image:opacity-100 pointer-events-none">
-                <span className="bg-white/95 px-4 py-2 rounded-lg text-sm font-medium text-gray-900 shadow-lg">
-                  Хурдан үзэх
-                </span>
-              </div>
-            </>
-          ) : (
-            <div
-              className="absolute inset-0 bg-gray-50"
-              style={{ backgroundColor: product.imageColor }}
-            />
-          )}
+          ) : product.discount && product.discount > 0 ? (
+            <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 text-white text-xs font-medium">
+              {t("products.discount", { percent: product.discount })}
+            </span>
+          ) : null}
         </div>
         <div className="flex-1">
-          <h3 className="text-sm md:text-base font-medium text-gray-900 mb-2 line-clamp-2 leading-snug ">
-            {product.nameEn}
-          </h3>
-          <p className="text-sm text-gray-600 mb-3 line-clamp-1 ">
-            {product.nameMn}
+          <p className="text-xs uppercase text-gray-500 tracking-wide mb-1">
+            {product.brand}
           </p>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-base md:text-lg font-semibold text-gray-900">
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+            {displayName}
+          </h3>
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-sm font-semibold ${
+                product.discount ? "text-red-600" : "text-gray-900"
+              }`}
+            >
               {formatPrice(product.price)} ₮
             </span>
-            <span className="text-sm text-gray-400 line-through">
-              {formatPrice(product.originalPrice)} ₮
-            </span>
-            {product.discount && (
-              <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded border border-gray-200">
-                -{product.discount}%
+            {product.originalPrice > product.price && (
+              <span className="text-sm text-gray-400 line-through">
+                {formatPrice(product.originalPrice)} ₮
               </span>
             )}
           </div>
         </div>
-      </a>
-      <div className="pt-3 mt-auto">
-        <AddToCartButton product={product} slug={slug} />
-      </div>
-      <ProductQuickView
-        product={product}
-        isOpen={showQuickView}
-        onClose={() => setShowQuickView(false)}
-      />
+      </Link>
     </div>
   );
 }

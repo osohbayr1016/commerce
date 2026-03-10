@@ -29,6 +29,7 @@ export default function AdminLayout({
     { href: "/admin", label: "Хянах самбар", icon: "📊" },
     { href: "/admin/products", label: "Бүтээгдэхүүн", icon: "📦" },
     { href: "/admin/categories", label: "Ангилал", icon: "🏷️" },
+    { href: "/admin/brands", label: "Брэнд", icon: "🏷️" },
     { href: "/admin/orders", label: "Захиалга", icon: "🛒" },
     { href: "/admin/users", label: "Хэрэглэгч", icon: "👥" },
     { href: "/admin/referral/top6", label: "Top 6", icon: "⭐" },

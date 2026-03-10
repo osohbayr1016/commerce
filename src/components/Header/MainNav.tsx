@@ -1,29 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
 import MainNavClient from "./MainNavClient";
-import { Category } from "@/types";
+import { getCategoryTree } from "@/lib/categories";
 
 export default async function MainNav() {
-  const siteName = "E-Commerce";
-  let headerCategories: Category[] = [];
-
+  let navItems: Awaited<ReturnType<typeof getCategoryTree>> = [];
   try {
-    const supabase = await createClient();
-
-    const { data: categoriesData } = await supabase
-      .from("categories")
-      .select("id, name, slug, name_en, name_mn")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true })
-      .limit(6);
-
-    if (categoriesData) {
-      headerCategories = categoriesData as Category[];
-    }
-  } catch (error) {
-    // Silent fail
+    const tree = await getCategoryTree(1);
+    navItems = tree.length > 0 ? tree : await getCategoryTree();
+  } catch {
+    navItems = [];
   }
-
-  return (
-    <MainNavClient siteName={siteName} headerCategories={headerCategories} />
-  );
+  return <MainNavClient siteName="E-Commerce" navItems={navItems} />;
 }

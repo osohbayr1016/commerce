@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
-import React, { Component, ReactNode } from 'react';
-import { AppError, createAppError, ErrorType, getUserFriendlyMessage, logError } from '@/lib/errors';
+import React, { Component, ReactNode } from "react";
+import {
+  AppError,
+  createAppError,
+  ErrorType,
+  getUserFriendlyMessage,
+  logError,
+} from "@/lib/errors";
 
 interface Props {
   children: ReactNode;
@@ -14,9 +20,9 @@ interface State {
 
 /**
  * Error Boundary Component
- * 
+ *
  * Catches React errors and displays user-friendly error messages
- * 
+ *
  * Usage:
  * <ErrorBoundary>
  *   <YourComponent />
@@ -30,21 +36,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     return {
-      error: createAppError(
-        ErrorType.UNKNOWN,
-        error.message,
-        error
-      ),
+      error: createAppError(ErrorType.UNKNOWN, error.message, error),
     };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    const appError = createAppError(
-      ErrorType.UNKNOWN,
-      error.message,
-      { error, errorInfo }
-    );
-    
+    const appError = createAppError(ErrorType.UNKNOWN, error.message, {
+      error,
+      errorInfo,
+    });
+
     logError(appError, {
       componentStack: errorInfo.componentStack,
     });
@@ -60,7 +61,9 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback(this.state.error, this.reset);
       }
 
-      return <DefaultErrorFallback error={this.state.error} reset={this.reset} />;
+      return (
+        <DefaultErrorFallback error={this.state.error} reset={this.reset} />
+      );
     }
 
     return this.props.children;
@@ -70,7 +73,13 @@ export class ErrorBoundary extends Component<Props, State> {
 /**
  * Default Error Fallback UI
  */
-function DefaultErrorFallback({ error, reset }: { error: AppError; reset: () => void }) {
+function DefaultErrorFallback({
+  error,
+  reset,
+}: {
+  error: AppError;
+  reset: () => void;
+}) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
@@ -90,16 +99,14 @@ function DefaultErrorFallback({ error, reset }: { error: AppError; reset: () => 
               />
             </svg>
           </div>
-          
+
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">
             Алдаа гарлаа
           </h2>
-          
-          <p className="text-gray-600 mb-6">
-            {getUserFriendlyMessage(error)}
-          </p>
-          
-          {process.env.NODE_ENV === 'development' && (
+
+          <p className="text-gray-600 mb-6">{getUserFriendlyMessage(error)}</p>
+
+          {process.env.NODE_ENV === "development" && (
             <details className="mb-6 text-left">
               <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
                 Technical Details
@@ -109,7 +116,7 @@ function DefaultErrorFallback({ error, reset }: { error: AppError; reset: () => 
               </pre>
             </details>
           )}
-          
+
           <div className="flex gap-4 justify-center">
             <button
               onClick={reset}
@@ -117,9 +124,9 @@ function DefaultErrorFallback({ error, reset }: { error: AppError; reset: () => 
             >
               Дахин оролдох
             </button>
-            
+
             <button
-              onClick={() => window.location.href = '/'}
+              onClick={() => (window.location.href = "/")}
               className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
             >
               Нүүр хуудас руу буцах
@@ -134,7 +141,13 @@ function DefaultErrorFallback({ error, reset }: { error: AppError; reset: () => 
 /**
  * API Error Fallback Component
  */
-export function ApiErrorFallback({ error, retry }: { error: AppError; retry?: () => void }) {
+export function ApiErrorFallback({
+  error,
+  retry,
+}: {
+  error: AppError;
+  retry?: () => void;
+}) {
   return (
     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
       <div className="flex items-start">
@@ -172,7 +185,13 @@ export function ApiErrorFallback({ error, retry }: { error: AppError; retry?: ()
 /**
  * Loading Error Component (for data fetching errors)
  */
-export function LoadingError({ message, retry }: { message: string; retry?: () => void }) {
+export function LoadingError({
+  message,
+  retry,
+}: {
+  message: string;
+  retry?: () => void;
+}) {
   return (
     <div className="flex items-center justify-center p-8">
       <div className="text-center">

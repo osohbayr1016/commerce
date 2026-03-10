@@ -83,6 +83,9 @@ export async function GET(_req: NextRequest) {
 const PRODUCT_INSERT_COLUMNS = [
   "name_en",
   "name_mn",
+  "name_ru",
+  "name_zh",
+  "name_it",
   "title",
   "brand",
   "sku",
@@ -92,15 +95,26 @@ const PRODUCT_INSERT_COLUMNS = [
   "stock",
   "sizes",
   "description",
+  "description_en",
+  "description_mn",
+  "description_ru",
+  "description_zh",
+  "description_it",
+  "product_type",
   "subcategory",
   "category_id",
   "brand_color",
   "image_color",
   "has_financing",
+  "availability_status",
+  "default_rating",
   "images",
+  "colors",
 ] as const;
 
-export function pickProductPayload(body: Record<string, unknown>): Record<string, unknown> {
+export function pickProductPayload(
+  body: Record<string, unknown>,
+): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const key of PRODUCT_INSERT_COLUMNS) {
     if (body[key] !== undefined) out[key] = body[key];
@@ -113,7 +127,7 @@ export async function POST(req: NextRequest) {
     const auth = await requireAdmin();
     if (auth.error) return auth.error;
     const body = await req.json().catch(() => ({}));
-    const { sizeStocks } = body;
+    const { sizeStocks, colorSizeStocks } = body;
     const productPayload = pickProductPayload(body);
     const { data: product, error } = await auth
       .adminClient!.from("products")
@@ -125,19 +139,71 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     const productType = body.product_type as string | undefined;
-    if (
+    const withVariants =
       product?.id &&
-      (productType === "shoes" || productType === "clothes") &&
-      sizeStocks &&
-      typeof sizeStocks === "object"
-    ) {
-      const rows = Object.entries(sizeStocks).map(([size, stock]) => ({
-        product_id: product.id,
-        color: null,
-        material: null,
-        size: parseInt(size, 10),
-        stock: Math.max(0, Number(stock) || 0),
-      }));
+      (productType === "shoes" ||
+        productType === "clothes" ||
+        productType === "other");
+    if (withVariants) {
+      type Row = {
+        product_id: string;
+        color: string | null;
+        material: null;
+        size: number;
+        stock: number;
+      };
+      let rows: Row[] = [];
+      if (
+        productType === "other" &&
+        colorSizeStocks &&
+        typeof colorSizeStocks === "object" &&
+        Object.keys(colorSizeStocks).length > 0
+      ) {
+        for (const [color, sizeMap] of Object.entries(colorSizeStocks)) {
+          const stock =
+            sizeMap && typeof sizeMap === "object"
+              ? Math.max(
+                  0,
+                  Number((sizeMap as Record<number, unknown>)[0]) || 0,
+                )
+              : 0;
+          rows.push({
+            product_id: product!.id,
+            color,
+            material: null,
+            size: 0,
+            stock,
+          });
+        }
+      } else if (productType === "shoes" || productType === "clothes") {
+        if (
+          colorSizeStocks &&
+          typeof colorSizeStocks === "object" &&
+          Object.keys(colorSizeStocks).length > 0
+        ) {
+          for (const [color, sizeMap] of Object.entries(colorSizeStocks)) {
+            if (sizeMap && typeof sizeMap === "object") {
+              for (const [size, stock] of Object.entries(sizeMap)) {
+                rows.push({
+                  product_id: product!.id,
+                  color,
+                  material: null,
+                  size: parseInt(size, 10),
+                  stock: Math.max(0, Number(stock) || 0),
+                });
+              }
+            }
+          }
+        } else if (sizeStocks && typeof sizeStocks === "object") {
+          rows = Object.entries(sizeStocks).map(([size, stock]) => ({
+            product_id: product!.id,
+            color: null,
+            material: null,
+            size: parseInt(size, 10),
+            stock: Math.max(0, Number(stock) || 0),
+          }));
+        }
+      }
       if (rows.length) {
         const { error: insErr } = await auth
           .adminClient!.from("product_variants")

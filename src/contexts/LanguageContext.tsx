@@ -24,7 +24,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("language", lang);
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = lang;
+    }
   };
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   const t = (path: string, params?: Record<string, any>): string => {
     const keys = path.split(".");

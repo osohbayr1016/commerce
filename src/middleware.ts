@@ -2,11 +2,17 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    request.nextUrl.pathname.startsWith('/debug-auth')
+  ) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -94,5 +100,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/profile"],
+  matcher: ["/admin/:path*", "/profile", "/debug-auth"],
 };

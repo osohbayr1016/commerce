@@ -18,7 +18,7 @@ import {
   syncCartToServer,
 } from "@/lib/cart";
 
-export type CartProductType = "shoes" | "clothes" | "beauty";
+export type CartProductType = "shoes" | "clothes" | "beauty" | "other";
 
 export interface CartItem {
   id: string;
@@ -32,6 +32,7 @@ export interface CartItem {
   brandColor?: string;
   images?: string[];
   size?: number;
+  color?: string;
   productType?: CartProductType;
 }
 

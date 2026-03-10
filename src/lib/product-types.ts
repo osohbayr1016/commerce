@@ -22,11 +22,13 @@ export function getSizeLabel(
 export function getSizesForType(type: ProductType): number[] {
   if (type === "shoes") return [...SHOES_SIZES];
   if (type === "clothes") return [...CLOTHES_SIZES];
+  if (type === "beauty" || type === "other") return [];
   return [];
 }
 
 export function getDefaultSizeForType(type: ProductType): number {
   if (type === "shoes") return 36;
   if (type === "clothes") return 1;
+  if (type === "beauty" || type === "other") return 0;
   return 0;
 }
