@@ -21,38 +21,10 @@ export default function QpayDialog({
 }: QpayDialogProps) {
   if (!open || !data) return null;
 
-  const appStyles: Record<
-    string,
-    { badge: string; symbol: string }
-  > = {
-    "qpay wallet": { badge: "bg-blue-900 text-white", symbol: "Q" },
-    "khan bank": { badge: "bg-green-700 text-white", symbol: "KH" },
-    "state bank": { badge: "bg-sky-700 text-white", symbol: "ST" },
-    "xac bank": { badge: "bg-indigo-700 text-white", symbol: "XA" },
-    "trade and development bank": {
-      badge: "bg-blue-700 text-white",
-      symbol: "TDB",
-    },
-    "national investment bank": {
-      badge: "bg-emerald-700 text-white",
-      symbol: "NI",
-    },
-    "capitron bank": { badge: "bg-purple-700 text-white", symbol: "CA" },
-    "bogd bank": { badge: "bg-lime-700 text-white", symbol: "BO" },
-    "chinggis khaan bank": {
-      badge: "bg-amber-700 text-white",
-      symbol: "CH",
-    },
-    "most money": { badge: "bg-orange-600 text-white", symbol: "M" },
-    "social pay": { badge: "bg-pink-600 text-white", symbol: "SP" },
-    "ard app": { badge: "bg-red-600 text-white", symbol: "AR" },
-    "happy pay": { badge: "bg-yellow-500 text-white", symbol: "HP" },
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 sm:p-6">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <div className="mb-4 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm pb-3">
           <h2 className="text-lg font-semibold text-gray-900">QPay төлбөр</h2>
           <button
             type="button"
@@ -78,15 +50,17 @@ export default function QpayDialog({
               <p className="text-xs font-medium text-gray-700">
                 Эсвэл доорх апп-уудын товчийг дарж шууд төлнө үү:
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                 {data.urls.map((u, idx) => {
                   if (!u.link) return null;
                   const displayName = u.name || u.description || "App";
-                  const key = displayName.toLowerCase();
-                  const style = appStyles[key] || {
-                    badge: "bg-gray-200 text-gray-800",
-                    symbol: displayName.charAt(0).toUpperCase(),
-                  };
+                  const urlAny = u as any;
+                  const logoSrc =
+                    urlAny.logo ||
+                    urlAny.logo_url ||
+                    urlAny.image ||
+                    urlAny.icon ||
+                    "https://upload.wikimedia.org/wikipedia/commons/3/3a/QPay_logo.svg";
                   return (
                     <button
                       key={`${u.link}-${idx}`}
@@ -94,14 +68,18 @@ export default function QpayDialog({
                       onClick={() => {
                         window.location.href = u.link as string;
                       }}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-300 text-xs font-medium text-gray-800 hover:bg-gray-100 transition-colors"
+                      className="flex flex-col items-center gap-1 focus:outline-none"
                     >
-                      <span
-                        className={`flex h-6 w-6 items-center justify-center rounded-full text-[0.65rem] font-semibold ${style.badge}`}
-                      >
-                        {style.symbol}
+                      <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shadow-sm hover:shadow-md transition-all">
+                        <img
+                          src={logoSrc}
+                          alt={displayName}
+                          className="h-10 w-10 object-contain"
+                        />
+                      </div>
+                      <span className="w-full truncate text-[0.65rem] text-center text-gray-700">
+                        {displayName}
                       </span>
-                      <span>{displayName}</span>
                     </button>
                   );
                 })}

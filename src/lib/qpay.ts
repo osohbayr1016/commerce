@@ -29,6 +29,7 @@ export interface QpayInvoiceResponse {
     name?: string;
     description?: string;
     link?: string;
+    logo?: string;
   }[];
 }
 
