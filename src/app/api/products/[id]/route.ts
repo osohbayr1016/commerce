@@ -25,10 +25,15 @@ export async function GET(
     );
   }
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     id: product.id,
     images: product.images || [],
     imageColor: product.image_color,
     brandColor: product.brand_color,
   });
+  res.headers.set(
+    "Cache-Control",
+    "public, s-maxage=60, stale-while-revalidate=300"
+  );
+  return res;
 }

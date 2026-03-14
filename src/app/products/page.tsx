@@ -8,6 +8,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import {
   getProductsWithFilters,
   getUniqueBrands,
+  getUniqueColors,
   getAvailableSizes,
   getPriceRange,
   type SortOption,
@@ -19,6 +20,7 @@ export const revalidate = 300;
 interface ProductsPageProps {
   searchParams?: Promise<{
     brands?: string;
+    colors?: string;
     sizes?: string;
     minPrice?: string;
     maxPrice?: string;
@@ -38,6 +40,7 @@ export default async function ProductsPage({
 
   const filters = {
     brands: params.brands?.split(",").filter(Boolean),
+    colors: params.colors?.split(",").filter(Boolean),
     sizes: params.sizes?.split(",").map(Number).filter((n) => !isNaN(n) && n > 0),
     minPrice: params.minPrice ? Number(params.minPrice) : undefined,
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
@@ -51,9 +54,10 @@ export default async function ProductsPage({
 
   const sort = (params.sort as SortOption) || "newest";
 
-  const [productsResult, brands, sizes, priceRange] = await Promise.all([
+  const [productsResult, brands, colors, sizes, priceRange] = await Promise.all([
     getProductsWithFilters(filters, sort, limit, offset),
     getUniqueBrands(),
+    getUniqueColors(),
     getAvailableSizes(),
     getPriceRange(),
   ]);
@@ -79,6 +83,7 @@ export default async function ProductsPage({
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <ProductFilters
               brands={brands}
+              availableColors={colors}
               availableSizes={sizes}
               minPrice={priceRange.min}
               maxPrice={priceRange.max}

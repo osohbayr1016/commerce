@@ -1,12 +1,12 @@
 import Footer from "@/components/Footer/Footer";
 import MainNav from "@/components/Header/MainNav";
-import CheckoutClient from "./CheckoutClient";
+import CheckoutWithErrorBoundary from "./CheckoutWithErrorBoundary";
 
 export default function CheckoutPage() {
   return (
     <>
       <MainNav />
-      <CheckoutClient />
+      <CheckoutWithErrorBoundary />
       <Footer />
     </>
   );

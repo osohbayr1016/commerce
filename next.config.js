@@ -7,6 +7,10 @@ const nextConfig = {
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-ancestors 'none';",
+          },
         ],
       },
     ];
@@ -73,4 +77,15 @@ const nextConfig = {
   outputFileTracingRoot: require("path").join(__dirname),
 };
 
-module.exports = nextConfig;
+const withSentry =
+  process.env.NEXT_PUBLIC_SENTRY_DSN &&
+  require("@sentry/nextjs").withSentryConfig;
+
+module.exports = withSentry
+  ? withSentry(nextConfig, {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      silent: !process.env.CI,
+    })
+  : nextConfig;

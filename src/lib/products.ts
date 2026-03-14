@@ -4,6 +4,7 @@ import { getCategoryDescendantIds } from "@/lib/categories";
 
 export interface ProductFilters {
   brands?: string[];
+  colors?: string[];
   sizes?: number[];
   minPrice?: number;
   maxPrice?: number;
@@ -30,12 +31,16 @@ export async function getProductsWithFilters(
   let query = supabase
     .from("products")
     .select(
-      "id, brand, name_en, name_mn, name_ru, name_zh, name_it, title, price, original_price, discount, stock, sizes, subcategory, brand_color, image_color, images, created_at, category_id, categories(slug, path)",
+      "id, brand, name_en, name_mn, name_ru, name_zh, name_it, title, price, original_price, discount, stock, sizes, colors, subcategory, brand_color, image_color, images, created_at, category_id, categories(slug, path)",
       { count: "exact" },
     );
 
   if (filters.brands && filters.brands.length > 0) {
     query = query.in("brand", filters.brands);
+  }
+
+  if (filters.colors && filters.colors.length > 0) {
+    query = query.overlaps("colors", filters.colors);
   }
 
   if (filters.sizes && filters.sizes.length > 0) {
@@ -225,4 +230,49 @@ export async function getPriceRange() {
 
   priceRangeCache = { data: range, timestamp: now };
   return range;
+}
+
+let colorsCache: {
+  data: string[];
+  key: string;
+  timestamp: number;
+} | null = null;
+
+export async function getUniqueColors(categoryId?: number): Promise<string[]> {
+  const cacheKey = categoryId != null ? String(categoryId) : "all";
+  const now = Date.now();
+  if (
+    colorsCache &&
+    colorsCache.key === cacheKey &&
+    now - colorsCache.timestamp < CACHE_DURATION
+  ) {
+    return colorsCache.data;
+  }
+
+  const supabase = await createClient();
+  let query = supabase.from("products").select("colors").limit(2000);
+
+  if (categoryId != null) {
+    const categoryIds = await getCategoryDescendantIds(categoryId);
+    query = query.in("category_id", categoryIds);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return colorsCache?.key === cacheKey ? colorsCache.data : [];
+  }
+
+  const set = new Set<string>();
+  (data || []).forEach((p: { colors?: string[] | null }) => {
+    if (Array.isArray(p.colors)) {
+      p.colors.forEach((c: string) => {
+        if (c != null && String(c).trim()) set.add(String(c).trim());
+      });
+    }
+  });
+
+  const colors = Array.from(set).sort((a, b) => a.localeCompare(b));
+  colorsCache = { data: colors, key: cacheKey, timestamp: now };
+  return colors;
 }

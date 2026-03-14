@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import {
-  SalesChart,
-  ProductPerformanceChart,
-} from "@/components/admin/AnalyticsCharts";
+  DynamicSalesChart,
+  DynamicProductPerformanceChart,
+} from "@/components/admin/DynamicAnalyticsCharts";
 import { getAnalyticsData } from "@/lib/analytics";
 
 export const revalidate = 300;
@@ -188,8 +188,8 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <SalesChart data={analytics.salesChart} />
-        <ProductPerformanceChart
+        <DynamicSalesChart data={analytics.salesChart} />
+        <DynamicProductPerformanceChart
           data={analytics.categoryPerformance.slice(0, 5)}
         />
       </div>

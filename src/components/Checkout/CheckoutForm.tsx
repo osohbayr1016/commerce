@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CartItem } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import type { QpayInvoiceResponse } from "@/lib/qpay";
+import { retryWithBackoff } from "@/lib/errors";
 import QpayDialog from "./QpayDialog";
 import CheckoutInfoStep from "./CheckoutInfoStep";
 import CheckoutPaymentStep from "./CheckoutPaymentStep";
@@ -34,7 +35,7 @@ export default function CheckoutForm({
   const { profile, user } = useAuth();
   const [currentStep, setCurrentStep] = useState<"info" | "payment">("info");
   const [form, setForm] = useState<CheckoutFormValues>(defaultValues);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("qpay");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [isVerified, setIsVerified] = useState(false);
@@ -284,20 +285,26 @@ export default function CheckoutForm({
           setQpayChecking(true);
           setError("");
           try {
-            const res = await fetch("/api/qpay/confirm", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId: pendingOrderId }),
-            });
-            const data = await res.json().catch(() => ({}));
-
-            if (!res.ok || !data) {
-              throw new Error(
-                data.error ||
-                  data.details ||
-                  "Төлбөр шалгахад алдаа гарлаа. Дахин оролдоно уу.",
-              );
-            }
+            const data = await retryWithBackoff(
+              async () => {
+                const res = await fetch("/api/qpay/confirm", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ orderId: pendingOrderId }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                  throw new Error(
+                    data.error ||
+                      data.details ||
+                      "Төлбөр шалгахад алдаа гарлаа. Дахин оролдоно уу."
+                  );
+                }
+                return data;
+              },
+              3,
+              1000
+            );
 
             if (data.status === "paid") {
               setShowQpayDialog(false);

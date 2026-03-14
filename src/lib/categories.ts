@@ -5,13 +5,21 @@ export async function getCategoryChildren(
   parentId: number,
 ): Promise<Category[]> {
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("categories")
     .select("id, name, slug, name_en, name_mn, name_ru, name_zh, name_it, parent_id, display_order")
     .eq("parent_id", parentId)
     .eq("is_active", true)
     .order("display_order", { ascending: true });
-  return (data || []) as Category[];
+
+  if (!error && data) return data as Category[];
+
+  const { data: minimal } = await supabase
+    .from("categories")
+    .select("id, name, slug, parent_id")
+    .eq("parent_id", parentId)
+    .order("id", { ascending: true });
+  return (minimal || []).map((r) => ({ ...r, children: [] })) as Category[];
 }
 
 export async function getCategoryDescendantIds(
@@ -33,21 +41,31 @@ export async function getCategoryByPath(
   if (!pathSegments || pathSegments.length === 0) return null;
 
   const supabase = await createClient();
-  const path = pathSegments.join("/");
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select(
-      "id, name, slug, name_en, name_mn, name_ru, name_zh, name_it, parent_id, level, path, display_order, is_active",
-    )
-    .eq("path", path)
-    .eq("is_active", true)
-    .single();
+  try {
+    const path = pathSegments.join("/");
+    const { data, error } = await supabase
+      .from("categories")
+      .select(
+        "id, name, slug, name_en, name_mn, name_ru, name_zh, name_it, parent_id, level, path, display_order, is_active",
+      )
+      .eq("path", path)
+      .eq("is_active", true)
+      .single();
 
-  if (error || !data) {
-    return walkPath(supabase, pathSegments);
+    if (!error && data) return data as Category;
+  } catch {
+    // path or is_active column may not exist yet
   }
-  return data as Category;
+
+  try {
+    const result = await walkPath(supabase, pathSegments);
+    if (result) return result;
+  } catch {
+    // fallback: minimal columns (no is_active)
+  }
+
+  return walkPathMinimal(supabase, pathSegments);
 }
 
 async function walkPath(
@@ -81,12 +99,40 @@ async function walkPath(
   return lastCategory;
 }
 
+async function walkPathMinimal(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  segments: string[],
+): Promise<Category | null> {
+  let parentId: number | null = null;
+  let lastCategory: Category | null = null;
+
+  for (const slug of segments) {
+    let query = supabase
+      .from("categories")
+      .select("id, name, slug, parent_id")
+      .eq("slug", slug);
+
+    if (parentId === null) {
+      query = query.is("parent_id", null);
+    } else {
+      query = query.eq("parent_id", parentId);
+    }
+
+    const { data, error } = await query.single();
+    if (error || !data) return null;
+    parentId = data.id;
+    lastCategory = { ...data, children: [] } as Category;
+  }
+
+  return lastCategory;
+}
+
 export async function getCategoryTree(
   levelFilter?: number,
 ): Promise<Category[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase
+  const { data: fullData, error } = await supabase
     .from("categories")
     .select(
       "id, name, slug, name_en, name_mn, name_ru, name_zh, name_it, parent_id, level, path, display_order, is_active",
@@ -94,7 +140,17 @@ export async function getCategoryTree(
     .eq("is_active", true)
     .order("display_order", { ascending: true });
 
-  const flat = (data || []) as Category[];
+  let flat: Category[] = [];
+  if (error) {
+    const { data: minimal } = await supabase
+      .from("categories")
+      .select("id, name, slug, parent_id")
+      .order("id", { ascending: true });
+    flat = (minimal || []).map((r) => ({ ...r, children: [] })) as Category[];
+  } else {
+    flat = (fullData || []) as Category[];
+  }
+
   const tree = buildCategoryTree(flat);
 
   if (levelFilter !== undefined) {

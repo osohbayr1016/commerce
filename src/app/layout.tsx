@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
@@ -9,8 +9,8 @@ import { ComparisonProvider } from "@/contexts/ComparisonContext";
 import { generateSEO } from "@/lib/seo";
 import MobileBottomNav from "@/components/Navigation/MobileBottomNav";
 import { ModalProvider } from "@/hooks/useModal";
-import ClientCartDrawer from "@/components/Cart/ClientCartDrawer";
 import { SpinModalProvider } from "@/contexts/SpinModalContext";
+import CartDrawerDynamic from "@/components/Cart/CartDrawerDynamic";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +20,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
@@ -34,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased font-sans`}
       >
         <LanguageProvider>
           <AuthProvider>
@@ -45,7 +51,7 @@ export default function RootLayout({
                     <div className="min-h-screen pb-16 md:pb-0">{children}</div>
                     <MobileBottomNav />
                     <ModalProvider />
-                    <ClientCartDrawer />
+                    <CartDrawerDynamic />
                   </SpinModalProvider>
                 </ComparisonProvider>
               </ToastProvider>

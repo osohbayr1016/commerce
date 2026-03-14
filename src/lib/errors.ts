@@ -180,11 +180,14 @@ export function logError(error: AppError, context?: Record<string, unknown>): vo
   if (isDev) {
     console.error('[AppError]', logData);
   }
-  
-  // TODO: Send to external error tracking service (Sentry, LogRocket, etc.)
-  // if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  //   Sentry.captureException(error, { extra: context });
-  // }
+
+  if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SENTRY_DSN) {
+    import('@sentry/nextjs').then((Sentry) => {
+      Sentry.captureException(error.details || error.message, {
+        extra: { appError: error, ...context },
+      });
+    }).catch(() => {});
+  }
 }
 
 /**

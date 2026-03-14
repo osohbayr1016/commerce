@@ -4,6 +4,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLocalizedName } from "@/lib/localize";
+import FilterSection from "./FilterSection";
+import FilterPriceRange from "./FilterPriceRange";
+import FilterChipList from "./FilterChipList";
 
 interface SubcategoryItem {
   id: number;
@@ -18,6 +21,7 @@ interface SubcategoryItem {
 
 interface ProductFiltersProps {
   brands?: string[];
+  availableColors?: string[];
   subcategories?: SubcategoryItem[];
   selectedSubcategory?: string;
   rootSlug?: string;
@@ -28,6 +32,7 @@ interface ProductFiltersProps {
 
 export default function ProductFilters({
   brands = [],
+  availableColors = [],
   subcategories = [],
   selectedSubcategory,
   rootSlug,
@@ -37,39 +42,27 @@ export default function ProductFilters({
 }: ProductFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { language } = useLanguage();
-
+  const { t, language } = useLanguage();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<number[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    minPrice,
-    maxPrice,
-  ]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const brandsParam = searchParams.get("brands");
+    const colorsParam = searchParams.get("colors");
     const sizesParam = searchParams.get("sizes");
     const minPriceParam = searchParams.get("minPrice");
     const maxPriceParam = searchParams.get("maxPrice");
     const stockParam = searchParams.get("inStock");
-
-    if (brandsParam) {
-      setSelectedBrands(brandsParam.split(",").filter(Boolean));
-    }
-    if (sizesParam) {
-      setSelectedSizes(sizesParam.split(",").map(Number).filter(Boolean));
-    }
-    if (minPriceParam) {
-      setPriceRange((prev) => [Number(minPriceParam), prev[1]]);
-    }
-    if (maxPriceParam) {
-      setPriceRange((prev) => [prev[0], Number(maxPriceParam)]);
-    }
-    if (stockParam === "true") {
-      setInStockOnly(true);
-    }
+    if (brandsParam) setSelectedBrands(brandsParam.split(",").filter(Boolean));
+    if (colorsParam) setSelectedColors(colorsParam.split(",").filter(Boolean));
+    if (sizesParam) setSelectedSizes(sizesParam.split(",").map(Number).filter(Boolean));
+    if (minPriceParam) setPriceRange((prev) => [Number(minPriceParam), prev[1]]);
+    if (maxPriceParam) setPriceRange((prev) => [prev[0], Number(maxPriceParam)]);
+    if (stockParam === "true") setInStockOnly(true);
   }, [searchParams]);
 
   const setSubcategory = (slug: string | null) => {
@@ -82,86 +75,56 @@ export default function ProductFilters({
 
   const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
-
-    if (selectedBrands.length > 0) {
-      params.set("brands", selectedBrands.join(","));
-    } else {
-      params.delete("brands");
-    }
-
-    if (selectedSizes.length > 0) {
-      params.set("sizes", selectedSizes.join(","));
-    } else {
-      params.delete("sizes");
-    }
-
-    if (priceRange[0] > minPrice) {
-      params.set("minPrice", priceRange[0].toString());
-    } else {
-      params.delete("minPrice");
-    }
-
-    if (priceRange[1] < maxPrice) {
-      params.set("maxPrice", priceRange[1].toString());
-    } else {
-      params.delete("maxPrice");
-    }
-
-    if (inStockOnly) {
-      params.set("inStock", "true");
-    } else {
-      params.delete("inStock");
-    }
-
+    if (selectedBrands.length > 0) params.set("brands", selectedBrands.join(","));
+    else params.delete("brands");
+    if (selectedColors.length > 0) params.set("colors", selectedColors.join(","));
+    else params.delete("colors");
+    if (selectedSizes.length > 0) params.set("sizes", selectedSizes.join(","));
+    else params.delete("sizes");
+    if (priceRange[0] > minPrice) params.set("minPrice", priceRange[0].toString());
+    else params.delete("minPrice");
+    if (priceRange[1] < maxPrice) params.set("maxPrice", priceRange[1].toString());
+    else params.delete("maxPrice");
+    inStockOnly ? params.set("inStock", "true") : params.delete("inStock");
     params.delete("page");
     router.push(`?${params.toString()}`);
   };
 
   const clearFilters = () => {
     setSelectedBrands([]);
+    setSelectedColors([]);
     setSelectedSizes([]);
     setPriceRange([minPrice, maxPrice]);
     setInStockOnly(false);
-    const params = new URLSearchParams();
-    router.push(`?${params.toString()}`);
+    router.push("?" + new URLSearchParams().toString());
   };
 
   const hasSubcategory = !!selectedSubcategory;
-  const hasActiveFilters = useMemo(() => {
-    return (
+  const hasActiveFilters = useMemo(
+    () =>
       hasSubcategory ||
       selectedBrands.length > 0 ||
+      selectedColors.length > 0 ||
       selectedSizes.length > 0 ||
       priceRange[0] > minPrice ||
       priceRange[1] < maxPrice ||
-      inStockOnly
-    );
-  }, [
-    hasSubcategory,
-    selectedBrands,
-    selectedSizes,
-    priceRange,
-    minPrice,
-    maxPrice,
-    inStockOnly,
-  ]);
-
-  const toggleBrand = (brand: string) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand],
-    );
-  };
-
-  const toggleSize = (size: number) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
-    );
-  };
+      inStockOnly,
+    [hasSubcategory, selectedBrands, selectedColors, selectedSizes, priceRange, minPrice, maxPrice, inStockOnly]
+  );
+  const activeCount = [
+    hasSubcategory ? 1 : 0,
+    selectedBrands.length,
+    selectedColors.length,
+    selectedSizes.length,
+    priceRange[0] > minPrice || priceRange[1] < maxPrice ? 1 : 0,
+    inStockOnly ? 1 : 0,
+  ].filter(Boolean).reduce((a, b) => a + b, 0);
 
   return (
     <div className="border-b border-gray-200 pb-4 mb-6">
       <div className="flex items-center justify-between mb-4">
         <button
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
         >
@@ -171,48 +134,33 @@ export default function ProductFilters({
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          Шүүлт
+          {t("products.refine")}
           {hasActiveFilters && (
             <span className="ml-2 px-2 py-0.5 bg-gray-900 text-white text-xs rounded-full">
-              {[
-                hasSubcategory ? 1 : 0,
-                selectedBrands.length,
-                selectedSizes.length,
-                priceRange[0] > minPrice || priceRange[1] < maxPrice ? 1 : 0,
-                inStockOnly ? 1 : 0,
-              ]
-                .filter(Boolean)
-                .reduce((a, b) => a + b, 0)}
+              {activeCount}
             </span>
           )}
         </button>
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={clearFilters}
             className="text-sm text-gray-500 hover:text-gray-900"
           >
-            Цэвэрлэх
+            {t("products.clearFilters")}
           </button>
         )}
       </div>
 
       {isOpen && (
         <div className="space-y-6">
-          {/* Subcategory */}
           {subcategories.length > 0 && rootSlug && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Дэд ангилал
-              </label>
+            <FilterSection label={t("products.subcategory")}>
               <div className="flex flex-wrap gap-2">
                 <button
+                  type="button"
                   onClick={() => setSubcategory(null)}
                   className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
                     !selectedSubcategory
@@ -220,11 +168,12 @@ export default function ProductFilters({
                       : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  Бүгд
+                  {t("products.allSubcategories")}
                 </button>
                 {subcategories.map((sc) => (
                   <button
                     key={sc.id}
+                    type="button"
                     onClick={() => setSubcategory(sc.slug)}
                     className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
                       selectedSubcategory === sc.slug
@@ -236,114 +185,64 @@ export default function ProductFilters({
                   </button>
                 ))}
               </div>
-            </div>
+            </FilterSection>
           )}
 
-          {/* Price Range */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Үнэ: {priceRange[0].toLocaleString()}₮ -{" "}
-              {priceRange[1].toLocaleString()}₮
-            </label>
-            <div className="flex gap-4">
-              <input
-                type="range"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[0]}
-                onChange={(e) =>
-                  setPriceRange([Number(e.target.value), priceRange[1]])
-                }
-                className="flex-1"
-              />
-              <input
-                type="range"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([priceRange[0], Number(e.target.value)])
-                }
-                className="flex-1"
-              />
-            </div>
-            <div className="flex gap-2 mt-2">
-              <input
-                type="number"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[0]}
-                onChange={(e) =>
-                  setPriceRange([Number(e.target.value), priceRange[1]])
-                }
-                className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
-                placeholder="Min"
-              />
-              <input
-                type="number"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([priceRange[0], Number(e.target.value)])
-                }
-                className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
-                placeholder="Max"
-              />
-            </div>
-          </div>
+          <FilterSection label={t("products.priceRange")}>
+            <FilterPriceRange
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              value={priceRange}
+              onChange={setPriceRange}
+              priceLabel={t("products.priceRange")}
+              minPlaceholder={t("products.priceMin")}
+              maxPlaceholder={t("products.priceMax")}
+            />
+          </FilterSection>
 
-          {/* Brands */}
           {brands.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Брэнд
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {brands.map((brand) => (
-                  <button
-                    key={brand}
-                    onClick={() => toggleBrand(brand)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                      selectedBrands.includes(brand)
-                        ? "bg-gray-900 text-white border-gray-900"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    {brand}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <FilterSection label={t("products.brand")}>
+              <FilterChipList
+                options={brands}
+                selected={selectedBrands}
+                onToggle={(b) =>
+                  setSelectedBrands((prev) =>
+                    prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]
+                  )
+                }
+              />
+            </FilterSection>
           )}
 
-          {/* Sizes */}
+          {availableColors.length > 0 && (
+            <FilterSection label={t("products.color")}>
+              <FilterChipList
+                options={availableColors}
+                selected={selectedColors}
+                onToggle={(c) =>
+                  setSelectedColors((prev) =>
+                    prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+                  )
+                }
+              />
+            </FilterSection>
+          )}
+
           {availableSizes.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Хэмжээ
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {availableSizes
-                  .sort((a, b) => a - b)
-                  .map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => toggleSize(size)}
-                      className={`w-12 h-12 rounded border text-sm font-medium transition-colors ${
-                        selectedSizes.includes(size)
-                          ? "bg-gray-900 text-white border-gray-900"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-              </div>
-            </div>
+            <FilterSection label={t("products.size")}>
+              <FilterChipList
+                options={[...availableSizes].sort((a, b) => a - b)}
+                selected={selectedSizes}
+                onToggle={(s) =>
+                  setSelectedSizes((prev) =>
+                    prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+                  )
+                }
+                sizeVariant="square"
+              />
+            </FilterSection>
           )}
 
-          {/* Stock Filter */}
           <div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -352,16 +251,16 @@ export default function ProductFilters({
                 onChange={(e) => setInStockOnly(e.target.checked)}
                 className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
               />
-              <span className="text-sm text-gray-700">Зөвхөн бэлэн бараа</span>
+              <span className="text-sm text-gray-700">{t("products.inStockOnly")}</span>
             </label>
           </div>
 
-          {/* Apply Button */}
           <button
+            type="button"
             onClick={applyFilters}
             className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
           >
-            Хэрэглэх
+            {t("products.applyFilters")}
           </button>
         </div>
       )}

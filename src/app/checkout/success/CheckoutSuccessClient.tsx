@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
+import { retryWithBackoff } from "@/lib/errors";
 
 export default function CheckoutSuccessClient() {
   const searchParams = useSearchParams();
@@ -22,15 +23,22 @@ export default function CheckoutSuccessClient() {
       setChecking(true);
       setError("");
       try {
-        const res = await fetch(`/api/orders/${orderId}`);
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          throw new Error(
-            data.error ||
-              data.details ||
-              "Төлбөрийн төлөв уншихад алдаа гарлаа.",
-          );
-        }
+        const data = await retryWithBackoff(
+          async () => {
+            const res = await fetch(`/api/orders/${orderId}`);
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              throw new Error(
+                data.error ||
+                  data.details ||
+                  "Төлбөрийн төлөв уншихад алдаа гарлаа."
+              );
+            }
+            return data;
+          },
+          3,
+          1000
+        );
         setPaymentStatus(data.payment_status || null);
       } catch (err: any) {
         setError(
@@ -98,30 +106,36 @@ export default function CheckoutSuccessClient() {
                 setChecking(true);
                 setError("");
                 try {
-                  const res = await fetch("/api/qpay/confirm", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ orderId }),
-                  });
-                  const data = await res.json().catch(() => ({}));
-                  if (!res.ok) {
-                    throw new Error(
-                      data.error ||
-                        data.details ||
-                        "Төлбөр шалгахад алдаа гарлаа.",
-                    );
-                  }
+                  const data = await retryWithBackoff(
+                    async () => {
+                      const res = await fetch("/api/qpay/confirm", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ orderId }),
+                      });
+                      const data = await res.json().catch(() => ({}));
+                      if (!res.ok) {
+                        throw new Error(
+                          data.error ||
+                            data.details ||
+                            "Төлбөр шалгахад алдаа гарлаа."
+                        );
+                      }
+                      return data;
+                    },
+                    3,
+                    1000
+                  );
                   if (data.status === "paid") {
                     setPaymentStatus("paid");
                   } else {
                     setError(
-                      "Төлбөр төлөгдөөгүй байна. Түр хүлээгээд дахин шалгана уу.",
+                      "Төлбөр төлөгдөөгүй байна. Түр хүлээгээд дахин шалгана уу."
                     );
                   }
                 } catch (err: any) {
                   setError(
-                    err.message ||
-                      "Төлбөр шалгахад алдаа гарлаа.",
+                    err.message || "Төлбөр шалгахад алдаа гарлаа."
                   );
                 } finally {
                   setChecking(false);

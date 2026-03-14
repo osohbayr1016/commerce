@@ -1,20 +1,20 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 
 export default function CoinBalance() {
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
 
-  if (!user || !profile) {
-    return null;
-  }
+  if (!user || !profile) return null;
 
   return (
     <Link
       href="/profile?tab=coins"
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
-      title="Миний монет"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm"
+      title={t("checkout.myCoins")}
     >
       <svg
         className="w-5 h-5 text-gray-700"

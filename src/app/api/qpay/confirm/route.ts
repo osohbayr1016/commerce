@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkQpayPayment } from "@/lib/qpay";
+import { apiError } from "@/lib/api-errors";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 interface ConfirmBody {
   orderId?: string;
@@ -8,6 +10,9 @@ interface ConfirmBody {
 
 export async function POST(request: Request) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const body = (await request.json().catch(() => ({}))) as ConfirmBody;
     const orderId = body.orderId;
 
@@ -63,15 +68,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ status: "pending" }, { status: 200 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
     console.error("QPay confirm API error:", err);
-    return NextResponse.json(
-      {
-        error: "QPay төлбөр баталгаажуулахад алдаа гарлаа",
-        details: message,
-      },
-      { status: 502 },
-    );
+    return apiError("QPay төлбөр баталгаажуулахад алдаа гарлаа", 502);
   }
 }
-

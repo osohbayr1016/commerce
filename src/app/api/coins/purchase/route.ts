@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { apiError } from '@/lib/api-errors';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 const COIN_PRICE_MNT = 1000; // 1 coin = 1000 MNT
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const supabase = await createClient();
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Нэвтэрч орно уу' },
-        { status: 401 }
-      );
+      return apiError('Нэвтэрч орно уу', 401);
     }
 
     const body = await request.json();
@@ -22,10 +24,7 @@ export async function POST(request: NextRequest) {
 
     // Validate coin amount
     if (!coinAmount || coinAmount < 1 || !Number.isInteger(coinAmount)) {
-      return NextResponse.json(
-        { error: 'Зөв тооны монет сонгоно уу' },
-        { status: 400 }
-      );
+      return apiError('Зөв тооны монет сонгоно уу', 400);
     }
 
     const totalPrice = coinAmount * COIN_PRICE_MNT;
@@ -43,10 +42,7 @@ export async function POST(request: NextRequest) {
 
     if (updateError) {
       console.error('Error updating coin balance:', updateError);
-      return NextResponse.json(
-        { error: 'Монет нэмэхэд алдаа гарлаа' },
-        { status: 500 }
-      );
+      return apiError('Монет нэмэхэд алдаа гарлаа', 500);
     }
 
     // Fetch updated profile
@@ -57,10 +53,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (profileError) {
-      return NextResponse.json(
-        { error: 'Мэдээллийг татахад алдаа гарлаа' },
-        { status: 500 }
-      );
+      return apiError('Мэдээллийг татахад алдаа гарлаа', 500);
     }
 
     return NextResponse.json({
@@ -73,9 +66,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error in coin purchase:', error);
-    return NextResponse.json(
-      { error: 'Алдаа гарлаа. Дахин оролдоно уу.' },
-      { status: 500 }
-    );
+    return apiError('Алдаа гарлаа. Дахин оролдоно уу.', 500);
   }
 }

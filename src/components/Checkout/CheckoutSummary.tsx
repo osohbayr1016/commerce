@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { CartItem } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CheckoutSummaryProps {
   items: CartItem[];
@@ -22,6 +23,7 @@ export default function CheckoutSummary({
   discount = 0,
   total,
 }: CheckoutSummaryProps) {
+  const { t } = useLanguage();
   const finalTotal = total !== undefined ? total : subtotal;
   const [itemsWithImages, setItemsWithImages] = useState<ItemWithImage[]>(items);
 
@@ -67,7 +69,7 @@ export default function CheckoutSummary({
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 h-fit sticky top-4">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">
-        Миний сагс
+        {t("checkout.myBag")}
       </h2>
       <div className="space-y-4 mb-6">
         {itemsWithImages.map((item) => {

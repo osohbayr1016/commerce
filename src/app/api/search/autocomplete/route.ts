@@ -40,5 +40,10 @@ export async function GET(request: Request) {
       : null,
   }));
 
-  return NextResponse.json({ results });
+  const res = NextResponse.json({ results });
+  res.headers.set(
+    "Cache-Control",
+    "public, s-maxage=30, stale-while-revalidate=60"
+  );
+  return res;
 }

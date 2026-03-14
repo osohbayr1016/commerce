@@ -49,19 +49,19 @@ export default function NavItemWithDropdown({
     >
       <Link
         href={`/categories/${category.slug}`}
-        className="hover:text-gray-600 transition-colors whitespace-nowrap block py-2"
+        className="hover:text-gray-600 transition-colors whitespace-nowrap block py-2 tracking-wide"
       >
         {displayName}
       </Link>
       {children.length > 0 && (
         <div
-          className={`absolute left-0 top-full pt-2 transition-all duration-200 ease-out ${
+          className={`absolute left-0 top-full pt-3 transition-all duration-200 ease-out ${
             isOpen
               ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 -translate-y-1 pointer-events-none"
+              : "opacity-0 -translate-y-2 pointer-events-none"
           }`}
         >
-          <div className="bg-white border border-gray-200 rounded-lg shadow-xl py-2 min-w-[200px]">
+          <div className="bg-white border border-gray-100 rounded-md shadow-lg py-3 min-w-[220px]">
             {children.map((child) => {
               const childName = getLocalizedName(child, language) || child.name;
               const href = `/categories/${child.path || `${category.slug}/${child.slug}`}`;
@@ -69,7 +69,7 @@ export default function NavItemWithDropdown({
                 <Link
                   key={child.id}
                   href={href}
-                  className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="block px-5 py-3 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50/80 transition-colors first:pt-3 last:pb-3"
                 >
                   {childName}
                 </Link>

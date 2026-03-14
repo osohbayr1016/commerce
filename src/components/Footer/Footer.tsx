@@ -4,8 +4,6 @@ import {
   type FooterContentsMap,
 } from "@/lib/footer-defaults";
 
-export const revalidate = 300;
-
 async function getFooterContents(): Promise<FooterContentsMap> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -74,6 +72,11 @@ export default async function Footer() {
 
   return (
     <footer className="bg-white border-t border-gray-200 mt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p className="py-4 text-center text-sm text-gray-500 border-b border-gray-100">
+          Secure payment • Authentic Italian products • Worldwide shipping
+        </p>
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           <div>

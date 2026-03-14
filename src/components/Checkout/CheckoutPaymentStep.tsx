@@ -1,6 +1,7 @@
 "use client";
 
 import { CartItem } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type PaymentMethod = "qpay" | "bank" | "coins";
 
@@ -27,11 +28,16 @@ export default function CheckoutPaymentStep({
   onChangeMethod,
   onSubmit,
 }: CheckoutPaymentStepProps) {
+  const { t } = useLanguage();
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      <p className="text-sm text-gray-500">Secure payment. Your data is protected.</p>
       <div className="space-y-3">
         <div
+          role="button"
+          tabIndex={0}
           onClick={() => onChangeMethod("qpay")}
+          onKeyDown={(e) => e.key === "Enter" && onChangeMethod("qpay")}
           className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
             paymentMethod === "qpay"
               ? "border-gray-900 bg-gray-50"
@@ -44,7 +50,7 @@ export default function CheckoutPaymentStep({
           <div className="flex-1">
             <div className="font-medium text-gray-900">QPay</div>
             <div className="text-sm text-gray-500">
-              Төлбөрөө QPay хэтэвчээр ашиглан төлөх сонголт
+              {t("checkout.qpayDescription")}
             </div>
           </div>
           <div
@@ -84,9 +90,11 @@ export default function CheckoutPaymentStep({
             </svg>
           </div>
           <div className="flex-1">
-            <div className="font-medium text-gray-900">Дансаар шилжүүлэх</div>
+            <div className="font-medium text-gray-900">
+              {t("checkout.bankTransfer")}
+            </div>
             <div className="text-sm text-gray-500">
-              Дансаар шинэтгэл шилжүүлэг хийх
+              {t("checkout.bankTransferDescription")}
             </div>
           </div>
           <div
@@ -122,16 +130,21 @@ export default function CheckoutPaymentStep({
             </svg>
           </div>
           <div className="flex-1">
-            <div className="font-medium text-gray-900">Монетоор төлөх</div>
+            <div className="font-medium text-gray-900">
+              {t("checkout.payWithCoins")}
+            </div>
             <div className="text-sm text-gray-500">
               {hasEnoughCoins ? (
-                <>
-                  Шаардлагатай: {requiredCoins} монет (Үлдэгдэл: {userCoins})
-                </>
+                t("checkout.coinsRequired", {
+                  required: requiredCoins,
+                  balance: userCoins,
+                })
               ) : (
                 <span className="text-red-500">
-                  Хангалтгүй монет (Шаардлагатай: {requiredCoins}, Үлдэгдэл:{" "}
-                  {userCoins})
+                  {t("checkout.coinsInsufficient", {
+                    required: requiredCoins,
+                    balance: userCoins,
+                  })}
                 </span>
               )}
             </div>
@@ -161,7 +174,7 @@ export default function CheckoutPaymentStep({
         disabled={submitting || items.length === 0}
         className="w-full rounded-lg bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {submitting ? "Илгээж байна..." : "Төлбөр төлөх"}
+        {submitting ? t("checkout.submitting") : t("checkout.submitPayment")}
       </button>
     </form>
   );

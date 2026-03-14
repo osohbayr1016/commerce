@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { apiError } from '@/lib/api-errors';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { email, code } = await request.json();
 
     if (!email || !code) {
-      return NextResponse.json({ error: 'И-мэйл болон код шаардлагатай' }, { status: 400 });
+      return apiError('И-мэйл болон код шаардлагатай', 400);
     }
 
     // Use standard client with Anon Key
@@ -22,17 +27,17 @@ export async function POST(request: Request) {
       .single();
 
     if (error || !data) {
-      return NextResponse.json({ error: 'Код олдсонгүй эсвэл буруу байна' }, { status: 400 });
+      return apiError('Код олдсонгүй эсвэл буруу байна', 400);
     }
 
     // Check expiration
     if (new Date(data.expires_at) < new Date()) {
-      return NextResponse.json({ error: 'Кодны хугацаа дууссан байна' }, { status: 400 });
+      return apiError('Кодны хугацаа дууссан байна', 400);
     }
 
     // Check code match
     if (data.code !== code) {
-      return NextResponse.json({ error: 'Код буруу байна' }, { status: 400 });
+      return apiError('Код буруу байна', 400);
     }
 
     // Mark as verified
@@ -43,12 +48,12 @@ export async function POST(request: Request) {
 
     if (updateError) {
       console.error('Database update error:', updateError);
-      return NextResponse.json({ error: 'Баталгаажуулахад алдаа гарлаа' }, { status: 500 });
+      return apiError('Баталгаажуулахад алдаа гарлаа', 500);
     }
 
     return NextResponse.json({ success: true, message: 'И-мэйл амжилттай баталгаажлаа' });
   } catch (error) {
     console.error('OTP Verify Error:', error);
-    return NextResponse.json({ error: 'Дотоод алдаа гарлаа' }, { status: 500 });
+    return apiError('Дотоод алдаа гарлаа', 500);
   }
 }

@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendOTP } from '@/lib/mail';
+import { apiError } from '@/lib/api-errors';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json({ error: 'И-мэйл хаяг шаардлагатай' }, { status: 400 });
+      return apiError('И-мэйл хаяг шаардлагатай', 400);
     }
 
     // Use standard client with Anon Key (requires RLS to be open for public insert)
@@ -35,25 +40,23 @@ export async function POST(request: Request) {
 
     if (dbError) {
       console.error('Database error in OTP Send:', dbError);
-      return NextResponse.json({ 
-        error: 'Өгөгдлийн сантай холбогдоход алдаа гарлаа. Та дахин оролдоно уу.',
-        details: dbError.message 
-      }, { status: 500 });
+      return apiError(
+        'Өгөгдлийн сантай холбогдоход алдаа гарлаа. Та дахин оролдоно уу.',
+        500,
+        'DATABASE_ERROR'
+      );
     }
 
     // Send email
     const emailSent = await sendOTP(email, otp);
 
     if (!emailSent) {
-      return NextResponse.json({ error: 'И-мэйл илгээхэд алдаа гарлаа' }, { status: 500 });
+      return apiError('И-мэйл илгээхэд алдаа гарлаа', 500);
     }
 
     return NextResponse.json({ success: true, message: 'Баталгаажуулах код илгээгдлээ' });
   } catch (error: any) {
     console.error('OTP Send Critical Error:', error);
-    return NextResponse.json({ 
-      error: 'Дотоод алдаа гарлаа', 
-      details: error.message 
-    }, { status: 500 });
+    return apiError('Дотоод алдаа гарлаа', 500);
   }
 }

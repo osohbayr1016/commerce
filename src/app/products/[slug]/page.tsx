@@ -9,6 +9,7 @@ import Breadcrumb from "@/components/ProductDetail/Breadcrumb";
 import CompareButton from "@/components/ProductDetail/CompareButton";
 import BackButton from "@/components/ui/BackButton";
 import Footer from "@/components/Footer/Footer";
+import ProductDetailErrorBoundary from "@/components/ProductDetail/ProductDetailErrorBoundary";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetail } from "@/data/mockProductDetail";
 import { Product } from "@/data/mockProducts";
@@ -154,7 +155,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <MainNav />
 
       <main className="flex-1 py-8 md:py-12">
-        <Breadcrumb
+        <ProductDetailErrorBoundary>
+          <Breadcrumb
           items={[
             { labelKey: "nav.home", href: "/" },
             ...(category
@@ -210,6 +212,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <ProductRecommendations productId={product.id} />
         </div>
+        </ProductDetailErrorBoundary>
       </main>
 
       <Footer />

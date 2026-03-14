@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { apiError } from '@/lib/api-errors';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { email, code, password } = await request.json();
 
     if (!email || !code || !password) {
-      return NextResponse.json({ error: 'Мэдээлэл дутуу байна' }, { status: 400 });
+      return apiError('Мэдээлэл дутуу байна', 400);
     }
 
     const supabase = createAdminClient();
@@ -20,15 +25,15 @@ export async function POST(request: Request) {
       .single();
 
     if (error || !data) {
-      return NextResponse.json({ error: 'Баталгаажуулах код буруу эсвэл олдсонгүй' }, { status: 400 });
+      return apiError('Баталгаажуулах код буруу эсвэл олдсонгүй', 400);
     }
 
     if (!data.verified) {
-      return NextResponse.json({ error: 'И-мэйл баталгаажаагүй байна' }, { status: 400 });
+      return apiError('И-мэйл баталгаажаагүй байна', 400);
     }
 
     if (new Date(data.expires_at) < new Date()) {
-      return NextResponse.json({ error: 'Кодны хугацаа дууссан байна' }, { status: 400 });
+      return apiError('Кодны хугацаа дууссан байна', 400);
     }
 
     // Get User ID by Email (Admin only)
@@ -60,8 +65,7 @@ export async function POST(request: Request) {
       .single();
 
     if (!profile) {
-       // Fallback or error
-       return NextResponse.json({ error: 'Хэрэглэгч олдсонгүй' }, { status: 404 });
+       return apiError('Хэрэглэгч олдсонгүй', 404);
     }
 
     // Update Password
@@ -72,7 +76,7 @@ export async function POST(request: Request) {
 
     if (updateError) {
       console.error('Password update error:', updateError);
-      return NextResponse.json({ error: 'Нууц үг шинэчлэхэд алдаа гарлаа' }, { status: 500 });
+      return apiError('Нууц үг шинэчлэхэд алдаа гарлаа', 500);
     }
 
     // Delete the used code
@@ -81,6 +85,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, message: 'Нууц үг амжилттай шинэчлэгдлээ' });
   } catch (error) {
     console.error('Reset Password Error:', error);
-    return NextResponse.json({ error: 'Дотоод алдаа гарлаа' }, { status: 500 });
+    return apiError('Дотоод алдаа гарлаа', 500);
   }
 }

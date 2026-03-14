@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import ProductSection from "@/components/Products/ProductSection";
 import Breadcrumb from "@/components/ProductDetail/Breadcrumb";
 import EmptyState from "@/components/ui/EmptyState";
@@ -11,6 +11,7 @@ import PaginationClient from "@/components/ui/PaginationClient";
 import {
   getProductsWithFilters,
   getUniqueBrands,
+  getUniqueColors,
   getAvailableSizes,
   getPriceRange,
   type SortOption,
@@ -25,6 +26,7 @@ interface CategoryPageProps {
   params: Promise<{ slug?: string[] }>;
   searchParams?: Promise<{
     brands?: string;
+    colors?: string;
     sizes?: string;
     minPrice?: string;
     maxPrice?: string;
@@ -44,6 +46,7 @@ export default async function CategoryPage({
   let totalCount = 0;
   let totalPages = 1;
   let brands: string[] = [];
+  let colors: string[] = [];
   let sizes: number[] = [];
   let priceRange = { min: 0, max: 1000000 };
   let currentPage = 1;
@@ -56,13 +59,13 @@ export default async function CategoryPage({
     pathSegments = Array.isArray(slug) ? slug : slug ? [slug] : [];
 
     if (pathSegments.length === 0) {
-      notFound();
+      redirect("/categories");
     }
 
     category = await getCategoryByPath(pathSegments);
 
     if (!category || !category.id) {
-      notFound();
+      redirect("/products");
     }
 
     const paramsData = searchParams ? await searchParams : {};
@@ -78,23 +81,12 @@ export default async function CategoryPage({
         selectedSubcategory,
       ]);
       if (subCat?.id) filterCategoryId = subCat.id;
-    } else if (pathSegments.length === 1) {
-      const children = await getCategoryChildren(category.id);
-      subcategories = children.map((c) => ({
-        id: c.id,
-        slug: c.slug,
-        name: c.name_mn || c.name_en || c.name || c.slug,
-        name_en: c.name_en,
-        name_mn: c.name_mn,
-        name_ru: c.name_ru,
-        name_zh: c.name_zh,
-        name_it: c.name_it,
-      }));
     }
 
     const filters = {
       categoryId: filterCategoryId,
       brands: paramsData?.brands?.split(",").filter(Boolean) || [],
+      colors: paramsData?.colors?.split(",").filter(Boolean) || [],
       sizes:
         paramsData?.sizes
           ?.split(",")
@@ -112,27 +104,52 @@ export default async function CategoryPage({
 
     const sort = (paramsData?.sort as SortOption) || "newest";
 
-    const results = await Promise.allSettled([
-      getProductsWithFilters(filters, sort, limit, offset),
-      getUniqueBrands(),
-      getAvailableSizes(),
-      getPriceRange(),
+    const childrenPromise =
+      pathSegments.length === 1 && !selectedSubcategory
+        ? getCategoryChildren(category.id)
+        : Promise.resolve([] as Category[]);
+
+    const [childrenResult, results] = await Promise.all([
+      childrenPromise,
+      Promise.allSettled([
+        getProductsWithFilters(filters, sort, limit, offset),
+        getUniqueBrands(),
+        getUniqueColors(filterCategoryId),
+        getAvailableSizes(),
+        getPriceRange(),
+      ]),
     ]);
 
-    if (results[0].status === "fulfilled") {
-      products = (results[0].value.data || []) as Product[];
-      totalCount = results[0].value.count || 0;
+    const children = (childrenResult || []) as Category[];
+    if (children.length > 0) {
+      subcategories = children.map((c) => ({
+        id: c.id,
+        slug: c.slug,
+        name: c.name_mn || c.name_en || c.name || c.slug,
+        name_en: c.name_en,
+        name_mn: c.name_mn,
+        name_ru: c.name_ru,
+        name_zh: c.name_zh,
+        name_it: c.name_it,
+      }));
+    }
+
+    if (results[0]?.status === "fulfilled") {
+      const v = results[0].value;
+      products = (v?.data || []) as Product[];
+      totalCount = v?.count || 0;
       totalPages = Math.max(1, Math.ceil(totalCount / limit));
     }
-    if (results[1].status === "fulfilled") brands = results[1].value || [];
-    if (results[2].status === "fulfilled") sizes = results[2].value || [];
-    if (results[3].status === "fulfilled")
-      priceRange = results[3].value || { min: 0, max: 1000000 };
+    if (results[1]?.status === "fulfilled") brands = results[1].value || [];
+    if (results[2]?.status === "fulfilled") colors = results[2].value || [];
+    if (results[3]?.status === "fulfilled") sizes = results[3].value || [];
+    if (results[4]?.status === "fulfilled")
+      priceRange = results[4].value || { min: 0, max: 1000000 };
   } catch {
-    notFound();
+    redirect("/products");
   }
 
-  if (!category) notFound();
+  if (!category) redirect("/products");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -150,6 +167,7 @@ export default async function CategoryPage({
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <ProductFilters
               brands={brands}
+              availableColors={colors}
               subcategories={subcategories}
               selectedSubcategory={selectedSubcategory}
               rootSlug={pathSegments.length === 1 ? pathSegments[0] : undefined}

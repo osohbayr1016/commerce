@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkQpayPayment } from "@/lib/qpay";
+import { apiError } from "@/lib/api-errors";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 interface CheckBody {
   invoiceId?: string;
@@ -8,14 +10,14 @@ interface CheckBody {
 
 export async function POST(request: Request) {
   try {
+    const rateLimitResponse = rateLimit(request, RateLimitPresets.STRICT);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const body = (await request.json().catch(() => ({}))) as CheckBody;
     const objectId = body.invoiceId || body.objectId;
 
     if (!objectId || typeof objectId !== "string") {
-      return NextResponse.json(
-        { error: "objectId (invoiceId) шаардлагатай" },
-        { status: 400 },
-      );
+      return apiError("objectId (invoiceId) шаардлагатай", 400);
     }
 
     const result = await checkQpayPayment(objectId);
@@ -33,13 +35,7 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("QPay payment check API error:", err);
-    return NextResponse.json(
-      {
-        error: "QPay төлбөр шалгахад алдаа гарлаа",
-        details: message,
-      },
-      { status: 502 },
-    );
+    return apiError("QPay төлбөр шалгахад алдаа гарлаа", 502);
   }
 }
 

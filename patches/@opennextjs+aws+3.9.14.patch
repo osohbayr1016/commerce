@@ -1,0 +1,24 @@
+diff --git a/node_modules/@opennextjs/aws/dist/build/copyTracedFiles.js b/node_modules/@opennextjs/aws/dist/build/copyTracedFiles.js
+index 1fd3096..e490d3b 100644
+--- a/node_modules/@opennextjs/aws/dist/build/copyTracedFiles.js
++++ b/node_modules/@opennextjs/aws/dist/build/copyTracedFiles.js
+@@ -137,10 +137,15 @@ File ${serverPath} does not exist
+     };
+     // Check for instrumentation trace file
+     if (existsSync(path.join(dotNextDir, INSTRUMENTATION_TRACE_FILE))) {
+-        // We still need to copy the nft.json file so that computeCopyFilesForPage doesn't throw
+-        copyFileSync(path.join(dotNextDir, INSTRUMENTATION_TRACE_FILE), path.join(standaloneNextDir, INSTRUMENTATION_TRACE_FILE));
+-        computeCopyFilesForPage("instrumentation");
+-        logger.debug("Adding instrumentation trace files");
++        // Next.js 16+ standalone may not include server/instrumentation.js; skip copy if missing
++        const standaloneInstrumentation = path.join(standaloneNextDir, "server", "instrumentation.js");
++        if (existsSync(standaloneInstrumentation)) {
++            copyFileSync(path.join(dotNextDir, INSTRUMENTATION_TRACE_FILE), path.join(standaloneNextDir, INSTRUMENTATION_TRACE_FILE));
++            computeCopyFilesForPage("instrumentation");
++            logger.debug("Adding instrumentation trace files");
++        } else {
++            logger.debug("Skipping instrumentation (server/instrumentation.js not in standalone output)");
++        }
+     }
+     if (existsSync(path.join(dotNextDir, MIDDLEWARE_TRACE_FILE))) {
+         // We still need to copy the nft.json file so that computeCopyFilesForPage doesn't throw

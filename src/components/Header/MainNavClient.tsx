@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
@@ -39,7 +39,14 @@ export default function MainNavClient({
   navItems,
 }: MainNavClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { t, language } = useLanguage();
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const getLabel = (cat: Category) => {
     const key = SLUG_TO_KEY[cat.slug];
     return key ? t(key) : getLocalizedName(cat, language) || cat.name;
@@ -48,9 +55,17 @@ export default function MainNavClient({
   const useFallback = navItems.length === 0;
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <header
+      className={`sticky top-0 z-50 bg-white border-b transition-all duration-300 ${
+        isScrolled ? "border-gray-100 shadow-sm" : "border-gray-200"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-        <div className="relative flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
+        <div
+          className={`relative flex items-center justify-between transition-[height] duration-300 ${
+            isScrolled ? "h-14 sm:h-14 lg:h-16" : "h-14 sm:h-16 md:h-18 lg:h-20"
+          }`}
+        >
           <div
             className={`flex items-center gap-4 shrink-0 z-10 transition-opacity duration-300 ${
               isSearchOpen ? "opacity-70" : "opacity-100"
@@ -65,7 +80,11 @@ export default function MainNavClient({
                 alt={siteName}
                 width={300}
                 height={100}
-                className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto object-contain"
+                className={`w-auto object-contain transition-all duration-300 ${
+                  isScrolled
+                    ? "h-10 sm:h-10 md:h-12 lg:h-14"
+                    : "h-12 sm:h-16 md:h-20 lg:h-24"
+                }`}
                 priority
               />
             </a>
@@ -75,7 +94,7 @@ export default function MainNavClient({
           </div>
 
           <nav
-            className={`hidden lg:flex items-center gap-7 xl:gap-8 text-lg font-semibold text-gray-900 absolute left-1/2 transform transition-all duration-300 ease-out ${
+            className={`hidden lg:flex items-center gap-8 xl:gap-10 text-[15px] font-medium tracking-wide text-gray-900 font-heading absolute left-1/2 transform transition-all duration-300 ease-out ${
               isSearchOpen
                 ? "-translate-x-1/2 opacity-0 pointer-events-none scale-95"
                 : "-translate-x-1/2 opacity-100 pointer-events-auto scale-100"

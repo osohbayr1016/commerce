@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { CartItem } from "@/contexts/CartContext";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 import { createQpayInvoice } from "@/lib/qpay";
+import { apiError } from "@/lib/api-errors";
 
 interface OrderPayload {
   items: CartItem[];
@@ -39,11 +40,11 @@ export async function POST(request: Request) {
     try {
       payload = (await request.json()) as OrderPayload;
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return apiError("Invalid JSON body", 400);
     }
 
     if (!payload.items || payload.items.length === 0) {
-      return NextResponse.json({ error: "Empty cart" }, { status: 400 });
+      return apiError("Empty cart", 400);
     }
 
     const customer = payload.customer;
@@ -54,12 +55,9 @@ export async function POST(request: Request) {
       typeof customer.email !== "string" ||
       typeof customer.address !== "string"
     ) {
-      return NextResponse.json(
-        {
-          error:
-            "Missing or invalid customer fields (fullName, phone, email, address)",
-        },
-        { status: 400 },
+      return apiError(
+        "Missing or invalid customer fields (fullName, phone, email, address)",
+        400
       );
     }
 
@@ -70,19 +68,13 @@ export async function POST(request: Request) {
     const isGuest = !user;
 
     if (isGuest) {
-      return NextResponse.json(
-        { error: "Захиалга хийхийн тулд нэвтэрч орно уу" },
-        { status: 401 },
-      );
+      return apiError("Захиалга хийхийн тулд нэвтэрч орно уу", 401);
     }
 
     // Handle coin payment (only for logged-in users)
     if (payload.paymentMethod === "coins" && payload.coinPayment) {
       if (isGuest) {
-        return NextResponse.json(
-          { error: "Зочин монетоор төлбөр төлөх боломжгүй" },
-          { status: 400 },
-        );
+        return apiError("Зочин монетоор төлбөр төлөх боломжгүй", 400);
       }
 
       const { coinsUsed } = payload.coinPayment;
@@ -95,17 +87,11 @@ export async function POST(request: Request) {
         .single();
 
       if (profileError || !profile) {
-        return NextResponse.json(
-          { error: "Profile not found" },
-          { status: 404 },
-        );
+        return apiError("Profile not found", 404);
       }
 
       if (profile.coin_balance < coinsUsed) {
-        return NextResponse.json(
-          { error: "Хангалтгүй монет үлдэгдэл" },
-          { status: 400 },
-        );
+        return apiError("Хангалтгүй монет үлдэгдэл", 400);
       }
 
       // Deduct coins using the function (negative amount for spending)
@@ -121,10 +107,7 @@ export async function POST(request: Request) {
 
       if (coinError) {
         console.error("Error deducting coins:", coinError);
-        return NextResponse.json(
-          { error: "Монет хасахад алдаа гарлаа" },
-          { status: 500 },
-        );
+        return apiError("Монет хасахад алдаа гарлаа", 500);
       }
     }
 
@@ -167,13 +150,7 @@ export async function POST(request: Request) {
           p_description: "Захиалга үүсгэхэд алдаа гарсан тул буцаасан",
         });
       }
-      return NextResponse.json(
-        {
-          error: "Order create failed",
-          details: orderError?.message || "Unknown error",
-        },
-        { status: 500 },
-      );
+      return apiError("Order create failed", 500);
     }
 
     // Update transaction with order_id if paid with coins
@@ -202,13 +179,7 @@ export async function POST(request: Request) {
 
     if (itemsError) {
       console.error("Order items insert error:", itemsError);
-      return NextResponse.json(
-        {
-          error: "Order items failed",
-          details: itemsError.message,
-        },
-        { status: 500 },
-      );
+      return apiError("Order items failed", 500);
     }
 
     // Decrement product (or variant) stock for each order line
@@ -275,13 +246,12 @@ export async function POST(request: Request) {
         // Don't fail the order
       }
     }
+
     if (paymentMethod === "qpay") {
       if (totalAmount < 1) {
-        return NextResponse.json(
-          {
-            error: "QPay төлбөрийн дүн 0 байж болохгүй. Хөнгөлөлтөө шалгана уу.",
-          },
-          { status: 400 },
+        return apiError(
+          "QPay төлбөрийн дүн 0 байж болохгүй. Хөнгөлөлтөө шалгана уу.",
+          400
         );
       }
       try {
@@ -319,13 +289,7 @@ export async function POST(request: Request) {
             ? qpayError.message
             : "Unknown QPay error";
         console.error("QPay invoice create error:", qpayError);
-        return NextResponse.json(
-          {
-            error: "QPay нэхэмжлэл үүсгэхэд алдаа гарлаа",
-            details: message,
-          },
-          { status: 502 },
-        );
+        return apiError("QPay нэхэмжлэл үүсгэхэд алдаа гарлаа", 502);
       }
     }
 
@@ -333,9 +297,6 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("POST /api/orders error:", err);
-    return NextResponse.json(
-      { error: "Order creation failed", details: message },
-      { status: 500 },
-    );
+    return apiError("Order creation failed", 500);
   }
 }

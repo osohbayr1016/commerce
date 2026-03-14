@@ -12,6 +12,7 @@ import BackButton from "@/components/ui/BackButton";
 import CheckoutSkeleton from "@/components/ui/skeletons/CheckoutSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const emptyForm: CheckoutFormValues = {
   fullName: "",
@@ -24,6 +25,7 @@ const emptyForm: CheckoutFormValues = {
 export default function CheckoutClient() {
   const { user, profile, loading } = useAuth();
   const { items, subtotal, clearCart } = useCart();
+  const { t } = useLanguage();
   const router = useRouter();
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [promoCodeId, setPromoCodeId] = useState("");
@@ -65,7 +67,7 @@ export default function CheckoutClient() {
           </div>
           {items.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
-              <p className="text-gray-600">Сагс хоосон байна</p>
+              <p className="text-gray-600">{t("cart.emptyCart")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -77,19 +79,24 @@ export default function CheckoutClient() {
                 />
               </div>
               <div className="lg:col-span-1 order-1 lg:order-2 space-y-4">
-                <PromoCodeInput
-                  orderAmount={subtotal}
-                  onApply={(discountAmt, id) => {
-                    setPromoDiscount(discountAmt);
-                    setPromoCodeId(id);
-                  }}
-                />
-                <DiscountSelector
-                  subtotal={subtotal}
-                  onDiscountChange={(percent) =>
-                    setReferralDiscountPercent(percent)
-                  }
-                />
+                <section className="rounded-lg border border-gray-200 bg-white p-4 space-y-4">
+                  <h2 className="text-sm font-semibold text-gray-900 tracking-wide">
+                    {t("checkout.discountAndLoyalty")}
+                  </h2>
+                  <PromoCodeInput
+                    orderAmount={subtotal}
+                    onApply={(discountAmt, id) => {
+                      setPromoDiscount(discountAmt);
+                      setPromoCodeId(id);
+                    }}
+                  />
+                  <DiscountSelector
+                    subtotal={subtotal}
+                    onDiscountChange={(percent) =>
+                      setReferralDiscountPercent(percent)
+                    }
+                  />
+                </section>
                 <CheckoutSummary
                   items={items}
                   subtotal={subtotal}
