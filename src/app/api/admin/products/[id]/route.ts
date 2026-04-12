@@ -156,10 +156,49 @@ export async function DELETE(
     const { id } = await params;
     if (!id)
       return NextResponse.json({ error: "ID шаардлагатай" }, { status: 400 });
-    const { error } = await auth
-      .adminClient!.from("products")
+
+    const db = auth.adminClient!;
+
+    // Remove dependent rows from all referencing tables before deleting the product
+    await db.from("product_variants").delete().eq("product_id", id);
+    await db.from("wishlist").delete().eq("product_id", id);
+    await db.from("product_views").delete().eq("product_id", id);
+
+    // spin_history → spin_products → products
+    const { data: spinProducts } = await db
+      .from("spin_products")
+      .select("id")
+      .eq("product_id", id);
+    if (spinProducts && spinProducts.length > 0) {
+      const spinProductIds = spinProducts.map((sp: { id: string }) => sp.id);
+      await db.from("spin_history").delete().in("spin_product_id", spinProductIds);
+    }
+    await db.from("spin_products").delete().eq("product_id", id);
+
+    // Optional tables – ignore errors if tables don't exist
+    const optionalTables = ["cart_items", "reviews"];
+    for (const table of optionalTables) {
+      const { error: optErr } = await db.from(table).delete().eq("product_id", id);
+      if (optErr) {
+        console.log(`Skipping ${table}: ${optErr.message}`);
+      }
+    }
+
+    // order_items – must delete these since product_id is NOT NULL
+    const { error: orderItemsErr } = await db
+      .from("order_items")
       .delete()
-      .eq("id", id);
+      .eq("product_id", id);
+    if (orderItemsErr) {
+      console.error("order_items delete error:", orderItemsErr);
+      return NextResponse.json(
+        { error: `order_items: ${orderItemsErr.message}` },
+        { status: 500 },
+      );
+    }
+
+    // Now delete the product itself
+    const { error } = await db.from("products").delete().eq("id", id);
     if (error) {
       console.error("Product delete error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });

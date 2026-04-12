@@ -16,8 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, signInWithGoogle, signInWithFacebook, user, isAdmin } =
-    useAuth();
+  const { signIn, signInWithGoogle, signInWithFacebook, user } = useAuth();
 
   const redirectUrl = searchParams.get("redirect") || "/";
 
@@ -34,14 +33,9 @@ export default function LoginPage() {
 
     try {
       await signIn(identifier, password);
-
-      if (redirectUrl.startsWith("/admin") && isAdmin) {
-        router.push(redirectUrl);
-      } else if (redirectUrl.startsWith("/admin") && !isAdmin) {
-        router.push("/");
-      } else {
-        router.push(redirectUrl);
-      }
+      // Role/permission checks are enforced by middleware on protected routes.
+      router.push(redirectUrl);
+      router.refresh();
     } catch (err) {
       setError("И-мэйл/утасны дугаар эсвэл нууц үг буруу байна");
     } finally {

@@ -12,6 +12,9 @@ import ProductFormNameSection from "./ProductFormNameSection";
 import ProductFormDescriptionSection from "./ProductFormDescriptionSection";
 import { getLocalizedName } from "@/lib/localize";
 
+import { z } from "zod";
+import { ProductSchema } from "./ProductFormSchema";
+
 function buildInitialSizeStocks(
   _productType: ProductType,
   sizeOnlyVariants?: ProductVariant[],
@@ -162,6 +165,9 @@ export default function ProductForm({
     setMessage("");
 
     try {
+      // 1. Zod Phase: Strict Schema Validation
+      ProductSchema.parse(formData);
+      
       const isNoSize = type === "beauty" || type === "other";
       const sizesArray = isNoSize
         ? []
@@ -252,8 +258,15 @@ export default function ProductForm({
         router.push("/admin/products");
         router.refresh();
       }, 1500);
-    } catch (error) {
-      setMessage(`Алдаа гарлаа: ${getErrorMessage(error)}`);
+    } catch (e: any) {
+      if (e instanceof z.ZodError) {
+        const errorMessages = e.issues.map((err: z.ZodIssue) => `${err.path.join(".")}: ${err.message}`).join(", ");
+        setMessage(`Алдаа: ${errorMessages}`);
+      } else {
+        setMessage(
+          `Алдаа: ${e instanceof Error ? e.message : getErrorMessage(e)}`,
+        );
+      }
     } finally {
       setLoading(false);
     }

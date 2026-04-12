@@ -73,3 +73,19 @@ input[type="number"] {
 .category-sub-enter {
   animation: category-fade-in-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Profile page content animation */
+@keyframes profile-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-animate-in {
+  animation: profile-fade-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

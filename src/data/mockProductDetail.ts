@@ -30,6 +30,8 @@ export interface ProductDetail {
   imageColor: string;
   hasFinancing: boolean;
   availabilityStatus?: "order" | "in_stock";
+  /** When defined and 0, product is out of stock. */
+  stock?: number;
 }
 
 export const mockProductDetail: ProductDetail = {

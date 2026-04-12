@@ -28,18 +28,14 @@ export default function AdminLayout({
   const navLinks = [
     { href: "/admin", label: "Хянах самбар", icon: "📊" },
     { href: "/admin/products", label: "Бүтээгдэхүүн", icon: "📦" },
+    { href: "/admin/types", label: "Төрөл", icon: "📋" },
     { href: "/admin/categories", label: "Ангилал", icon: "🏷️" },
-    { href: "/admin/brands", label: "Брэнд", icon: "🏷️" },
     { href: "/admin/orders", label: "Захиалга", icon: "🛒" },
     { href: "/admin/users", label: "Хэрэглэгч", icon: "👥" },
     { href: "/admin/referral/top6", label: "Top 6", icon: "⭐" },
-    {
-      href: "/admin/referral/analytics",
-      label: "Referral Analytics",
-      icon: "📈",
-    },
-    { href: "/admin/referral/network", label: "Referral Network", icon: "🌐" },
-    { href: "/admin/spin", label: "Spin Wheel", icon: "🎰" },
+    { href: "/admin/referral/analytics", label: "Урилгын аналитик", icon: "📈" },
+    { href: "/admin/referral/network", label: "Урилгын сүлжээ", icon: "🌐" },
+    { href: "/admin/spin", label: "Spin хүрд", icon: "🎰" },
     { href: "/admin/hero", label: "Banner", icon: "🖼️" },
     { href: "/admin/footer", label: "Footer", icon: "📄" },
     { href: "/admin/settings", label: "Тохиргоо", icon: "⚙️" },
@@ -56,7 +52,7 @@ export default function AdminLayout({
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-4 py-3">
-          <Link href="/admin" className="text-lg font-semibold text-gray-900">
+          <Link href="/admin" className="text-lg font-semibold font-heading text-gray-900">
             Admin
           </Link>
           <button
@@ -121,7 +117,7 @@ export default function AdminLayout({
         <div className="flex flex-col h-full">
           {/* Desktop Header */}
           <div className="hidden lg:block p-6 border-b border-gray-200">
-            <Link href="/" className="text-xl font-semibold text-gray-900">
+            <Link href="/" className="text-xl font-semibold font-heading text-gray-900">
               Admin Dashboard
             </Link>
           </div>
@@ -136,7 +132,7 @@ export default function AdminLayout({
                     key={link.href}
                     href={link.href}
                     onClick={closeMobileMenu}
-                    className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-3 text-sm font-medium font-heading rounded-lg transition-colors ${
                       isActive
                         ? "bg-gray-900 text-white"
                         : "text-gray-700 hover:bg-gray-100"

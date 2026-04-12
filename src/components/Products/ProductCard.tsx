@@ -8,6 +8,7 @@ import WishlistButton from "./WishlistButton";
 import ProductCardImage from "./ProductCardImage";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLocalizedNameFromProduct } from "@/lib/localize";
+import QuickViewModal from "./QuickViewModal";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [stock, setStock] = useState<number | null>(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const { t, language } = useLanguage();
 
   const slug = product.id
@@ -40,38 +42,57 @@ export default function ProductCard({ product }: ProductCardProps) {
   const displayName = getLocalizedNameFromProduct(product, language, "Product");
 
   return (
-    <div
-      className={`group flex flex-col h-full relative bg-white ${
-        isOutOfStock ? "opacity-75" : ""
-      }`}
-    >
-      {product.id && (
-        <div className="absolute top-2 right-2 z-20 shrink-0">
-          <WishlistButton productId={String(product.id)} />
+    <>
+      <div
+        className={`group flex flex-col h-full relative bg-white ${
+          isOutOfStock ? "opacity-75" : ""
+        }`}
+      >
+        {product.id && (
+          <div className="absolute top-2 right-2 z-20 shrink-0">
+            <WishlistButton productId={String(product.id)} />
+          </div>
+        )}
+        
+        {/* Image Area with Quick View Overlay */}
+        <div className="relative mb-3 group/image block overflow-hidden rounded-md">
+          <Link href={`/products/${slug}`} className="block relative">
+            <ProductCardImage
+              images={product.images}
+              alt={displayName}
+              imageColor={product.imageColor}
+            />
+            {isOutOfStock ? (
+              <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium z-10">
+                {t("products.outOfStock")}
+              </span>
+            ) : isLowStock ? (
+              <span className="absolute top-2 left-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium z-10">
+                {t("products.lowStock", { count: stock })}
+              </span>
+            ) : product.discount && product.discount > 0 ? (
+              <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 text-white text-xs font-medium z-10">
+                {t("products.discount", { percent: product.discount })}
+              </span>
+            ) : null}
+          </Link>
+
+          {/* Quick View Button overlay (Desktop) */}
+          <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 z-20 hidden md:block">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setIsQuickViewOpen(true);
+              }}
+              className="w-full bg-white/90 backdrop-blur text-gray-900 py-2.5 rounded-lg text-sm font-semibold shadow-lg hover:bg-white transition-colors"
+            >
+              Quick View
+            </button>
+          </div>
         </div>
-      )}
-      <Link href={`/products/${slug}`} className="flex flex-col flex-1 min-w-0">
-        <div className="relative mb-3">
-          <ProductCardImage
-            images={product.images}
-            alt={displayName}
-            imageColor={product.imageColor}
-          />
-          {isOutOfStock ? (
-            <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium">
-              {t("products.outOfStock")}
-            </span>
-          ) : isLowStock ? (
-            <span className="absolute top-2 left-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium">
-              {t("products.lowStock", { count: stock })}
-            </span>
-          ) : product.discount && product.discount > 0 ? (
-            <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 text-white text-xs font-medium">
-              {t("products.discount", { percent: product.discount })}
-            </span>
-          ) : null}
-        </div>
-        <div className="flex-1">
+
+        {/* Text Details */}
+        <Link href={`/products/${slug}`} className="flex-1 min-w-0">
           <p className="text-xs uppercase text-gray-500 tracking-wide mb-1">
             {product.brand}
           </p>
@@ -92,8 +113,14 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
-        </div>
-      </Link>
-    </div>
+        </Link>
+      </div>
+
+      <QuickViewModal
+        product={product}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+      />
+    </>
   );
 }

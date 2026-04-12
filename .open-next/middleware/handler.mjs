@@ -717,28 +717,28 @@ var init_node_buffer = __esm({
 var require_root_of_the_server_f1390a54 = __commonJS({
   ".next/server/edge/chunks/[root-of-the-server]__f1390a54._.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__f1390a54._.js", 51615, (e, t, r) => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__f1390a54._.js", 951615, (e, t, r) => {
       t.exports = e.x("node:buffer", () => (init_node_buffer(), __toCommonJS(node_buffer_exports)));
-    }, 59858, (e, t, r) => {
+    }, 559858, (e, t, r) => {
       self._ENTRIES ||= {};
-      let n = Promise.resolve().then(() => e.i(10977));
+      let n = Promise.resolve().then(() => e.i(210977));
       n.catch(() => {
       }), self._ENTRIES.middleware_instrumentation = new Proxy(n, { get(e2, t2) {
         if ("then" === t2) return (t3, r3) => e2.then(t3, r3);
         let r2 = (...r3) => e2.then((e3) => (0, e3[t2])(...r3));
         return r2.then = (r3, n2) => e2.then((e3) => e3[t2]).then(r3, n2), r2;
       } });
-    }, 10977, (e) => {
+    }, 210977, (e) => {
       "use strict";
-      var t = e.i(5893), r = e.i(30232), n = e.i(98261), o = e.i(99200);
+      var t = e.i(505893), r = e.i(830232), n = e.i(598261), o = e.i(499200);
       async function s() {
-        await Promise.resolve().then(() => e.i(25973));
+        await Promise.resolve().then(() => e.i(925973));
       }
       e.s(["onRequestError", 0, function(e2, s2, i) {
         (0, t.withScope)((t2) => {
           t2.setSDKProcessingMetadata({ normalizedRequest: { headers: (0, r.headersToDict)(s2.headers), method: s2.method } }), t2.setContext("nextjs", { request_path: s2.path, router_kind: i.routerKind, router_path: i.routePath, route_type: i.routeType }), t2.setTransactionName(i.routePath), (0, n.captureException)(e2, { mechanism: { handled: false, type: "auto.function.nextjs.on_request_error" } }), (0, o.waitUntil)((0, o.flushSafelyWithTimeout)());
         });
-      }, "register", () => s], 10977);
+      }, "register", () => s], 210977);
     }]);
   }
 });
@@ -752,10 +752,10 @@ var require_c437 = __commonJS({
       n._ = function(e2) {
         return e2 && e2.__esModule ? e2 : { default: e2 };
       };
-    }, 18574, (e, t, n) => {
+    }, 118574, (e, t, n) => {
       "use strict";
       t.exports = ["chrome 111", "edge 111", "firefox 111", "safari 16.4"];
-    }, 57703, (e, t, n) => {
+    }, 757703, (e, t, n) => {
       "use strict";
       Object.defineProperty(n, "__esModule", { value: true });
       var r = { UNDERSCORE_GLOBAL_ERROR_ROUTE: function() {
@@ -769,7 +769,7 @@ var require_c437 = __commonJS({
       } };
       for (var i in r) Object.defineProperty(n, i, { enumerable: true, get: r[i] });
       let s = "/_not-found", a = `${s}/page`, o = "/_global-error", u = `${o}/page`;
-    }, 95552, (e, t, n) => {
+    }, 995552, (e, t, n) => {
       "use strict";
       Object.defineProperty(n, "__esModule", { value: true });
       var r, i = { APP_CLIENT_INTERNALS: function() {
@@ -912,13 +912,13 @@ var require_c437 = __commonJS({
         return S;
       } };
       for (var s in i) Object.defineProperty(n, s, { enumerable: true, get: i[s] });
-      let a = e.r(36766)._(e.r(18574)), o = e.r(57703), u = { client: "client", server: "server", edgeServer: "edge-server" }, c = { [u.client]: 0, [u.server]: 1, [u.edgeServer]: 2 };
+      let a = e.r(36766)._(e.r(118574)), o = e.r(757703), u = { client: "client", server: "server", edgeServer: "edge-server" }, c = { [u.client]: 0, [u.server]: 1, [u.edgeServer]: 2 };
       var l = ((r = {}).PAGES = "PAGES", r.PAGES_API = "PAGES_API", r.APP_PAGE = "APP_PAGE", r.APP_ROUTE = "APP_ROUTE", r.PRERENDER = "PRERENDER", r.STATIC_FILE = "STATIC_FILE", r.MIDDLEWARE = "MIDDLEWARE", r);
       let p = "phase-export", d = "phase-analyze", f = "phase-production-build", _ = "phase-production-server", h = "phase-development-server", g = "phase-test", m = "phase-info", E = "pages-manifest.json", S = "webpack-stats.json", v = "app-paths-manifest.json", T = "app-path-routes-manifest.json", y = "build-manifest.json", R = "functions-config-manifest.json", A = "subresource-integrity-manifest", I = "next-font-manifest", b = "export-marker.json", O = "export-detail.json", C = "prerender-manifest.json", N = "routes-manifest.json", L = "images-manifest.json", P = "required-server-files", w = "_devPagesManifest.json", D = "middleware-manifest.json", M = "_clientMiddlewareManifest.json", U = "client-build-manifest.json", x = "_devMiddlewareManifest.json", B = "react-loadable-manifest.json", k = "server", $ = ["next.config.js", "next.config.mjs", "next.config.ts", ...process?.features?.typescript ? ["next.config.mts"] : []], F = "BUILD_ID", G = ["/_document", "/_app", "/_error"], j = "public", V = "static", Y = "__NEXT_DROP_CLIENT_FILE__", H = "__NEXT_BUILTIN_DOCUMENT__", z = "__barrel_optimize__", W = "client-reference-manifest", K = "server-reference-manifest", q = "middleware-build-manifest", J = "middleware-react-loadable-manifest", X = "interception-route-rewrite-manifest", Z = "dynamic-css-manifest", Q = "main", ee = `${Q}-app`, et = "app-pages-internals", en = "react-refresh", er = "webpack", ei = "polyfills", es = Symbol(ei), ea = "webpack-runtime", eo = "edge-runtime-webpack", eu = "__N_SSG", ec = "__N_SSP", el = { name: "Times New Roman", xAvgCharWidth: 821, azAvgWidth: 854.3953488372093, unitsPerEm: 2048 }, ep = { name: "Arial", xAvgCharWidth: 904, azAvgWidth: 934.5116279069767, unitsPerEm: 2048 }, ed = ["/500"], ef = 1, e_ = 6e3, eh = { client: "client", server: "server" }, eg = ["clearImmediate", "setImmediate", "BroadcastChannel", "ByteLengthQueuingStrategy", "CompressionStream", "CountQueuingStrategy", "DecompressionStream", "DomException", "MessageChannel", "MessageEvent", "MessagePort", "ReadableByteStreamController", "ReadableStreamBYOBRequest", "ReadableStreamDefaultController", "TransformStreamDefaultController", "WritableStreamDefaultController"], em = /* @__PURE__ */ new Set([Q, en, ee]);
       ("function" == typeof n.default || "object" == typeof n.default && null !== n.default) && void 0 === n.default.__esModule && (Object.defineProperty(n.default, "__esModule", { value: true }), Object.assign(n.default, n), t.exports = n.default);
-    }, 93597, (e, t, n) => {
-      t.exports = e.r(95552);
-    }, 25973, (e) => {
+    }, 193597, (e, t, n) => {
+      t.exports = e.r(995552);
+    }, 925973, (e) => {
       "use strict";
       let t, n, r, i, s;
       function a(e10) {
@@ -1154,7 +1154,7 @@ var require_c437 = __commonJS({
         }, e10.prototype.disable = function() {
           this._getContextManager().disable(), B(W, Y.instance());
         }, e10;
-      }(), J = q.getInstance(), X = e.i(57493), Z = e.i(99219), Q = e.i(20174), ee = e.i(24058);
+      }(), J = q.getInstance(), X = e.i(257493), Z = e.i(499219), Q = e.i(20174), ee = e.i(224058);
       let et = {}, en = {};
       function er(e10, t10) {
         et[e10] = et[e10] || [], et[e10].push(t10);
@@ -1192,7 +1192,7 @@ Error:`, t11);
           return es("unhandledrejection", e10), !eu || eu.apply(this, arguments);
         }, Z.GLOBAL_OBJ.onunhandledrejection.__SENTRY_INSTRUMENTED__ = true;
       }
-      var el = e.i(53393), ep = e.i(54534);
+      var el = e.i(153393), ep = e.i(654534);
       let ed = false;
       function ef() {
         if (!ed) {
@@ -1207,12 +1207,12 @@ Error:`, t11);
           }
         }
       }
-      var e_ = e.i(35872);
+      var e_ = e.i(935872);
       function eh(e10, t10, n10 = [t10], r10 = "npm") {
         let i3 = e10._metadata || {};
         i3.sdk || (i3.sdk = { name: `sentry.javascript.${t10}`, packages: n10.map((e11) => ({ name: `${r10}:@sentry/${e11}`, version: e_.SDK_VERSION })), version: e_.SDK_VERSION }), e10._metadata = i3;
       }
-      var eg = e.i(12115), em = e.i(4229), eE = e.i(5893);
+      var eg = e.i(412115), em = e.i(304229), eE = e.i(505893);
       function eS(e10) {
         return "isRelative" in e10;
       }
@@ -1257,7 +1257,7 @@ Error:`, t11);
         return e10;
       }
       let eb = "telemetry.sdk.language", eO = "telemetry.sdk.name", eC = "telemetry.sdk.version";
-      var eN = e.i(87709);
+      var eN = e.i(187709);
       function eL(e10, t10) {
         var n10, r10, i3, s2;
         let a2, o2 = t10?.getDsn(), u2 = t10?.getOptions().tunnel;
@@ -1266,7 +1266,7 @@ Error:`, t11);
       function eP(e10) {
         return "/" === e10[e10.length - 1] ? e10.slice(0, -1) : e10;
       }
-      var ew = e.i(65434), eD = e.i(42495);
+      var ew = e.i(765434), eD = e.i(842495);
       class eM {
         constructor(e10) {
           this._maxSize = e10, this._cache = /* @__PURE__ */ new Map();
@@ -1300,7 +1300,7 @@ Error:`, t11);
           return this._cache.forEach((t10) => e10.push(t10)), e10;
         }
       }
-      var eU = e.i(12862), ex = e.i(57645), eB = e.i(63382), ek = e.i(25376), e$ = e.i(94482), eF = e.i(50850), eG = e.i(83250), eG = eG, ej = e.i(58648), eV = e.i(98261), eY = e.i(75641), eH = e.i(62308), ez = eG, eW = e.i(76970);
+      var eU = e.i(12862), ex = e.i(257645), eB = e.i(263382), ek = e.i(225376), e$ = e.i(294482), eF = e.i(50850), eG = e.i(883250), eG = eG, ej = e.i(958648), eV = e.i(598261), eY = e.i(875641), eH = e.i(162308), ez = eG, eW = e.i(776970);
       (m = u || (u = {}))[m.NONE = 0] = "NONE", m[m.SAMPLED = 1] = "SAMPLED";
       var eK = "0000000000000000", eq = "00000000000000000000000000000000", eJ = { traceId: eq, spanId: eK, traceFlags: u.NONE }, eX = function() {
         function e10(e11) {
@@ -1340,10 +1340,10 @@ Error:`, t11);
       function e2(e10) {
         return e10.deleteValue(eZ);
       }
-      function e5(e10, t10) {
+      function e4(e10, t10) {
         return e1(e10, new eX(t10));
       }
-      function e4(e10) {
+      function e5(e10) {
         var t10;
         return null == (t10 = eQ(e10)) ? void 0 : t10.spanContext();
       }
@@ -1363,7 +1363,7 @@ Error:`, t11);
         }
         return e10.prototype.startSpan = function(e11, t10, n10) {
           if (void 0 === n10 && (n10 = te.active()), null == t10 ? void 0 : t10.root) return new eX();
-          var r10, i3 = n10 && e4(n10);
+          var r10, i3 = n10 && e5(n10);
           return "object" == typeof (r10 = i3) && "string" == typeof r10.spanId && "string" == typeof r10.traceId && "number" == typeof r10.traceFlags && e8(i3) ? new eX(i3) : new eX();
         }, e10.prototype.startActiveSpan = function(e11, t10, n10, r10) {
           if (!(arguments.length < 2)) {
@@ -1409,7 +1409,7 @@ Error:`, t11);
         }, e10;
       }(), ta = "trace", to = function() {
         function e10() {
-          this._proxyTracerProvider = new ts(), this.wrapSpanContext = e7, this.isSpanContextValid = e8, this.deleteSpan = e2, this.getSpan = eQ, this.getActiveSpan = e0, this.getSpanContext = e4, this.setSpan = e1, this.setSpanContext = e5;
+          this._proxyTracerProvider = new ts(), this.wrapSpanContext = e7, this.isSpanContextValid = e8, this.deleteSpan = e2, this.getSpan = eQ, this.getActiveSpan = e0, this.getSpanContext = e5, this.setSpan = e1, this.setSpanContext = e4;
         }
         return e10.getInstance = function() {
           return this._instance || (this._instance = new e10()), this._instance;
@@ -1583,7 +1583,7 @@ Error:`, t11);
       let tw = a("sentry_scopes");
       a("sentry_fork_isolation_scope"), a("sentry_fork_set_scope"), a("sentry_fork_set_isolation_scope");
       "u" < typeof __SENTRY_DEBUG__ || __SENTRY_DEBUG__;
-      var tD = e.i(51615), tM = e.i(46665), tU = e.i(96874), tx = e.i(60748), tB = e.i(35848);
+      var tD = e.i(951615), tM = e.i(646665), tU = e.i(496874), tx = e.i(360748), tB = e.i(835848);
       let tk = [];
       function t$(e10, t10) {
         for (let n10 of t10) n10?.afterAllSetup && n10.afterAllSetup(e10);
@@ -1603,8 +1603,8 @@ Error:`, t11);
         }
         X.DEBUG_BUILD && Q.debug.log(`Integration installed: ${t10.name}`);
       }
-      var tG = e.i(2393), tj = e.i(66474);
-      e.i(94736), e.i(52434);
+      var tG = e.i(102393), tj = e.i(966474);
+      e.i(294736), e.i(652434);
       var tV = e.i(57890);
       function tY(e10, t10) {
         var n10, r10, i3, s2;
@@ -1626,7 +1626,7 @@ Error:`, t11);
       function tW() {
         return (0, tG.getGlobalSingleton)("clientToMetricBufferMap", () => /* @__PURE__ */ new WeakMap());
       }
-      var tK = e.i(98881), tq = e.i(69728);
+      var tK = e.i(298881), tq = e.i(269728);
       let tJ = Symbol.for("SentryBufferFullError");
       function tX(e10 = 100) {
         let t10 = /* @__PURE__ */ new Set();
@@ -1657,7 +1657,7 @@ Error:`, t11);
         }
         return t10;
       }
-      var t0 = e.i(74779), t1 = e.i(75403), t2 = e.i(33245), t5 = eG, t4 = e.i(69599);
+      var t0 = e.i(274779), t1 = e.i(775403), t2 = e.i(133245), t4 = eG, t5 = e.i(469599);
       let t3 = "Not capturing exception because it's already been captured.", t9 = "Discarded session because of missing or non-string release", t6 = Symbol.for("SentryInternalError"), t8 = Symbol.for("SentryDoNotSendEventError");
       function t7(e10) {
         return { message: e10, [t6]: true };
@@ -1842,7 +1842,7 @@ Error:`, t11);
         }
         _processEvent(e10, t10, n10, r10) {
           let i3 = this.getOptions(), { sampleRate: s2 } = i3, a2 = no(e10), o2 = na(e10), u2 = e10.type || "error", c2 = `before send for type \`${u2}\``, l2 = void 0 === s2 ? void 0 : (0, eH.parseSampleRate)(s2);
-          if (o2 && "number" == typeof l2 && (0, t5.safeMathRandom)() > l2) return this.recordDroppedEvent("sample_rate", "error"), (0, tq.rejectedSyncPromise)(ne(`Discarding event because it's not included in the random sample (sampling rate = ${s2})`));
+          if (o2 && "number" == typeof l2 && (0, t4.safeMathRandom)() > l2) return this.recordDroppedEvent("sample_rate", "error"), (0, tq.rejectedSyncPromise)(ne(`Discarding event because it's not included in the random sample (sampling rate = ${s2})`));
           let p2 = ns(e10.type);
           return this._prepareEvent(e10, t10, n10, r10).then((e11) => {
             if (null === e11) throw this.recordDroppedEvent("event_processor", p2), ne("An event processor returned `null`, will not send event.");
@@ -1865,7 +1865,7 @@ Error:`, t11);
                     let { trace_id: t13, parent_span_id: n12, span_id: r12, status: i5, origin: s4, data: a4, op: o4 } = e13.contexts?.trace ?? {};
                     return { data: a4 ?? {}, description: e13.transaction, op: o4, parent_span_id: n12, span_id: r12 ?? "", start_timestamp: e13.start_timestamp ?? 0, status: i5, timestamp: e13.timestamp, trace_id: t13 ?? "", origin: s4, profile_id: a4?.[eg.SEMANTIC_ATTRIBUTE_PROFILE_ID], exclusive_time: a4?.[eg.SEMANTIC_ATTRIBUTE_EXCLUSIVE_TIME], measurements: e13.measurements, is_segment: true };
                   }(u3);
-                  if (o3?.length && (0, t4.shouldIgnoreSpan)(t12, o3)) return null;
+                  if (o3?.length && (0, t5.shouldIgnoreSpan)(t12, o3)) return null;
                   if (a3) {
                     let e13 = a3(t12);
                     if (e13) u3 = (0, t0.merge)(n11, { type: "transaction", timestamp: e13.timestamp, start_timestamp: e13.start_timestamp, transaction: e13.description, contexts: { trace: { trace_id: e13.trace_id, span_id: e13.span_id, parent_span_id: e13.parent_span_id, op: e13.op, status: e13.status, origin: e13.origin, data: { ...e13.data, ...e13.profile_id && { [eg.SEMANTIC_ATTRIBUTE_PROFILE_ID]: e13.profile_id }, ...e13.exclusive_time && { [eg.SEMANTIC_ATTRIBUTE_EXCLUSIVE_TIME]: e13.exclusive_time } } } }, measurements: e13.measurements });
@@ -1874,8 +1874,8 @@ Error:`, t11);
                   if (u3.spans) {
                     let t13 = [], n12 = u3.spans;
                     for (let e13 of n12) {
-                      if (o3?.length && (0, t4.shouldIgnoreSpan)(e13, o3)) {
-                        (0, t4.reparentChildSpans)(n12, e13);
+                      if (o3?.length && (0, t5.shouldIgnoreSpan)(e13, o3)) {
+                        (0, t5.reparentChildSpans)(n12, e13);
                         continue;
                       }
                       if (a3) {
@@ -1973,7 +1973,7 @@ Reason: ${e11}`);
       function np(e10) {
         return "string" == typeof e10 ? 2 * e10.length : "number" == typeof e10 ? 8 : 4 * ("boolean" == typeof e10);
       }
-      var nd = e.i(50666);
+      var nd = e.i(150666);
       function nf(e10, t10) {
         return e10(t10.stack || "", 1);
       }
@@ -2084,7 +2084,7 @@ Reason: ${e11}`);
         return "string" == typeof e10 ? e10 : e10 ? nm(e10, "url") ? e10.url : e10.toString ? e10.toString() : "" : "";
       }
       Z.GLOBAL_OBJ;
-      var nS = e.i(6691), nv = e.i(33798);
+      var nS = e.i(606691), nv = e.i(433798);
       function nT(e10) {
         return e10.split(",").some((e11) => e11.trim().startsWith(ew.SENTRY_BAGGAGE_KEY_PREFIX));
       }
@@ -2323,7 +2323,7 @@ Reason: ${e11}`);
             continue;
           }
           let i3 = e10[r10];
-          if (!n5(i3)) {
+          if (!n4(i3)) {
             nV.warn(`Invalid attribute value set for key: ${r10}`);
             continue;
           }
@@ -2331,14 +2331,14 @@ Reason: ${e11}`);
         }
         return t10;
       }
-      function n5(e10) {
+      function n4(e10) {
         return null == e10 || (Array.isArray(e10) ? function(e11) {
           let t10;
           for (let n10 of e11) {
             if (null == n10) continue;
             let e12 = typeof n10;
             if (e12 !== t10) {
-              if (!t10 && n4(e12)) {
+              if (!t10 && n5(e12)) {
                 t10 = e12;
                 continue;
               }
@@ -2346,9 +2346,9 @@ Reason: ${e11}`);
             }
           }
           return true;
-        }(e10) : n4(typeof e10));
+        }(e10) : n5(typeof e10));
       }
-      function n4(e10) {
+      function n5(e10) {
         switch (e10) {
           case "number":
           case "boolean":
@@ -2514,7 +2514,7 @@ Reason: ${e11}`);
         setAttribute(e10, t10) {
           if (null == t10 || this._isSpanEnded()) return this;
           if (0 === e10.length) return nV.warn(`Invalid attribute key: ${e10}`), this;
-          if (!n5(t10)) return nV.warn(`Invalid attribute value set for key: ${e10}`), this;
+          if (!n4(t10)) return nV.warn(`Invalid attribute value set for key: ${e10}`), this;
           let { attributeCountLimit: n10 } = this._spanLimits;
           return void 0 !== n10 && Object.keys(this.attributes).length >= n10 && !Object.prototype.hasOwnProperty.call(this.attributes, e10) ? this._droppedAttributesCount++ : this.attributes[e10] = this._truncateToSize(t10), this;
         }
@@ -2856,7 +2856,7 @@ Reason: ${e11}`);
       function rK(e10) {
         return !!e10.attributes && "object" == typeof e10.attributes;
       }
-      let rq = "sentry-trace", rJ = "baggage", rX = "sentry.dsc", rZ = "sentry.sampled_not_recording", rQ = "sentry.url", r0 = a("sentry_scopes"), r1 = a("sentry_fork_isolation_scope"), r2 = a("sentry_fork_set_scope"), r5 = a("sentry_fork_set_isolation_scope"), r4 = "_scopeContext";
+      let rq = "sentry-trace", rJ = "baggage", rX = "sentry.dsc", rZ = "sentry.sampled_not_recording", rQ = "sentry.url", r0 = a("sentry_scopes"), r1 = a("sentry_fork_isolation_scope"), r2 = a("sentry_fork_set_scope"), r4 = a("sentry_fork_set_isolation_scope"), r5 = "_scopeContext";
       function r3(e10) {
         return e10.getValue(r0);
       }
@@ -3050,7 +3050,7 @@ Reason: ${e11}`);
       function iv(e10, t10) {
         let n10 = function(e11) {
           if (e11) {
-            let t11 = e11[r4];
+            let t11 = e11[r5];
             if (t11) return t11;
           }
           return J.active();
@@ -3072,10 +3072,10 @@ Reason: ${e11}`);
         return J.with(t10, e10);
       }
       function iA({ span: e10, scope: t10, client: n10, propagateTraceparent: r10 } = {}) {
-        let i3 = (t10 && t10[r4]) ?? J.active();
+        let i3 = (t10 && t10[r5]) ?? J.active();
         if (e10) {
           let { scope: t11 } = (0, em.getCapturedScopesOnSpan)(e10);
-          i3 = t11 && t11[r4] || to.setSpan(J.active(), e10);
+          i3 = t11 && t11[r5] || to.setSpan(J.active(), e10);
         }
         let { traceId: s2, spanId: a2, sampled: o2, dynamicSamplingContext: u2 } = ic(i3, { scope: t10, client: n10 }), c2 = { "sentry-trace": (0, eU.generateSentryTraceHeader)(s2, a2, o2), baggage: (0, ew.dynamicSamplingContextToSentryBaggageHeader)(u2) };
         return r10 && (c2.traceparent = (0, eU.generateTraceparentHeader)(s2, a2, o2)), c2;
@@ -3776,11 +3776,11 @@ Url: ${nL(e13)}`), true;
           } };
         })()] : []];
       }
-      var iH = e.i(65549);
+      var iH = e.i(465549);
       let iz = "next.span_type", iW = "sentry.drop_transaction";
-      var iK = e.i(30232);
+      var iK = e.i(830232);
       let iq = Z.GLOBAL_OBJ;
-      var iJ = e.i(93597), iX = e.i(99200);
+      var iJ = e.i(193597), iX = e.i(499200);
       let iZ = /^(\S+:\\|\/?)([\s\S]*?)((?:\.{1,2}|[^/\\]+?|)(\.[^./\\]*|))(?:[/\\]*)$/;
       function iQ(...e10) {
         let t10 = "", n10 = false;
@@ -3873,11 +3873,11 @@ Url: ${nL(e13)}`), true;
             let t12 = J.active();
             return J.with(t12, () => e12(u2()));
           }, withSetScope: function(e12, t12) {
-            let n12 = e12[r4] || J.active();
+            let n12 = e12[r5] || J.active();
             return J.with(n12.setValue(r2, e12), () => t12(e12));
           }, withSetIsolationScope: function(e12, t12) {
             let n12 = J.active();
-            return J.with(n12.setValue(r5, e12), () => t12(c2()));
+            return J.with(n12.setValue(r4, e12), () => t12(c2()));
           }, withIsolationScope: function(e12) {
             let t12 = J.active();
             return J.with(t12.setValue(r1, true), () => e12(c2()));
@@ -3914,8 +3914,8 @@ Url: ${nL(e13)}`), true;
               super(...e12), ia("SentryContextManager");
             }
             with(e12, t12, n12, ...r12) {
-              let i5 = r3(e12), s3 = i5?.scope || (0, eE.getCurrentScope)(), a3 = i5?.isolationScope || (0, eE.getIsolationScope)(), o2 = true === e12.getValue(r1), u3 = e12.getValue(r2), c3 = e12.getValue(r5), l3 = u3 || s3.clone(), p2 = r9(e12, { scope: l3, isolationScope: c3 || (o2 ? a3.clone() : a3) }).deleteValue(r1).deleteValue(r2).deleteValue(r5);
-              return (0, eN.addNonEnumerableProperty)(l3, r4, p2), super.with(p2, t12, n12, ...r12);
+              let i5 = r3(e12), s3 = i5?.scope || (0, eE.getCurrentScope)(), a3 = i5?.isolationScope || (0, eE.getIsolationScope)(), o2 = true === e12.getValue(r1), u3 = e12.getValue(r2), c3 = e12.getValue(r4), l3 = u3 || s3.clone(), p2 = r9(e12, { scope: l3, isolationScope: c3 || (o2 ? a3.clone() : a3) }).deleteValue(r1).deleteValue(r2).deleteValue(r4);
+              return (0, eN.addNonEnumerableProperty)(l3, r5, p2), super.with(p2, t12, n12, ...r12);
             }
             getAsyncLocalStorageLookup() {
               return { asyncLocalStorage: this._asyncLocalStorage, contextSymbol: r0 };
@@ -4004,7 +4004,7 @@ Url: ${nL(e13)}`), true;
           (0, eE.getGlobalScope)().setTag("turbopack", true);
         } catch {
         }
-      }({ dsn: i2, sendDefaultPii: false, tracesSampleRate: 0.1, environment: "production" }), e.s([], 25973);
+      }({ dsn: i2, sendDefaultPii: false, tracesSampleRate: 0.1, environment: "production" }), e.s([], 925973);
     }]);
   }
 });
@@ -4013,16 +4013,16 @@ Url: ${nL(e13)}`), true;
 var require_node_modules_sentry_f05d8265 = __commonJS({
   ".next/server/edge/chunks/node_modules_@sentry_f05d8265._.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/node_modules_@sentry_f05d8265._.js", 35872, (t) => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/node_modules_@sentry_f05d8265._.js", 935872, (t) => {
       "use strict";
       t.s(["SDK_VERSION", () => "10.38.0"]);
-    }, 99219, (t) => {
+    }, 499219, (t) => {
       "use strict";
       let e = globalThis;
       t.s(["GLOBAL_OBJ", () => e]);
-    }, 2393, (t) => {
+    }, 102393, (t) => {
       "use strict";
-      var e = t.i(35872), n = t.i(99219);
+      var e = t.i(935872), n = t.i(499219);
       function r() {
         return i(n.GLOBAL_OBJ), n.GLOBAL_OBJ;
       }
@@ -4035,11 +4035,11 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         return o[t2] || (o[t2] = r2());
       }
       t.s(["getGlobalSingleton", () => s, "getMainCarrier", () => r, "getSentryCarrier", () => i]);
-    }, 57493, (t) => {
+    }, 257493, (t) => {
       "use strict";
       let e = "u" < typeof __SENTRY_DEBUG__ || __SENTRY_DEBUG__;
       t.s(["DEBUG_BUILD", () => e]);
-    }, 47660, 66474, (t) => {
+    }, 147660, 966474, (t) => {
       "use strict";
       let e = Object.prototype.toString;
       function n(t2) {
@@ -4099,8 +4099,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function h(t2) {
         return "u" > typeof Request && g(t2, Request);
       }
-      t.s(["isElement", () => l, "isError", () => n, "isErrorEvent", () => i, "isEvent", () => u, "isInstanceOf", () => g, "isParameterizedString", () => a, "isPlainObject", () => c, "isPrimitive", () => o, "isRegExp", () => p, "isRequest", () => h, "isString", () => s, "isSyntheticEvent", () => _, "isThenable", () => d, "isVueViewModel", () => f], 66474);
-      let m = t.i(99219).GLOBAL_OBJ;
+      t.s(["isElement", () => l, "isError", () => n, "isErrorEvent", () => i, "isEvent", () => u, "isInstanceOf", () => g, "isParameterizedString", () => a, "isPlainObject", () => c, "isPrimitive", () => o, "isRegExp", () => p, "isRequest", () => h, "isString", () => s, "isSyntheticEvent", () => _, "isThenable", () => d, "isVueViewModel", () => f], 966474);
+      let m = t.i(499219).GLOBAL_OBJ;
       function S(t2, e2 = {}) {
         if (!t2) return "<unknown>";
         try {
@@ -4133,10 +4133,10 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
           return "<unknown>";
         }
       }
-      t.s(["htmlTreeAsString", () => S], 47660);
+      t.s(["htmlTreeAsString", () => S], 147660);
     }, 20174, (t) => {
       "use strict";
-      var e = t.i(2393), n = t.i(57493), r = t.i(99219);
+      var e = t.i(102393), n = t.i(257493), r = t.i(499219);
       let i = ["debug", "info", "warn", "error", "log", "assert", "trace"], s = {};
       function a(t2) {
         if (!("console" in r.GLOBAL_OBJ)) return t2();
@@ -4176,10 +4176,10 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         c("error", ...t2);
       } };
       t.s(["CONSOLE_LEVELS", () => i, "consoleSandbox", () => a, "debug", () => l, "originalConsoleMethods", () => s]);
-    }, 87709, 83250, (t) => {
+    }, 187709, 883250, (t) => {
       "use strict";
       let e;
-      var n = t.i(57493), r = t.i(47660), i = t.i(20174), s = t.i(66474);
+      var n = t.i(257493), r = t.i(147660), i = t.i(20174), s = t.i(966474);
       function a(t2, e2, r2) {
         if (!(e2 in t2)) return;
         let s2 = t2[e2];
@@ -4235,8 +4235,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let e2 = Object.keys(u(t2));
         return e2.sort(), e2[0] ? e2.join(", ") : "[object has no keys]";
       }
-      t.s(["addNonEnumerableProperty", () => o, "convertToPlainObject", () => u, "extractExceptionKeysForMessage", () => d, "fill", () => a, "getOriginalFunction", () => c], 87709);
-      var _ = t.i(99219);
+      t.s(["addNonEnumerableProperty", () => o, "convertToPlainObject", () => u, "extractExceptionKeysForMessage", () => d, "fill", () => a, "getOriginalFunction", () => c], 187709);
+      var _ = t.i(499219);
       function g(t2) {
         if (void 0 !== e) return e ? e(t2) : t2();
         let n2 = Symbol.for("__SENTRY_SAFE_RANDOM_ID_WRAPPER__"), r2 = _.GLOBAL_OBJ;
@@ -4248,8 +4248,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function h() {
         return g(() => Date.now());
       }
-      t.s(["safeDateNow", () => h, "safeMathRandom", () => f, "withRandomSafeContext", () => g], 83250);
-    }, 24058, (t) => {
+      t.s(["safeDateNow", () => h, "safeMathRandom", () => f, "withRandomSafeContext", () => g], 883250);
+    }, 224058, (t) => {
       "use strict";
       let e = /\(error: (.*)\)/, n = /captureMessage|captureException/;
       function r(...t2) {
@@ -4312,10 +4312,10 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         return e2?.match(/\/[A-Z]:/) && (e2 = e2.slice(1)), e2;
       }
       t.s(["UNKNOWN_FUNCTION", () => "?", "createStackParser", () => r, "getFramesFromEvent", () => c, "getFunctionName", () => o, "getVueInternalName", () => u, "normalizeStackTracePath", () => l, "stackParserFromStackParserOptions", () => i]);
-    }, 5893, 57645, 75403, 57890, 98881, 74779, 99316, 52434, 92906, 50850, 94482, (t) => {
+    }, 505893, 257645, 775403, 57890, 298881, 274779, 699316, 652434, 392906, 50850, 294482, (t) => {
       "use strict";
       let e, n;
-      var r = t.i(2393), i = t.i(57493), s = t.i(87709), a = t.i(83250), o = t.i(66474), c = t.i(24058);
+      var r = t.i(102393), i = t.i(257493), s = t.i(187709), a = t.i(883250), o = t.i(966474), c = t.i(224058);
       function u(t2, e2 = 0) {
         return "string" != typeof t2 || 0 === e2 || t2.length <= e2 ? t2 : `${t2.slice(0, e2)}...`;
       }
@@ -4347,8 +4347,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function _(t2, e2 = [], n2 = false) {
         return e2.some((e3) => d(t2, e3, n2));
       }
-      t.s(["isMatchingPattern", () => d, "safeJoin", () => p, "snipLine", () => l, "stringMatchesSomePattern", () => _, "truncate", () => u], 57645);
-      var g = t.i(99219);
+      t.s(["isMatchingPattern", () => d, "safeJoin", () => p, "snipLine", () => l, "stringMatchesSomePattern", () => _, "truncate", () => u], 257645);
+      var g = t.i(499219);
       function f(t2 = function() {
         let t3 = g.GLOBAL_OBJ;
         return t3.crypto || t3.msCrypto;
@@ -4425,7 +4425,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let n2 = {};
         e2 ? n2 = { status: e2 } : "ok" === t2.status && (n2 = { status: "exited" }), I(t2, n2);
       }
-      t.s(["addExceptionMechanism", () => E, "addExceptionTypeValue", () => S, "checkOrSetAlreadyCaught", () => T, "getEventDescription", () => m, "uuid4", () => f], 75403), t.s(["dateTimestampInSeconds", () => y, "timestampInSeconds", () => b], 57890), t.s(["closeSession", () => A, "makeSession", () => v, "updateSession", () => I], 98881);
+      t.s(["addExceptionMechanism", () => E, "addExceptionTypeValue", () => S, "checkOrSetAlreadyCaught", () => T, "getEventDescription", () => m, "uuid4", () => f], 775403), t.s(["dateTimestampInSeconds", () => y, "timestampInSeconds", () => b], 57890), t.s(["closeSession", () => A, "makeSession", () => v, "updateSession", () => I], 298881);
       var C = t.i(20174);
       function N(t2, e2, n2 = 2) {
         if (!e2 || "object" != typeof e2 || n2 <= 0) return e2;
@@ -4440,7 +4440,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function R() {
         return f().substring(16);
       }
-      t.s(["merge", () => N], 74779), t.s(["generateSpanId", () => R, "generateTraceId", () => x], 99316);
+      t.s(["merge", () => N], 274779), t.s(["generateSpanId", () => R, "generateTraceId", () => x], 699316);
       let O = "_sentrySpan";
       function D(t2, e2) {
         e2 ? (0, s.addNonEnumerableProperty)(t2, O, e2) : delete t2[O];
@@ -4448,7 +4448,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function U(t2) {
         return t2[O];
       }
-      t.s(["_getSpanForScope", () => U, "_setSpanForScope", () => D], 52434);
+      t.s(["_getSpanForScope", () => U, "_setSpanForScope", () => D], 652434);
       class B {
         constructor() {
           this._notifyingListeners = false, this._scopeListeners = [], this._eventProcessors = [], this._breadcrumbs = [], this._attachments = [], this._user = {}, this._tags = {}, this._attributes = {}, this._extra = {}, this._contexts = {}, this._sdkProcessingMetadata = {}, this._propagationContext = { traceId: x(), sampleRand: (0, a.safeMathRandom)() };
@@ -4589,7 +4589,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       function w() {
         return (0, r.getGlobalSingleton)("defaultIsolationScope", () => new B());
       }
-      t.s(["Scope", () => B], 92906), t.s(["getDefaultCurrentScope", () => k, "getDefaultIsolationScope", () => w], 50850);
+      t.s(["Scope", () => B], 392906), t.s(["getDefaultCurrentScope", () => k, "getDefaultIsolationScope", () => w], 50850);
       class L {
         constructor(t2, e2) {
           let n2, r2;
@@ -4680,8 +4680,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let { traceId: e2, parentSpanId: n2, propagationSpanId: r2 } = t2.getPropagationContext(), i2 = { trace_id: e2, span_id: r2 || R() };
         return n2 && (i2.parent_span_id = n2), i2;
       }
-      t.s(["getAsyncContextStrategy", () => F, "setAsyncContextStrategy", () => j], 94482), t.s(["getClient", () => K, "getCurrentScope", () => J, "getGlobalScope", () => V, "getIsolationScope", () => Y, "getTraceContextFromScope", () => W, "withIsolationScope", () => H, "withScope", () => z], 5893);
-    }, 30232, (t) => {
+      t.s(["getAsyncContextStrategy", () => F, "setAsyncContextStrategy", () => j], 294482), t.s(["getClient", () => K, "getCurrentScope", () => J, "getGlobalScope", () => V, "getIsolationScope", () => Y, "getTraceContextFromScope", () => W, "withIsolationScope", () => H, "withScope", () => z], 505893);
+    }, 830232, (t) => {
       "use strict";
       function e(t2) {
         let e2 = {};
@@ -4731,12 +4731,12 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         void 0 !== p && (t2[l] = p);
       }
       t.s(["headersToDict", () => n, "httpHeadersToSpanAttributes", () => s, "winterCGHeadersToDict", () => e]);
-    }, 12115, (t) => {
+    }, 412115, (t) => {
       "use strict";
       t.s(["GEN_AI_CONVERSATION_ID_ATTRIBUTE", () => "gen_ai.conversation.id", "SEMANTIC_ATTRIBUTE_EXCLUSIVE_TIME", () => "sentry.exclusive_time", "SEMANTIC_ATTRIBUTE_HTTP_REQUEST_METHOD", () => "http.request.method", "SEMANTIC_ATTRIBUTE_PROFILE_ID", () => "sentry.profile_id", "SEMANTIC_ATTRIBUTE_SENTRY_CUSTOM_SPAN_NAME", () => "sentry.custom_span_name", "SEMANTIC_ATTRIBUTE_SENTRY_MEASUREMENT_UNIT", () => "sentry.measurement_unit", "SEMANTIC_ATTRIBUTE_SENTRY_MEASUREMENT_VALUE", () => "sentry.measurement_value", "SEMANTIC_ATTRIBUTE_SENTRY_OP", () => "sentry.op", "SEMANTIC_ATTRIBUTE_SENTRY_ORIGIN", () => "sentry.origin", "SEMANTIC_ATTRIBUTE_SENTRY_PREVIOUS_TRACE_SAMPLE_RATE", () => "sentry.previous_trace_sample_rate", "SEMANTIC_ATTRIBUTE_SENTRY_SAMPLE_RATE", () => "sentry.sample_rate", "SEMANTIC_ATTRIBUTE_SENTRY_SOURCE", () => "sentry.source", "SEMANTIC_ATTRIBUTE_URL_FULL", () => "url.full"]);
-    }, 65434, (t) => {
+    }, 765434, (t) => {
       "use strict";
-      var e = t.i(57493), n = t.i(20174), r = t.i(66474);
+      var e = t.i(257493), n = t.i(20174), r = t.i(966474);
       let i = "sentry-", s = /^sentry-/;
       function a(t2) {
         let e2 = c(t2);
@@ -4771,9 +4771,9 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         }).reduce((t3, [e2, n2]) => (e2 && n2 && (t3[e2] = n2), t3), {});
       }
       t.s(["SENTRY_BAGGAGE_KEY_PREFIX", () => i, "baggageHeaderToDynamicSamplingContext", () => a, "dynamicSamplingContextToSentryBaggageHeader", () => o, "parseBaggageHeader", () => c]);
-    }, 25376, (t) => {
+    }, 225376, (t) => {
       "use strict";
-      var e = t.i(66474);
+      var e = t.i(966474);
       function n(t2, r, i = () => {
       }, s = () => {
       }) {
@@ -4789,16 +4789,16 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         }) : (c(), u(a), a);
       }
       t.s(["handleCallbackErrors", () => n]);
-    }, 42495, (t) => {
+    }, 842495, (t) => {
       "use strict";
-      var e = t.i(5893);
+      var e = t.i(505893);
       function n(t2) {
         if ("boolean" == typeof __SENTRY_TRACING__ && !__SENTRY_TRACING__) return false;
         let n2 = t2 || (0, e.getClient)()?.getOptions();
         return !!n2 && (null != n2.tracesSampleRate || !!n2.tracesSampler);
       }
       t.s(["hasSpansEnabled", () => n]);
-    }, 62308, (t) => {
+    }, 162308, (t) => {
       "use strict";
       function e(t2) {
         if ("boolean" == typeof t2) return Number(t2);
@@ -4806,7 +4806,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         if (!("number" != typeof e2 || isNaN(e2)) && !(e2 < 0) && !(e2 > 1)) return e2;
       }
       t.s(["parseSampleRate", () => e]);
-    }, 54534, 4229, (t) => {
+    }, 654534, 304229, (t) => {
       "use strict";
       function e(t2) {
         if (t2 < 400 && t2 >= 100) return { code: 1 };
@@ -4843,8 +4843,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let r2 = e(n2);
         "unknown_error" !== r2.message && t2.setStatus(r2);
       }
-      t.s(["SPAN_STATUS_ERROR", () => 2, "SPAN_STATUS_OK", () => 1, "SPAN_STATUS_UNSET", () => 0, "getSpanStatusFromHttpCode", () => e, "setHttpStatus", () => n], 54534);
-      var r = t.i(87709), i = t.i(99219);
+      t.s(["SPAN_STATUS_ERROR", () => 2, "SPAN_STATUS_OK", () => 1, "SPAN_STATUS_UNSET", () => 0, "getSpanStatusFromHttpCode", () => e, "setHttpStatus", () => n], 654534);
+      var r = t.i(187709), i = t.i(499219);
       let s = "_sentryScope", a = "_sentryIsolationScope";
       function o(t2, e2, n2) {
         t2 && ((0, r.addNonEnumerableProperty)(t2, a, function(t3) {
@@ -4868,10 +4868,10 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
           }
         }(t2[a]) };
       }
-      t.s(["getCapturedScopesOnSpan", () => c, "setCapturedScopesOnSpan", () => o], 4229);
-    }, 46665, (t) => {
+      t.s(["getCapturedScopesOnSpan", () => c, "setCapturedScopesOnSpan", () => o], 304229);
+    }, 646665, (t) => {
       "use strict";
-      var e = t.i(57493), n = t.i(20174);
+      var e = t.i(257493), n = t.i(20174);
       let r = /^o(\d+)\./, i = /^(?:(\w+):)\/\/(?:(\w+)(?::(\w+)?)?@)((?:\[[:.%\w]+\]|[\w.-]+))(?::(\d+))?\/(.+)/;
       function s(t2, e2 = false) {
         let { host: n2, path: r2, pass: i2, port: a2, projectId: o2, protocol: c2, publicKey: u } = t2;
@@ -4909,9 +4909,9 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         }(r2)) return r2;
       }
       t.s(["dsnToString", () => s, "extractOrgIdFromClient", () => o, "makeDsn", () => c]);
-    }, 53393, 12862, (t) => {
+    }, 153393, 12862, (t) => {
       "use strict";
-      var e = t.i(94482), n = t.i(2393), r = t.i(5893), i = t.i(12115), s = t.i(54534), a = t.i(4229), o = t.i(87709), c = t.i(99316), u = t.i(57890), l = t.i(20174), p = t.i(65434), d = t.i(46665), _ = t.i(62308), g = t.i(83250);
+      var e = t.i(294482), n = t.i(102393), r = t.i(505893), i = t.i(412115), s = t.i(654534), a = t.i(304229), o = t.i(187709), c = t.i(699316), u = t.i(57890), l = t.i(20174), p = t.i(765434), d = t.i(646665), _ = t.i(162308), g = t.i(883250);
       let f = RegExp("^[ \\t]*([0-9a-f]{32})?-?([0-9a-f]{16})?-?([01])?[ \\t]*$");
       function h(t2, e2) {
         let n2 = function(t3) {
@@ -4943,7 +4943,7 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         return e2 && n2 && e2 !== n2 ? (l.debug.log(`Won't continue trace because org IDs don't match (incoming baggage: ${e2}, SDK options: ${n2})`), false) : !t2.getOptions().strictTraceContinuation || (!e2 || !!n2) && (!!e2 || !n2) || (l.debug.log(`Starting a new trace because strict trace continuation is enabled but one org ID is missing (incoming baggage: ${e2}, Sentry client: ${n2})`), false);
       }
       t.s(["TRACEPARENT_REGEXP", () => f, "generateSentryTraceHeader", () => m, "generateTraceparentHeader", () => S, "propagationContextFromHeaders", () => h, "shouldContinueTrace", () => E], 12862);
-      var T = t.i(52434);
+      var T = t.i(652434);
       let y = false;
       function b(t2) {
         let { spanId: e2, traceId: n2 } = t2.spanContext(), { data: r2, op: i2, parent_span_id: s2, status: a2, origin: o2, links: c2 } = R(t2);
@@ -5010,12 +5010,12 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
           console.warn("[Sentry] Returning null from `beforeSendSpan` is disallowed. To drop certain spans, configure the respective integrations directly or use `ignoreSpans`.");
         }), y = true);
       }
-      t.s(["TRACE_FLAG_NONE", () => 0, "TRACE_FLAG_SAMPLED", () => 1, "addChildSpanToSpan", () => k, "convertSpanLinksForEnvelope", () => C, "getActiveSpan", () => M, "getRootSpan", () => L, "getSpanDescendants", () => w, "getStatusMessage", () => D, "showSpanDropWarning", () => P, "spanIsSampled", () => O, "spanTimeInputToSeconds", () => N, "spanToJSON", () => R, "spanToTraceContext", () => v, "spanToTraceHeader", () => I, "spanToTraceparentHeader", () => A, "spanToTransactionTraceContext", () => b], 53393);
-    }, 63382, 60748, (t) => {
+      t.s(["TRACE_FLAG_NONE", () => 0, "TRACE_FLAG_SAMPLED", () => 1, "addChildSpanToSpan", () => k, "convertSpanLinksForEnvelope", () => C, "getActiveSpan", () => M, "getRootSpan", () => L, "getSpanDescendants", () => w, "getStatusMessage", () => D, "showSpanDropWarning", () => P, "spanIsSampled", () => O, "spanTimeInputToSeconds", () => N, "spanToJSON", () => R, "spanToTraceContext", () => v, "spanToTraceHeader", () => I, "spanToTraceparentHeader", () => A, "spanToTransactionTraceContext", () => b], 153393);
+    }, 263382, 360748, (t) => {
       "use strict";
       let e = "production";
-      t.s(["DEFAULT_ENVIRONMENT", () => e], 60748);
-      var n = t.i(5893), r = t.i(12115), i = t.i(65434), s = t.i(46665), a = t.i(42495), o = t.i(87709), c = t.i(53393), u = t.i(4229);
+      t.s(["DEFAULT_ENVIRONMENT", () => e], 360748);
+      var n = t.i(505893), r = t.i(412115), i = t.i(765434), s = t.i(646665), a = t.i(842495), o = t.i(187709), c = t.i(153393), u = t.i(304229);
       let l = "_frozenDsc";
       function p(t2, e2) {
         (0, o.addNonEnumerableProperty)(t2, l, e2);
@@ -5042,10 +5042,10 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let E = d(t2.spanContext().traceId, e2), T = p2[r.SEMANTIC_ATTRIBUTE_SENTRY_SOURCE], y = o2.description;
         return "url" !== T && y && (E.transaction = y), (0, a.hasSpansEnabled)() && (E.sampled = String((0, c.spanIsSampled)(s2)), E.sample_rand = _2?.get("sentry.sample_rand") ?? (0, u.getCapturedScopesOnSpan)(s2).scope?.getPropagationContext().sampleRand.toString()), f(E), e2.emit("createDsc", E, s2), E;
       }
-      t.s(["freezeDscOnSpan", () => p, "getDynamicSamplingContextFromScope", () => _, "getDynamicSamplingContextFromSpan", () => g], 63382);
-    }, 75641, 76970, 6691, 50666, 96874, 69599, 35848, (t) => {
+      t.s(["freezeDscOnSpan", () => p, "getDynamicSamplingContextFromScope", () => _, "getDynamicSamplingContextFromSpan", () => g], 263382);
+    }, 875641, 776970, 606691, 150666, 496874, 469599, 835848, (t) => {
       "use strict";
-      var e = t.i(57493), n = t.i(20174), r = t.i(53393);
+      var e = t.i(257493), n = t.i(20174), r = t.i(153393);
       function i(t2) {
         if (!e.DEBUG_BUILD) return;
         let { description: i2 = "< unknown name >", op: s2 = "< unknown op >", parent_span_id: a2 } = (0, r.spanToJSON)(t2), { spanId: o2 } = t2.spanContext(), c2 = (0, r.spanIsSampled)(t2), u2 = (0, r.getRootSpan)(t2), l2 = u2 === t2, p2 = `[Tracing] Starting ${c2 ? "sampled" : "unsampled"} ${l2 ? "root " : ""}span`, d2 = [`op: ${s2}`, `name: ${i2}`, `ID: ${o2}`];
@@ -5061,8 +5061,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let { description: i2 = "< unknown name >", op: s2 = "< unknown op >" } = (0, r.spanToJSON)(t2), { spanId: a2 } = t2.spanContext(), o2 = (0, r.getRootSpan)(t2) === t2, c2 = `[Tracing] Finishing "${s2}" ${o2 ? "root " : ""}span "${i2}" with ID ${a2}`;
         n.debug.log(c2);
       }
-      t.s(["logSpanEnd", () => s, "logSpanStart", () => i], 75641);
-      var a = t.i(42495), o = t.i(62308);
+      t.s(["logSpanEnd", () => s, "logSpanStart", () => i], 875641);
+      var a = t.i(842495), o = t.i(162308);
       function c(t2, r2, i2) {
         let s2, c2;
         if (!(0, a.hasSpansEnabled)(t2)) return [false];
@@ -5073,8 +5073,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         let l2 = i2 < u2;
         return !l2 && e.DEBUG_BUILD && n.debug.log(`[Tracing] Discarding transaction because it's not included in the random sample (sampling rate = ${Number(s2)})`), [l2, u2, c2];
       }
-      t.s(["sampleSpan", () => c], 76970);
-      var u = t.i(99316);
+      t.s(["sampleSpan", () => c], 776970);
+      var u = t.i(699316);
       class l {
         constructor(t2 = {}) {
           this._traceId = t2.traceId || (0, u.generateTraceId)(), this._spanId = t2.spanId || (0, u.generateSpanId)();
@@ -5111,8 +5111,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
         recordException(t2, e2) {
         }
       }
-      t.s(["SentryNonRecordingSpan", () => l], 6691);
-      var p = t.i(63382), d = t.i(46665), _ = t.i(2393), g = t.i(66474), f = t.i(87709), h = t.i(24058);
+      t.s(["SentryNonRecordingSpan", () => l], 606691);
+      var p = t.i(263382), d = t.i(646665), _ = t.i(102393), g = t.i(966474), f = t.i(187709), h = t.i(224058);
       function m(e2, n2 = 100, r2 = Infinity) {
         try {
           return function e3(n3, r3, i2 = Infinity, s2 = Infinity, a2 = /* @__PURE__ */ function() {
@@ -5175,8 +5175,8 @@ var require_node_modules_sentry_f05d8265 = __commonJS({
       t.s(["normalize", () => m, "normalizeToSize", () => function t2(e2, n2 = 3, r2 = 102400) {
         let i2 = m(e2, n2);
         return ~-encodeURI(JSON.stringify(i2)).split(/%..|./).length > r2 ? t2(e2, n2 - 1, r2) : i2;
-      }], 50666);
-      var S = t.i(99219);
+      }], 150666);
+      var S = t.i(499219);
       function E(t2, e2 = []) {
         return [t2, e2];
       }
@@ -5244,8 +5244,8 @@ ${JSON.stringify(e3)}
         let i2 = t2.sdkProcessingMetadata?.dynamicSamplingContext;
         return { event_id: t2.event_id, sent_at: (/* @__PURE__ */ new Date()).toISOString(), ...e2 && { sdk: e2 }, ...!!n2 && r2 && { dsn: (0, d.dsnToString)(r2) }, ...i2 && { trace: i2 } };
       }
-      t.s(["addItemToEnvelope", () => T, "createAttachmentEnvelopeItem", () => C, "createEnvelope", () => E, "createEventEnvelopeHeaders", () => O, "createSpanEnvelopeItem", () => A, "envelopeContainsItemType", () => b, "envelopeItemTypeToDataCategory", () => x, "forEachEnvelopeItem", () => y, "getSdkMetadataForEnvelopeHeader", () => R, "serializeEnvelope", () => I], 96874);
-      var D = t.i(57645);
+      t.s(["addItemToEnvelope", () => T, "createAttachmentEnvelopeItem", () => C, "createEnvelope", () => E, "createEventEnvelopeHeaders", () => O, "createSpanEnvelopeItem", () => A, "envelopeContainsItemType", () => b, "envelopeItemTypeToDataCategory", () => x, "forEachEnvelopeItem", () => y, "getSdkMetadataForEnvelopeHeader", () => R, "serializeEnvelope", () => I], 496874);
+      var D = t.i(257645);
       function U(t2) {
         n.debug.log(`Ignoring span ${t2.op} - ${t2.description} because it matches \`ignoreSpans\`.`);
       }
@@ -5294,11 +5294,11 @@ ${JSON.stringify(e3)}
         }
         return E(a2, g2);
       }
-      t.s(["reparentChildSpans", () => k, "shouldIgnoreSpan", () => B], 69599), t.s(["createEventEnvelope", () => L, "createSessionEnvelope", () => w, "createSpanEnvelope", () => M], 35848);
-    }, 58648, (t) => {
+      t.s(["reparentChildSpans", () => k, "shouldIgnoreSpan", () => B], 469599), t.s(["createEventEnvelope", () => L, "createSessionEnvelope", () => w, "createSpanEnvelope", () => M], 835848);
+    }, 958648, (t) => {
       "use strict";
-      t.i(57493);
-      var e = t.i(12115);
+      t.i(257493);
+      var e = t.i(412115);
       function n(t2) {
         if (!t2 || 0 === t2.length) return;
         let n2 = {};
@@ -5307,19 +5307,19 @@ ${JSON.stringify(e3)}
           "string" == typeof i && "number" == typeof s && (n2[t3.name] = { value: s, unit: i });
         }), n2;
       }
-      t.i(20174), t.i(53393), t.s(["timedEventsToMeasurements", () => n]);
-    }, 98261, 33798, 69728, 94736, 33245, (t) => {
+      t.i(20174), t.i(153393), t.s(["timedEventsToMeasurements", () => n]);
+    }, 598261, 433798, 269728, 294736, 133245, (t) => {
       "use strict";
       let e, n, r, i;
-      var s = t.i(5893), a = t.i(57493);
-      t.i(98881);
-      var o = t.i(94482), c = t.i(2393), u = t.i(12115);
-      t.i(65434);
+      var s = t.i(505893), a = t.i(257493);
+      t.i(298881);
+      var o = t.i(294482), c = t.i(102393), u = t.i(412115);
+      t.i(765434);
       var l = t.i(20174);
-      t.i(25376);
-      var p = t.i(42495), d = t.i(62308), _ = t.i(99316), g = t.i(83250), f = t.i(52434), h = t.i(53393);
+      t.i(225376);
+      var p = t.i(842495), d = t.i(162308), _ = t.i(699316), g = t.i(883250), f = t.i(652434), h = t.i(153393);
       t.i(12862);
-      var m = t.i(63382), S = t.i(75641), E = t.i(76970), T = t.i(6691), y = t.i(35848), b = t.i(57890), v = t.i(58648), I = t.i(4229);
+      var m = t.i(263382), S = t.i(875641), E = t.i(776970), T = t.i(606691), y = t.i(835848), b = t.i(57890), v = t.i(958648), I = t.i(304229);
       class A {
         constructor(t2 = {}) {
           this._traceId = t2.traceId || (0, _.generateTraceId)(), this._spanId = t2.spanId || (0, _.generateSpanId)(), this._startTime = t2.startTimestamp || (0, b.timestampInSeconds)(), this._links = t2.links, this._attributes = {}, this.setAttributes({ [u.SEMANTIC_ATTRIBUTE_SENTRY_ORIGIN]: "manual", [u.SEMANTIC_ATTRIBUTE_SENTRY_OP]: t2.op, ...t2.attributes }), this._name = t2.name, t2.parentSpanId && (this._parentSpanId = t2.parentSpanId), "sampled" in t2 && (this._sampled = t2.sampled), t2.endTimestamp && (this._endTime = t2.endTimestamp), this._events = [], this._isStandaloneSpan = t2.isStandalone, this._endTime && this._onSpanEnded();
@@ -5402,7 +5402,7 @@ ${JSON.stringify(e3)}
       function N(t2) {
         return !!t2.start_timestamp && !!t2.timestamp && !!t2.span_id && !!t2.trace_id;
       }
-      t.i(54534);
+      t.i(654534);
       let x = "__SENTRY_SUPPRESS_TRACING__";
       function R(t2) {
         let e2 = B();
@@ -5477,8 +5477,8 @@ ${JSON.stringify(e3)}
         let p2 = c2.parentSampled ?? n2, _2 = c2.spanAttributes, g2 = e2.getPropagationContext(), [f2, h2, m2] = e2.getScopeData().sdkProcessingMetadata[x] ? [false] : (0, E.sampleSpan)(i2, { name: o2, parentSampled: p2, attributes: _2, parentSampleRate: (0, d.parseSampleRate)(g2.dsc?.sample_rate) }, g2.sampleRand), S2 = new A({ ...t2, attributes: { [u.SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "custom", [u.SEMANTIC_ATTRIBUTE_SENTRY_SAMPLE_RATE]: void 0 !== h2 && m2 ? h2 : void 0, ..._2 }, sampled: f2 });
         return !f2 && r2 && (a.DEBUG_BUILD && l.debug.log("[Tracing] Discarding root span because its trace was not chosen to be sampled."), r2.recordDroppedEvent("sample_rate", "transaction")), r2 && r2.emit("spanStart", S2), S2;
       }
-      t.s(["startInactiveSpan", () => R, "startNewTrace", () => U, "suppressTracing", () => D], 33798);
-      var w = t.i(66474), L = t.i(75403), M = t.i(60748);
+      t.s(["startInactiveSpan", () => R, "startNewTrace", () => U, "suppressTracing", () => D], 433798);
+      var w = t.i(966474), L = t.i(775403), M = t.i(360748);
       function P(t2) {
         return new G((e2) => {
           e2(t2);
@@ -5552,10 +5552,10 @@ ${JSON.stringify(e3)}
           }
         }
       }
-      t.s(["rejectedSyncPromise", () => $, "resolvedSyncPromise", () => P], 69728);
-      var j = t.i(92906);
-      t.i(24058);
-      var F = t.i(99219), J = t.i(50666), Y = t.i(74779);
+      t.s(["rejectedSyncPromise", () => $, "resolvedSyncPromise", () => P], 269728);
+      var j = t.i(392906);
+      t.i(224058);
+      var F = t.i(499219), J = t.i(150666), Y = t.i(274779);
       function V(t2, e2) {
         var n2, r2, i2, s2, a2, o2, c2, u2;
         let l2, p2, d2, { fingerprint: _2, span: g2, breadcrumbs: f2, sdkProcessingMetadata: S2 } = e2;
@@ -5575,8 +5575,8 @@ ${JSON.stringify(e3)}
         let n2 = (0, s.getGlobalScope)().getScopeData();
         return t2 && z(n2, t2.getScopeData()), e2 && z(n2, e2.getScopeData()), n2;
       }
-      t.s(["applyScopeDataToEvent", () => V, "getCombinedScopeData", () => K], 94736);
-      var W = t.i(57645);
+      t.s(["applyScopeDataToEvent", () => V, "getCombinedScopeData", () => K], 294736);
+      var W = t.i(257645);
       function q(t2, s2, o2, c2, u2, p2) {
         var d2, _2, g2;
         let f2, { normalizeDepth: h2 = 3, normalizeMaxBreadth: m2 = 1e3 } = t2, S2 = { ...s2, event_id: s2.event_id || o2.event_id || (0, L.uuid4)(), timestamp: s2.timestamp || (0, b.dateTimestampInSeconds)() }, E2 = o2.integrations || t2.integrations.map((t3) => t3.name);
@@ -5673,22 +5673,22 @@ ${JSON.stringify(e3)}
         let t2 = (0, s.getClient)();
         return t2?.getOptions().enabled !== false && !!t2?.getTransport();
       }
-      t.s(["parseEventHintOrCaptureContext", () => X, "prepareEvent", () => q], 33245), t.s(["captureEvent", () => tt, "captureException", () => Z, "flush", () => te, "isEnabled", () => tn], 98261);
-    }, 85935, (t) => {
+      t.s(["parseEventHintOrCaptureContext", () => X, "prepareEvent", () => q], 133245), t.s(["captureEvent", () => tt, "captureException", () => Z, "flush", () => te, "isEnabled", () => tn], 598261);
+    }, 485935, (t) => {
       "use strict";
-      var e = t.i(99219);
+      var e = t.i(499219);
       function n(t2) {
         let n2 = e.GLOBAL_OBJ[Symbol.for("@vercel/request-context")], r = n2?.get?.();
         r?.waitUntil && r.waitUntil(t2);
       }
       t.s(["vercelWaitUntil", () => n]);
-    }, 65549, (t) => {
+    }, 465549, (t) => {
       "use strict";
       let e = "u" < typeof __SENTRY_DEBUG__ || __SENTRY_DEBUG__;
       t.s(["DEBUG_BUILD", () => e]);
-    }, 99200, (t) => {
+    }, 499200, (t) => {
       "use strict";
-      var e = t.i(85935), n = t.i(20174), r = t.i(98261), i = t.i(99219), s = t.i(65549);
+      var e = t.i(485935), n = t.i(20174), r = t.i(598261), i = t.i(499219), s = t.i(465549);
       async function a() {
         try {
           s.DEBUG_BUILD && n.debug.log("Flushing events..."), await (0, r.flush)(2e3), s.DEBUG_BUILD && n.debug.log("Done flushing events");
@@ -5713,7 +5713,7 @@ ${JSON.stringify(e3)}
 var require_turbopack_node_modules_next_dist_esm_build_templates_edge_wrapper_b0bc9966 = __commonJS({
   ".next/server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_b0bc9966.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_b0bc9966.js", { otherChunks: ["chunks/[root-of-the-server]__f1390a54._.js", "chunks/_0727c437._.js", "chunks/node_modules_@sentry_f05d8265._.js"], runtimeModuleIds: [59858] }]), (() => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_b0bc9966.js", { otherChunks: ["chunks/[root-of-the-server]__f1390a54._.js", "chunks/_0727c437._.js", "chunks/node_modules_@sentry_f05d8265._.js"], runtimeModuleIds: [559858] }]), (() => {
       let e;
       if (!Array.isArray(globalThis.TURBOPACK)) return;
       let t = /* @__PURE__ */ new WeakMap();
@@ -6079,11 +6079,11 @@ importScripts(...self.TURBOPACK_NEXT_CHUNK_URLS.map(c => self.TURBOPACK_WORKER_L
 var require_root_of_the_server_2112c9b3 = __commonJS({
   ".next/server/edge/chunks/[root-of-the-server]__2112c9b3._.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__2112c9b3._.js", 51615, (e, r, t) => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__2112c9b3._.js", 951615, (e, r, t) => {
       r.exports = e.x("node:buffer", () => (init_node_buffer(), __toCommonJS(node_buffer_exports)));
-    }, 35825, (e, r, t) => {
+    }, 435825, (e, r, t) => {
       self._ENTRIES ||= {};
-      let h = Promise.resolve().then(() => e.i(58217));
+      let h = Promise.resolve().then(() => e.i(558217));
       h.catch(() => {
       }), self._ENTRIES.middleware_middleware = new Proxy(h, { get(e2, r2) {
         if ("then" === r2) return (r3, t3) => e2.then(r3, t3);
@@ -6107,7 +6107,7 @@ var init_node_async_hooks = __esm({
 var require_root_of_the_server_4d77b799 = __commonJS({
   ".next/server/edge/chunks/[root-of-the-server]__4d77b799._.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__4d77b799._.js", 28042, (e, t, r) => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/[root-of-the-server]__4d77b799._.js", 828042, (e, t, r) => {
       "use strict";
       var n = Object.defineProperty, s = Object.getOwnPropertyDescriptor, i = Object.getOwnPropertyNames, a = Object.prototype.hasOwnProperty, o = {}, l = { RequestCookies: () => g, ResponseCookies: () => m, parseCookie: () => h, parseSetCookie: () => d, stringifyCookie: () => c };
       for (var u in l) n(o, u, { get: l[u], enumerable: true });
@@ -6251,7 +6251,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
           return [...this._parsed.values()].map(c).join("; ");
         }
       };
-    }, 11646, (e) => {
+    }, 311646, (e) => {
       "use strict";
       function t(e7) {
         return Symbol.for(e7);
@@ -6846,7 +6846,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         }(e0[e7].c);
       };
       (h = s || (s = {}))[h.INT = 0] = "INT", h[h.DOUBLE = 1] = "DOUBLE", (d = i || (i = {}))[d.NOT_RECORD = 0] = "NOT_RECORD", d[d.RECORD = 1] = "RECORD", d[d.RECORD_AND_SAMPLED = 2] = "RECORD_AND_SAMPLED", (p = a || (a = {}))[p.INTERNAL = 0] = "INTERNAL", p[p.SERVER = 1] = "SERVER", p[p.CLIENT = 2] = "CLIENT", p[p.PRODUCER = 3] = "PRODUCER", p[p.CONSUMER = 4] = "CONSUMER", (f = o || (o = {}))[f.UNSET = 0] = "UNSET", f[f.OK = 1] = "OK", f[f.ERROR = 2] = "ERROR";
-      var e2 = "[_0-9a-z-*/]", e4 = RegExp("^(?:[a-z]" + e2 + "{0,255}|" + ("[a-z0-9]" + e2 + "{0,240}@[a-z]") + e2 + "{0,13})$"), e3 = /^[ -~]{0,255}[!-~]$/, e6 = /,|=/, e5 = function() {
+      var e2 = "[_0-9a-z-*/]", e3 = RegExp("^(?:[a-z]" + e2 + "{0,255}|" + ("[a-z0-9]" + e2 + "{0,240}@[a-z]") + e2 + "{0,13})$"), e4 = /^[ -~]{0,255}[!-~]$/, e6 = /,|=/, e5 = function() {
         function e7(e9) {
           this._internalState = /* @__PURE__ */ new Map(), e9 && this._parse(e9);
         }
@@ -6868,7 +6868,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
             var r2 = t2.trim(), n2 = r2.indexOf("=");
             if (-1 !== n2) {
               var s2 = r2.slice(0, n2), i2 = r2.slice(n2 + 1, t2.length);
-              e4.test(s2) && e3.test(i2) && !e6.test(i2) && e10.set(s2, i2);
+              e3.test(s2) && e4.test(i2) && !e6.test(i2) && e10.set(s2, i2);
             }
             return e10;
           }, /* @__PURE__ */ new Map()), this._internalState.size > 32 && (this._internalState = new Map(Array.from(this._internalState.entries()).reverse().slice(0, 32))));
@@ -6882,8 +6882,8 @@ var require_root_of_the_server_4d77b799 = __commonJS({
       function e8(e7) {
         return new e5(e7);
       }
-      e.s(["DiagConsoleLogger", () => e1, "DiagLogLevel", () => r, "INVALID_SPANID", () => ex, "INVALID_SPAN_CONTEXT", () => eA, "INVALID_TRACEID", () => eC, "ProxyTracer", () => eG, "ProxyTracerProvider", () => eX, "ROOT_CONTEXT", () => g, "SamplingDecision", () => i, "SpanKind", () => a, "SpanStatusCode", () => o, "TraceFlags", () => n, "ValueType", () => s, "baggageEntryMetadataFromString", () => eE, "context", () => q, "createContextKey", () => t, "createNoopMeter", () => ea, "createTraceState", () => e8, "default", 0, eZ, "defaultTextMapGetter", () => eh, "defaultTextMapSetter", () => ed, "diag", () => B, "isSpanContextValid", () => eH, "isValidSpanId", () => eW, "isValidTraceId", () => eM, "metrics", () => eu, "propagation", () => eO, "trace", () => eQ], 11646);
-    }, 71498, (e, t, r) => {
+      e.s(["DiagConsoleLogger", () => e1, "DiagLogLevel", () => r, "INVALID_SPANID", () => ex, "INVALID_SPAN_CONTEXT", () => eA, "INVALID_TRACEID", () => eC, "ProxyTracer", () => eG, "ProxyTracerProvider", () => eX, "ROOT_CONTEXT", () => g, "SamplingDecision", () => i, "SpanKind", () => a, "SpanStatusCode", () => o, "TraceFlags", () => n, "ValueType", () => s, "baggageEntryMetadataFromString", () => eE, "context", () => q, "createContextKey", () => t, "createNoopMeter", () => ea, "createTraceState", () => e8, "default", 0, eZ, "defaultTextMapGetter", () => eh, "defaultTextMapSetter", () => ed, "diag", () => B, "isSpanContextValid", () => eH, "isValidSpanId", () => eW, "isValidTraceId", () => eM, "metrics", () => eu, "propagation", () => eO, "trace", () => eQ], 311646);
+    }, 871498, (e, t, r) => {
       (() => {
         "use strict";
         "u" > typeof __nccwpck_require__ && (__nccwpck_require__.ab = "/ROOT/node_modules/next/dist/compiled/cookie/");
@@ -6945,7 +6945,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
           return l;
         }, e2 = decodeURIComponent, r2 = encodeURIComponent, n = /; */, s = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/, t.exports = i;
       })();
-    }, 99734, (e, t, r) => {
+    }, 299734, (e, t, r) => {
       (() => {
         "use strict";
         let e2, r2, n, s, i;
@@ -7253,9 +7253,9 @@ var require_root_of_the_server_4d77b799 = __commonJS({
           }
         }, t.exports = u;
       })();
-    }, 78500, (e, t, r) => {
+    }, 478500, (e, t, r) => {
       t.exports = e.x("node:async_hooks", () => (init_node_async_hooks(), __toCommonJS(node_async_hooks_exports)));
-    }, 25085, (e, t, r) => {
+    }, 369307, (e, t, r) => {
       "use strict";
       Object.defineProperty(r, "__esModule", { value: true });
       var n = { getTestReqInfo: function() {
@@ -7264,7 +7264,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         return o;
       } };
       for (var s in n) Object.defineProperty(r, s, { enumerable: true, get: n[s] });
-      let i = new (e.r(78500)).AsyncLocalStorage();
+      let i = new (e.r(478500)).AsyncLocalStorage();
       function a(e2, t2) {
         let r2 = t2.header(e2, "next-test-proxy-port");
         if (!r2) return;
@@ -7279,9 +7279,9 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         let r2 = i.getStore();
         return r2 || (e2 && t2 ? a(e2, t2) : void 0);
       }
-    }, 28325, (e, t, r) => {
+    }, 928325, (e, t, r) => {
       "use strict";
-      var n = e.i(51615);
+      var n = e.i(951615);
       Object.defineProperty(r, "__esModule", { value: true });
       var s = { handleFetch: function() {
         return u;
@@ -7291,7 +7291,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         return o;
       } };
       for (var i in s) Object.defineProperty(r, i, { enumerable: true, get: s[i] });
-      let a = e.r(25085), o = { url: (e2) => e2.url, header: (e2, t2) => e2.headers.get(t2) };
+      let a = e.r(369307), o = { url: (e2) => e2.url, header: (e2, t2) => e2.headers.get(t2) };
       async function l(e2, t2) {
         let { url: r2, method: s2, headers: i2, body: a2, cache: o2, credentials: l2, integrity: u2, mode: c2, redirect: h, referrer: d, referrerPolicy: p } = t2;
         return { testData: e2, api: "fetch", request: { url: r2, method: s2, headers: [...Array.from(i2), ["next-test-stack", function() {
@@ -7332,7 +7332,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
           e.g.fetch = t2;
         };
       }
-    }, 94165, (e, t, r) => {
+    }, 494165, (e, t, r) => {
       "use strict";
       Object.defineProperty(r, "__esModule", { value: true });
       var n = { interceptTestApis: function() {
@@ -7341,14 +7341,14 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         return l;
       } };
       for (var s in n) Object.defineProperty(r, s, { enumerable: true, get: n[s] });
-      let i = e.r(25085), a = e.r(28325);
+      let i = e.r(369307), a = e.r(928325);
       function o() {
         return (0, a.interceptFetch)(e.g.fetch);
       }
       function l(e2) {
         return (t2, r2) => (0, i.withRequest)(t2, a.reader, () => e2(t2, r2));
       }
-    }, 99929, (e, t, r) => {
+    }, 399929, (e, t, r) => {
       "use strict";
       let n;
       Object.defineProperty(r, "__esModule", { value: true }), r.parseCookie = h, r.parse = h, r.stringifyCookie = function(e2, t2) {
@@ -7504,8 +7504,8 @@ var require_root_of_the_server_4d77b799 = __commonJS({
           return e2;
         }
       }
-    }, 39990, (e, t, r) => {
-    }, 64445, (e, t, r) => {
+    }, 739990, (e, t, r) => {
+    }, 164445, (e, t, r) => {
       var n = { 226: function(t2, r2) {
         !function(n2, s2) {
           "use strict";
@@ -7587,7 +7587,7 @@ var require_root_of_the_server_4d77b799 = __commonJS({
         return r2.exports;
       }
       i.ab = "/ROOT/node_modules/next/dist/compiled/ua-parser-js/", t.exports = i(226);
-    }, 8946, (e, t, r) => {
+    }, 708946, (e, t, r) => {
       "use strict";
       var n = { H: null, A: null };
       function s(e2) {
@@ -7778,8 +7778,8 @@ var require_root_of_the_server_4d77b799 = __commonJS({
       }, r.version = "19.3.0-canary-f93b9fd4-20251217";
     }, 40049, (e, t, r) => {
       "use strict";
-      t.exports = e.r(8946);
-    }, 58217, (e) => {
+      t.exports = e.r(708946);
+    }, 558217, (e) => {
       "use strict";
       let t, r, n;
       async function s() {
@@ -8111,7 +8111,7 @@ Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime`;
           return new $(String(this), this[I].options);
         }
       }
-      var N, U, L, D, q, B, M, W, H, z, V, K, F, G, J, X, Y, Q, Z, ee, et, er, en, es, ei, ea, eo, el, eu, ec, eh, ed, ep, ef = e.i(28042);
+      var N, U, L, D, q, B, M, W, H, z, V, K, F, G, J, X, Y, Q, Z, ee, et, er, en, es, ei, ea, eo, el, eu, ec, eh, ed, ep, ef = e.i(828042);
       let eg = Symbol("internal request");
       class em extends Request {
         constructor(e10, t10 = {}) {
@@ -8398,14 +8398,14 @@ Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime`;
       function eQ(e10) {
         return null !== e10 && "object" == typeof e10 && "then" in e10 && "function" == typeof e10.then;
       }
-      let eZ = process.env.NEXT_OTEL_PERFORMANCE_PREFIX, { context: e0, propagation: e1, trace: e2, SpanStatusCode: e4, SpanKind: e3, ROOT_CONTEXT: e6 } = t = e.r(11646);
+      let eZ = process.env.NEXT_OTEL_PERFORMANCE_PREFIX, { context: e0, propagation: e1, trace: e2, SpanStatusCode: e3, SpanKind: e4, ROOT_CONTEXT: e6 } = t = e.r(311646);
       class e5 extends Error {
         constructor(e10, t10) {
           super(), this.bubble = e10, this.result = t10;
         }
       }
       let e8 = (e10, t10) => {
-        "object" == typeof t10 && null !== t10 && t10 instanceof e5 && t10.bubble ? e10.setAttribute("next.bubble", true) : (t10 && (e10.recordException(t10), e10.setAttribute("error.type", t10.name)), e10.setStatus({ code: e4.ERROR, message: null == t10 ? void 0 : t10.message })), e10.end();
+        "object" == typeof t10 && null !== t10 && t10 instanceof e5 && t10.bubble ? e10.setAttribute("next.bubble", true) : (t10 && (e10.recordException(t10), e10.setAttribute("error.type", t10.name)), e10.setStatus({ code: e3.ERROR, message: null == t10 ? void 0 : t10.message })), e10.end();
       }, e9 = /* @__PURE__ */ new Map(), e7 = t.createContextKey("next.rootSpanId"), te = 0, tt = { set(e10, t10, r10) {
         e10.push({ key: t10, value: r10 });
       } }, tr = (n = new class e {
@@ -8527,7 +8527,7 @@ Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime`;
           super(`Invariant: ${e10.endsWith(".") ? e10 : e10 + "."} This is a bug in Next.js.`, t10), this.name = "InvariantError";
         }
       }
-      var tl = e.i(99734), tu = e.i(51615);
+      var tl = e.i(299734), tu = e.i(951615);
       process.env.NEXT_PRIVATE_DEBUG_CACHE, Symbol.for("@next/cache-handlers");
       let tc = Symbol.for("@next/cache-handlers-map"), th = Symbol.for("@next/cache-handlers-set"), td = globalThis;
       function tp() {
@@ -8703,7 +8703,7 @@ Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime`;
         let a2, o2, l2, c2, h2;
         !function() {
           if (!tC && (tC = true, "true" === process.env.NEXT_PRIVATE_TEST_PROXY)) {
-            let { interceptTestApis: t11, wrapRequestHandler: r11 } = e.r(94165);
+            let { interceptTestApis: t11, wrapRequestHandler: r11 } = e.r(494165);
             t11(), tx = r11(tx);
           }
         }(), await u();
@@ -8844,7 +8844,7 @@ Learn More: https://nextjs.org/docs/messages/node-module-in-edge-runtime`;
         return { response: O2, waitUntil: ("internal" === E2[_].kind ? Promise.all(E2[_].promises).then(() => {
         }) : void 0) ?? Promise.resolve(), fetchMetrics: v2.fetchMetrics };
       }
-      var tP = e.i(99929);
+      var tP = e.i(399929);
       tP.parse, tP.serialize;
       let tj = { path: "/", sameSite: "lax", httpOnly: false, maxAge: 3456e4 }, tI = /^(.*)[.](0|[1-9][0-9]*)$/;
       function t$(e10, t10) {
@@ -9312,7 +9312,7 @@ ${c2.stack}`);
           return e11 && "function" == typeof Symbol && e11.constructor === Symbol && e11 !== Symbol.prototype ? "symbol" : typeof e11;
         })(e10);
       }
-      function t4(e10, t10) {
+      function t3(e10, t10) {
         var r10 = Object.keys(e10);
         if (Object.getOwnPropertySymbols) {
           var n10 = Object.getOwnPropertySymbols(e10);
@@ -9322,10 +9322,10 @@ ${c2.stack}`);
         }
         return r10;
       }
-      function t3(e10) {
+      function t4(e10) {
         for (var t10 = 1; t10 < arguments.length; t10++) {
           var r10 = null != arguments[t10] ? arguments[t10] : {};
-          t10 % 2 ? t4(Object(r10), true).forEach(function(t11) {
+          t10 % 2 ? t3(Object(r10), true).forEach(function(t11) {
             !function(e11, t12, r11) {
               var n10;
               (n10 = function(e12, t13) {
@@ -9339,7 +9339,7 @@ ${c2.stack}`);
                 return ("string" === t13 ? String : Number)(e12);
               }(t12, "string"), (t12 = "symbol" == t2(n10) ? n10 : n10 + "") in e11) ? Object.defineProperty(e11, t12, { value: r11, enumerable: true, configurable: true, writable: true }) : e11[t12] = r11;
             }(e10, t11, r10[t11]);
-          }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e10, Object.getOwnPropertyDescriptors(r10)) : t4(Object(r10)).forEach(function(t11) {
+          }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e10, Object.getOwnPropertyDescriptors(r10)) : t3(Object(r10)).forEach(function(t11) {
             Object.defineProperty(e10, t11, Object.getOwnPropertyDescriptor(r10, t11));
           });
         }
@@ -9356,11 +9356,11 @@ ${c2.stack}`);
               let s3 = () => {
                 clearTimeout(n11), r11.abort();
               };
-              return i3.addEventListener("abort", s3, { once: true }), a2(e12, t3(t3({}, t11), {}, { signal: r11.signal })).finally(() => {
+              return i3.addEventListener("abort", s3, { once: true }), a2(e12, t4(t4({}, t11), {}, { signal: r11.signal })).finally(() => {
                 clearTimeout(n11), i3.removeEventListener("abort", s3);
               });
             }
-            return a2(e12, t3(t3({}, t11), {}, { signal: r11.signal })).finally(() => clearTimeout(n11));
+            return a2(e12, t4(t4({}, t11), {}, { signal: r11.signal })).finally(() => clearTimeout(n11));
           } : this.fetch = a2;
         }
         from(e11) {
@@ -10891,7 +10891,7 @@ Option 2: Install and provide the "ws" package:
         async deleteVectors(e10) {
           return super.deleteVectors.call(this, rP(rP({}, e10), {}, { vectorBucketName: this.vectorBucketName, indexName: this.indexName }));
         }
-      }, r4 = class extends rJ {
+      }, r3 = class extends rJ {
         constructor(e10, t10 = {}, r10, n10) {
           super(e10, t10, r10, n10);
         }
@@ -10905,7 +10905,7 @@ Option 2: Install and provide the "ws" package:
           return new rX(this.url + "/iceberg", this.headers, this.fetch);
         }
       };
-      let r3 = "2.94.0", r6 = { "X-Client-Info": `gotrue-js/${r3}` }, r5 = "X-Supabase-Api-Version", r8 = { "2024-01-01": { timestamp: Date.parse("2024-01-01T00:00:00.0Z"), name: "2024-01-01" } }, r9 = /^([a-z0-9_-]{4})*($|[a-z0-9_-]{3}$|[a-z0-9_-]{2}$)$/i;
+      let r4 = "2.94.0", r6 = { "X-Client-Info": `gotrue-js/${r4}` }, r5 = "X-Supabase-Api-Version", r8 = { "2024-01-01": { timestamp: Date.parse("2024-01-01T00:00:00.0Z"), name: "2024-01-01" } }, r9 = /^([a-z0-9_-]{4})*($|[a-z0-9_-]{3}$|[a-z0-9_-]{2}$)$/i;
       class r7 extends Error {
         constructor(e10, t10, r10) {
           super(e10), this.__isAuthError = true, this.name = "AuthError", this.status = t10, this.code = r10;
@@ -11383,10 +11383,10 @@ Option 2: Install and provide the "ws" package:
           }
         }
       }();
-      function n4(e10) {
+      function n3(e10) {
         return "localhost" === e10 || /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/i.test(e10);
       }
-      async function n3(e10) {
+      async function n4(e10) {
         try {
           let t10 = await navigator.credentials.create(e10);
           if (!t10) return { data: null, error: new n1("Empty credential response", t10) };
@@ -11408,7 +11408,7 @@ Option 2: Install and provide the "ws" package:
             else if ("NotSupportedError" === e11.name) return new n0(0 === i2.pubKeyCredParams.filter((e12) => "public-key" === e12.type).length ? { message: 'No entry in pubKeyCredParams was of type "public-key"', code: "ERROR_MALFORMED_PUBKEYCREDPARAMS", cause: e11 } : { message: "No available authenticator supported any of the specified pubKeyCredParams algorithms", code: "ERROR_AUTHENTICATOR_NO_SUPPORTED_PUBKEYCREDPARAMS_ALG", cause: e11 });
             else if ("SecurityError" === e11.name) {
               let t12 = window.location.hostname;
-              if (!n4(t12)) return new n0({ message: `${window.location.hostname} is an invalid domain`, code: "ERROR_INVALID_DOMAIN", cause: e11 });
+              if (!n3(t12)) return new n0({ message: `${window.location.hostname} is an invalid domain`, code: "ERROR_INVALID_DOMAIN", cause: e11 });
               if (i2.rp.id !== t12) return new n0({ message: `The RP ID "${i2.rp.id}" is invalid for this domain`, code: "ERROR_INVALID_RP_ID", cause: e11 });
             } else if ("TypeError" === e11.name) {
               if (i2.user.id.byteLength < 1 || i2.user.id.byteLength > 64) return new n0({ message: "User ID was not between 1 and 64 characters", code: "ERROR_INVALID_USER_ID_LENGTH", cause: e11 });
@@ -11432,7 +11432,7 @@ Option 2: Install and provide the "ws" package:
             } else if ("NotAllowedError" === e11.name) return new n0({ message: e11.message, code: "ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY", cause: e11 });
             else if ("SecurityError" === e11.name) {
               let t12 = window.location.hostname;
-              if (!n4(t12)) return new n0({ message: `${window.location.hostname} is an invalid domain`, code: "ERROR_INVALID_DOMAIN", cause: e11 });
+              if (!n3(t12)) return new n0({ message: `${window.location.hostname} is an invalid domain`, code: "ERROR_INVALID_DOMAIN", cause: e11 });
               if (r10.rpId !== t12) return new n0({ message: `The RP ID "${r10.rpId}" is invalid for this domain`, code: "ERROR_INVALID_RP_ID", cause: e11 });
             } else if ("UnknownError" === e11.name) return new n0({ message: "The authenticator was unable to process the specified options, or could not create a new assertion signature", code: "ERROR_AUTHENTICATOR_GENERAL_ERROR", cause: e11 });
             return new n0({ message: "a Non-Webauthn related error has occurred", code: "ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY", cause: e11 });
@@ -11477,7 +11477,7 @@ Option 2: Install and provide the "ws" package:
             }
             switch (c2.webauthn.type) {
               case "create": {
-                let t11 = (a2 = c2.webauthn.credential_options.publicKey, o2 = null == s2 ? void 0 : s2.create, n9(n5, a2, o2 || {})), { data: r11, error: n11 } = await n3({ publicKey: t11, signal: d2 });
+                let t11 = (a2 = c2.webauthn.credential_options.publicKey, o2 = null == s2 ? void 0 : s2.create, n9(n5, a2, o2 || {})), { data: r11, error: n11 } = await n4({ publicKey: t11, signal: d2 });
                 if (r11) return { data: { factorId: e10, challengeId: c2.id, webauthn: { type: c2.webauthn.type, credential_response: r11 } }, error: null };
                 return { data: null, error: n11 };
               }
@@ -11559,7 +11559,7 @@ Option 2: Install and provide the "ws" package:
           return e10;
         }
         _logPrefix() {
-          return `GoTrueClient@${this.storageKey}:${this.instanceID} (${r3}) ${(/* @__PURE__ */ new Date()).toISOString()}`;
+          return `GoTrueClient@${this.storageKey}:${this.instanceID} (${r4}) ${(/* @__PURE__ */ new Date()).toISOString()}`;
         }
         _debug(...e10) {
           return this.logDebugMessages && this.logger(this._logPrefix(), ...e10), this;
@@ -12680,7 +12680,7 @@ ${y3}`;
               let o3 = null != (a3 = await t11()) ? a3 : e11, l3 = new s3(null == i3 ? void 0 : i3.headers);
               return l3.has("apikey") || l3.set("apikey", e11), l3.has("Authorization") || l3.set("Authorization", `Bearer ${o3}`), n11(r12, sd(sd({}, i3), {}, { headers: l3 }));
             };
-          })(t10, this._getAccessToken.bind(this), l2.global.fetch), this.realtime = this._initRealtimeClient(sd({ headers: this.headers, accessToken: this._getAccessToken.bind(this) }, l2.realtime)), this.accessToken && Promise.resolve(this.accessToken()).then((e11) => this.realtime.setAuth(e11)).catch((e11) => console.warn("Failed to set initial Realtime auth token:", e11)), this.rest = new t6(new URL("rest/v1", a2).href, { headers: this.headers, schema: l2.db.schema, fetch: this.fetch, timeout: l2.db.timeout, urlLengthLimit: l2.db.urlLengthLimit }), this.storage = new r4(this.storageUrl.href, this.headers, this.fetch, null == r10 ? void 0 : r10.storage), l2.accessToken || this._listenForAuthEvents();
+          })(t10, this._getAccessToken.bind(this), l2.global.fetch), this.realtime = this._initRealtimeClient(sd({ headers: this.headers, accessToken: this._getAccessToken.bind(this) }, l2.realtime)), this.accessToken && Promise.resolve(this.accessToken()).then((e11) => this.realtime.setAuth(e11)).catch((e11) => console.warn("Failed to set initial Realtime auth token:", e11)), this.rest = new t6(new URL("rest/v1", a2).href, { headers: this.headers, schema: l2.db.schema, fetch: this.fetch, timeout: l2.db.timeout, urlLengthLimit: l2.db.urlLengthLimit }), this.storage = new r3(this.storageUrl.href, this.headers, this.fetch, null == r10 ? void 0 : r10.storage), l2.accessToken || this._listenForAuthEvents();
         }
         get functions() {
           return new tJ(this.functionsUrl.href, { headers: this.headers, customFetch: this.fetch });
@@ -12735,7 +12735,7 @@ ${y3}`;
         if (null == t10) return false;
         let r10 = t10.match(/^v(\d+)\./);
         return !!r10 && 18 >= parseInt(r10[1], 10);
-      }() && console.warn("\u26A0\uFE0F  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217"), e.i(39990), "u" > typeof process && process.env?.npm_package_name) {
+      }() && console.warn("\u26A0\uFE0F  Node.js 18 and below are deprecated and will no longer be supported in future versions of @supabase/supabase-js. Please upgrade to Node.js 20 or later. For more information, visit: https://github.com/orgs/supabase/discussions/37217"), e.i(739990), "u" > typeof process && process.env?.npm_package_name) {
         let e10 = process.env.npm_package_name;
         ["@supabase/auth-helpers-nextjs", "@supabase/auth-helpers-react", "@supabase/auth-helpers-remix", "@supabase/auth-helpers-sveltekit"].includes(e10) && console.warn(`
 \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
@@ -12757,7 +12757,7 @@ ${y3}`;
 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
     `);
       }
-      e.i(64445), "u" < typeof URLPattern || URLPattern;
+      e.i(164445), "u" < typeof URLPattern || URLPattern;
       var sg = e.i(40049);
       if (/* @__PURE__ */ new WeakMap(), sg.default.unstable_postpone, false === ("Route %%% needs to bail out of prerendering at this point because it used ^^^. React throws this special object to indicate where. It should not be caught by your own try/catch. Learn more: https://nextjs.org/docs/messages/ppr-caught-error".includes("needs to bail out of prerendering at this point because it used") && "Route %%% needs to bail out of prerendering at this point because it used ^^^. React throws this special object to indicate where. It should not be caught by your own try/catch. Learn more: https://nextjs.org/docs/messages/ppr-caught-error".includes("Learn more: https://nextjs.org/docs/messages/ppr-caught-error"))) throw Object.defineProperty(Error("Invariant: isDynamicPostpone misidentified a postpone reason. This is a bug in Next.js"), "__NEXT_ERROR_CODE", { value: "E296", enumerable: false, configurable: true });
       async function sm(e10) {
@@ -12870,7 +12870,7 @@ https://supabase.com/dashboard/project/_/settings/api`);
         } catch (e11) {
           return console.error("Middleware: Supabase connection error", e11), t10;
         }
-        if (["/profile"].some((t11) => e10.nextUrl.pathname.startsWith(t11)) && !i2) {
+        if ([].some((t11) => e10.nextUrl.pathname.startsWith(t11)) && !i2) {
           let t11 = new URL("/auth/login", e10.url);
           return t11.searchParams.set("redirect", e10.nextUrl.pathname), e_.redirect(t11);
         }
@@ -12888,8 +12888,8 @@ https://supabase.com/dashboard/project/_/settings/api`);
         }
         return t10;
       }
-      RegExp(`\\n\\s+at Suspense \\(<anonymous>\\)(?:(?!\\n\\s+at (?:body|div|main|section|article|aside|header|footer|nav|form|p|span|h1|h2|h3|h4|h5|h6) \\(<anonymous>\\))[\\s\\S])*?\\n\\s+at __next_root_layout_boundary__ \\([^\\n]*\\)`), RegExp(`\\n\\s+at __next_metadata_boundary__[\\n\\s]`), RegExp(`\\n\\s+at __next_viewport_boundary__[\\n\\s]`), RegExp(`\\n\\s+at __next_outlet_boundary__[\\n\\s]`), e.s([], 85835), e.i(85835), e.s(["config", 0, { matcher: ["/admin/:path*", "/profile", "/debug-auth"] }, "middleware", () => sm], 96592);
-      var sy = e.i(96592);
+      RegExp(`\\n\\s+at Suspense \\(<anonymous>\\)(?:(?!\\n\\s+at (?:body|div|main|section|article|aside|header|footer|nav|form|p|span|h1|h2|h3|h4|h5|h6) \\(<anonymous>\\))[\\s\\S])*?\\n\\s+at __next_root_layout_boundary__ \\([^\\n]*\\)`), RegExp(`\\n\\s+at __next_metadata_boundary__[\\n\\s]`), RegExp(`\\n\\s+at __next_viewport_boundary__[\\n\\s]`), RegExp(`\\n\\s+at __next_outlet_boundary__[\\n\\s]`), e.s([], 985835), e.i(985835), e.s(["config", 0, { matcher: ["/admin/:path*", "/debug-auth"] }, "middleware", () => sm], 196592);
+      var sy = e.i(196592);
       Object.values({ NOT_FOUND: 404, FORBIDDEN: 403, UNAUTHORIZED: 401 });
       let sb = { ...sy }, sw = "/middleware", sv = sb.middleware || sb.default;
       if ("function" != typeof sv) throw new class extends Error {
@@ -12904,7 +12904,7 @@ https://supabase.com/dashboard/project/_/settings/api`);
           let t10 = e11[0], r10 = new URL(t10.url), n10 = r10.pathname + r10.search;
           throw await o(s2, { path: n10, method: t10.method, headers: Object.fromEntries(t10.headers.entries()) }, { routerKind: "Pages Router", routePath: "/proxy", routeType: "proxy", revalidateReason: void 0 }), s2;
         }
-      } })], 58217);
+      } })], 558217);
     }]);
   }
 });
@@ -12913,7 +12913,7 @@ https://supabase.com/dashboard/project/_/settings/api`);
 var require_turbopack_node_modules_next_dist_esm_build_templates_edge_wrapper_851fa7d3 = __commonJS({
   ".next/server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_851fa7d3.js"() {
     "use strict";
-    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_851fa7d3.js", { otherChunks: ["chunks/[root-of-the-server]__2112c9b3._.js", "chunks/[root-of-the-server]__4d77b799._.js"], runtimeModuleIds: [35825] }]), (() => {
+    (globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_851fa7d3.js", { otherChunks: ["chunks/[root-of-the-server]__2112c9b3._.js", "chunks/[root-of-the-server]__4d77b799._.js"], runtimeModuleIds: [435825] }]), (() => {
       let e;
       if (!Array.isArray(globalThis.TURBOPACK)) return;
       let t = /* @__PURE__ */ new WeakMap();
@@ -13305,7 +13305,7 @@ var init_edgeFunctionHandler = __esm({
   "node_modules/@opennextjs/aws/dist/core/edgeFunctionHandler.js"() {
     globalThis._ENTRIES = {};
     globalThis.self = globalThis;
-    globalThis._ROUTES = [{ "name": "middleware", "page": "/", "regex": ["^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$", "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/profile(\\\\.json)?[\\/#\\?]?$", "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/debug-auth(\\\\.json)?[\\/#\\?]?$"] }];
+    globalThis._ROUTES = [{ "name": "middleware", "page": "/", "regex": ["^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$", "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/debug-auth(\\\\.json)?[\\/#\\?]?$"] }];
     require_root_of_the_server_f1390a54();
     require_c437();
     require_node_modules_sentry_f05d8265();
@@ -13464,12 +13464,12 @@ var NEXT_DIR = path.join(__dirname, ".next");
 var OPEN_NEXT_DIR = path.join(__dirname, ".open-next");
 debug({ NEXT_DIR, OPEN_NEXT_DIR });
 var NextConfig = { "env": { "NEXT_PUBLIC_SUPABASE_URL": "https://ejdwrepyuznanwujidai.supabase.co", "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqZHdyZXB5dXpuYW53dWppZGFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjk3NTYsImV4cCI6MjA4Mzk0NTc1Nn0.MRJe6csColzMRDpAWa-Ma99noAk6n8SbnXXHP2rNAJ4" }, "typescript": { "ignoreBuildErrors": false }, "typedRoutes": false, "distDir": ".next", "cleanDistDir": true, "assetPrefix": "", "cacheMaxMemorySize": 52428800, "configOrigin": "next.config.js", "useFileSystemPublicRoutes": true, "generateEtags": true, "pageExtensions": ["tsx", "ts", "jsx", "js"], "poweredByHeader": false, "compress": true, "images": { "deviceSizes": [640, 750, 828, 1080, 1200, 1920, 2048, 3840], "imageSizes": [32, 48, 64, 96, 128, 256, 384], "path": "/_next/image", "loader": "default", "loaderFile": "", "domains": [], "disableStaticImages": false, "minimumCacheTTL": 14400, "formats": ["image/webp"], "maximumRedirects": 3, "maximumResponseBody": 5e7, "dangerouslyAllowLocalIP": false, "dangerouslyAllowSVG": false, "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;", "contentDispositionType": "attachment", "localPatterns": [{ "pathname": "**", "search": "" }], "remotePatterns": [{ "protocol": "https", "hostname": "**.supabase.co" }, { "protocol": "https", "hostname": "lh3.googleusercontent.com" }, { "protocol": "https", "hostname": "**.r2.dev" }, { "protocol": "https", "hostname": "**.r2.cloudflarestorage.com" }, { "protocol": "https", "hostname": "maayaauvuu.com" }], "qualities": [75], "unoptimized": false }, "devIndicators": { "position": "bottom-left" }, "onDemandEntries": { "maxInactiveAge": 6e4, "pagesBufferLength": 5 }, "basePath": "", "sassOptions": {}, "trailingSlash": false, "i18n": null, "productionBrowserSourceMaps": false, "excludeDefaultMomentLocales": true, "reactProductionProfiling": false, "reactStrictMode": true, "reactMaxHeadersLength": 6e3, "httpAgentOptions": { "keepAlive": true }, "logging": {}, "compiler": {}, "expireTime": 31536e3, "staticPageGenerationTimeout": 60, "output": "standalone", "modularizeImports": { "@mui/icons-material": { "transform": "@mui/icons-material/{{member}}" }, "lodash": { "transform": "lodash/{{member}}" } }, "outputFileTracingRoot": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce", "cacheComponents": false, "cacheLife": { "default": { "stale": 300, "revalidate": 900, "expire": 4294967294 }, "seconds": { "stale": 30, "revalidate": 1, "expire": 60 }, "minutes": { "stale": 300, "revalidate": 60, "expire": 3600 }, "hours": { "stale": 300, "revalidate": 3600, "expire": 86400 }, "days": { "stale": 300, "revalidate": 86400, "expire": 604800 }, "weeks": { "stale": 300, "revalidate": 604800, "expire": 2592e3 }, "max": { "stale": 300, "revalidate": 2592e3, "expire": 31536e3 } }, "cacheHandlers": {}, "experimental": { "useSkewCookie": false, "cssChunking": true, "multiZoneDraftMode": false, "appNavFailHandling": false, "prerenderEarlyExit": true, "serverMinification": true, "linkNoTouchStart": false, "caseSensitiveRoutes": false, "dynamicOnHover": false, "preloadEntriesOnStart": true, "clientRouterFilter": true, "clientRouterFilterRedirects": false, "fetchCacheKeyPrefix": "", "proxyPrefetch": "flexible", "optimisticClientCache": true, "manualClientBasePath": false, "cpus": 7, "memoryBasedWorkersCount": false, "imgOptConcurrency": null, "imgOptTimeoutInSeconds": 7, "imgOptMaxInputPixels": 268402689, "imgOptSequentialRead": null, "imgOptSkipMetadata": null, "isrFlushToDisk": true, "workerThreads": false, "optimizeCss": false, "nextScriptWorkers": false, "scrollRestoration": false, "externalDir": false, "disableOptimizedLoading": false, "gzipSize": true, "craCompat": false, "esmExternals": true, "fullySpecified": false, "swcTraceProfiling": false, "forceSwcTransforms": false, "largePageDataBytes": 128e3, "typedEnv": false, "parallelServerCompiles": false, "parallelServerBuildTraces": false, "ppr": false, "authInterrupts": false, "webpackMemoryOptimizations": false, "optimizeServerReact": true, "viewTransition": false, "removeUncaughtErrorAndRejectionListeners": false, "validateRSCRequestHeaders": false, "staleTimes": { "dynamic": 0, "static": 300 }, "reactDebugChannel": false, "serverComponentsHmrCache": true, "staticGenerationMaxConcurrency": 8, "staticGenerationMinPagesPerWorker": 25, "transitionIndicator": false, "inlineCss": false, "useCache": false, "globalNotFound": false, "browserDebugInfoInTerminal": false, "lockDistDir": true, "isolatedDevBuild": true, "proxyClientMaxBodySize": 10485760, "hideLogsAfterAbort": false, "mcpServer": true, "turbopackFileSystemCacheForDev": true, "turbopackFileSystemCacheForBuild": false, "turbopackInferModuleSideEffects": false, "optimizePackageImports": ["lucide-react", "date-fns", "lodash-es", "ramda", "antd", "react-bootstrap", "ahooks", "@ant-design/icons", "@headlessui/react", "@headlessui-float/react", "@heroicons/react/20/solid", "@heroicons/react/24/solid", "@heroicons/react/24/outline", "@visx/visx", "@tremor/react", "rxjs", "@mui/material", "@mui/icons-material", "recharts", "react-use", "effect", "@effect/schema", "@effect/platform", "@effect/platform-node", "@effect/platform-browser", "@effect/platform-bun", "@effect/sql", "@effect/sql-mssql", "@effect/sql-mysql2", "@effect/sql-pg", "@effect/sql-sqlite-node", "@effect/sql-sqlite-bun", "@effect/sql-sqlite-wasm", "@effect/sql-sqlite-react-native", "@effect/rpc", "@effect/rpc-http", "@effect/typeclass", "@effect/experimental", "@effect/opentelemetry", "@material-ui/core", "@material-ui/icons", "@tabler/icons-react", "mui-core", "react-icons/ai", "react-icons/bi", "react-icons/bs", "react-icons/cg", "react-icons/ci", "react-icons/di", "react-icons/fa", "react-icons/fa6", "react-icons/fc", "react-icons/fi", "react-icons/gi", "react-icons/go", "react-icons/gr", "react-icons/hi", "react-icons/hi2", "react-icons/im", "react-icons/io", "react-icons/io5", "react-icons/lia", "react-icons/lib", "react-icons/lu", "react-icons/md", "react-icons/pi", "react-icons/ri", "react-icons/rx", "react-icons/si", "react-icons/sl", "react-icons/tb", "react-icons/tfi", "react-icons/ti", "react-icons/vsc", "react-icons/wi"], "trustHostHeader": false, "isExperimentalCompile": false }, "htmlLimitedBots": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight", "bundlePagesRouterDependencies": false, "configFileName": "next.config.js", "turbopack": { "root": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce" }, "distDirRoot": ".next" };
-var BuildId = "pOe13NbNoEdFeFhaafO5Y";
-var RoutesManifest = { "basePath": "", "rewrites": { "beforeFiles": [], "afterFiles": [], "fallback": [] }, "redirects": [{ "source": "/:path+/", "destination": "/:path+", "internal": true, "priority": true, "statusCode": 308, "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$" }], "routes": { "static": [{ "page": "/", "regex": "^/(?:/)?$", "routeKeys": {}, "namedRegex": "^/(?:/)?$" }, { "page": "/_global-error", "regex": "^/_global\\-error(?:/)?$", "routeKeys": {}, "namedRegex": "^/_global\\-error(?:/)?$" }, { "page": "/_not-found", "regex": "^/_not\\-found(?:/)?$", "routeKeys": {}, "namedRegex": "^/_not\\-found(?:/)?$" }, { "page": "/admin", "regex": "^/admin(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin(?:/)?$" }, { "page": "/admin/brands", "regex": "^/admin/brands(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/brands(?:/)?$" }, { "page": "/admin/categories", "regex": "^/admin/categories(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/categories(?:/)?$" }, { "page": "/admin/fix-images", "regex": "^/admin/fix\\-images(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/fix\\-images(?:/)?$" }, { "page": "/admin/footer", "regex": "^/admin/footer(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/footer(?:/)?$" }, { "page": "/admin/hero", "regex": "^/admin/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/hero(?:/)?$" }, { "page": "/admin/orders", "regex": "^/admin/orders(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/orders(?:/)?$" }, { "page": "/admin/products", "regex": "^/admin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/products(?:/)?$" }, { "page": "/admin/products/new", "regex": "^/admin/products/new(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/products/new(?:/)?$" }, { "page": "/admin/referral/analytics", "regex": "^/admin/referral/analytics(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/analytics(?:/)?$" }, { "page": "/admin/referral/network", "regex": "^/admin/referral/network(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/network(?:/)?$" }, { "page": "/admin/referral/top6", "regex": "^/admin/referral/top6(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/top6(?:/)?$" }, { "page": "/admin/seed", "regex": "^/admin/seed(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/seed(?:/)?$" }, { "page": "/admin/settings", "regex": "^/admin/settings(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/settings(?:/)?$" }, { "page": "/admin/setup-hero", "regex": "^/admin/setup\\-hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/setup\\-hero(?:/)?$" }, { "page": "/admin/spin", "regex": "^/admin/spin(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/spin(?:/)?$" }, { "page": "/admin/users", "regex": "^/admin/users(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/users(?:/)?$" }, { "page": "/api/admin/brands", "regex": "^/api/admin/brands(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/brands(?:/)?$" }, { "page": "/api/admin/fix-image-urls", "regex": "^/api/admin/fix\\-image\\-urls(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/fix\\-image\\-urls(?:/)?$" }, { "page": "/api/admin/hero", "regex": "^/api/admin/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/hero(?:/)?$" }, { "page": "/api/admin/products", "regex": "^/api/admin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/products(?:/)?$" }, { "page": "/api/admin/products/bulk", "regex": "^/api/admin/products/bulk(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/products/bulk(?:/)?$" }, { "page": "/api/admin/referral-analytics", "regex": "^/api/admin/referral\\-analytics(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/referral\\-analytics(?:/)?$" }, { "page": "/api/admin/referral-network", "regex": "^/api/admin/referral\\-network(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/referral\\-network(?:/)?$" }, { "page": "/api/admin/spin/products", "regex": "^/api/admin/spin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/spin/products(?:/)?$" }, { "page": "/api/admin/spin/statistics", "regex": "^/api/admin/spin/statistics(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/spin/statistics(?:/)?$" }, { "page": "/api/admin/top6", "regex": "^/api/admin/top6(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/top6(?:/)?$" }, { "page": "/api/admin/users", "regex": "^/api/admin/users(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/users(?:/)?$" }, { "page": "/api/admin/users/search", "regex": "^/api/admin/users/search(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/users/search(?:/)?$" }, { "page": "/api/auth/otp/send", "regex": "^/api/auth/otp/send(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/otp/send(?:/)?$" }, { "page": "/api/auth/otp/verify", "regex": "^/api/auth/otp/verify(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/otp/verify(?:/)?$" }, { "page": "/api/auth/reset-password", "regex": "^/api/auth/reset\\-password(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/reset\\-password(?:/)?$" }, { "page": "/api/cart", "regex": "^/api/cart(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/cart(?:/)?$" }, { "page": "/api/coins/purchase", "regex": "^/api/coins/purchase(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/coins/purchase(?:/)?$" }, { "page": "/api/coins/transactions", "regex": "^/api/coins/transactions(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/coins/transactions(?:/)?$" }, { "page": "/api/hero", "regex": "^/api/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/hero(?:/)?$" }, { "page": "/api/images/upload", "regex": "^/api/images/upload(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/images/upload(?:/)?$" }, { "page": "/api/orders", "regex": "^/api/orders(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/orders(?:/)?$" }, { "page": "/api/promo/validate", "regex": "^/api/promo/validate(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/promo/validate(?:/)?$" }, { "page": "/api/qpay/check", "regex": "^/api/qpay/check(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/qpay/check(?:/)?$" }, { "page": "/api/qpay/confirm", "regex": "^/api/qpay/confirm(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/qpay/confirm(?:/)?$" }, { "page": "/api/referral/create-code", "regex": "^/api/referral/create\\-code(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/create\\-code(?:/)?$" }, { "page": "/api/referral/stats", "regex": "^/api/referral/stats(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/stats(?:/)?$" }, { "page": "/api/referral/validate", "regex": "^/api/referral/validate(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/validate(?:/)?$" }, { "page": "/api/search/autocomplete", "regex": "^/api/search/autocomplete(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/search/autocomplete(?:/)?$" }, { "page": "/api/spin/eligibility", "regex": "^/api/spin/eligibility(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/eligibility(?:/)?$" }, { "page": "/api/spin/history", "regex": "^/api/spin/history(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/history(?:/)?$" }, { "page": "/api/spin/play", "regex": "^/api/spin/play(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/play(?:/)?$" }, { "page": "/api/spin/products", "regex": "^/api/spin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/products(?:/)?$" }, { "page": "/api/wishlist", "regex": "^/api/wishlist(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/wishlist(?:/)?$" }, { "page": "/api/ws/referral", "regex": "^/api/ws/referral(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/ws/referral(?:/)?$" }, { "page": "/auth/callback", "regex": "^/auth/callback(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/callback(?:/)?$" }, { "page": "/auth/forgot-password", "regex": "^/auth/forgot\\-password(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/forgot\\-password(?:/)?$" }, { "page": "/auth/login", "regex": "^/auth/login(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/login(?:/)?$" }, { "page": "/auth/signup", "regex": "^/auth/signup(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/signup(?:/)?$" }, { "page": "/cart", "regex": "^/cart(?:/)?$", "routeKeys": {}, "namedRegex": "^/cart(?:/)?$" }, { "page": "/categories", "regex": "^/categories(?:/)?$", "routeKeys": {}, "namedRegex": "^/categories(?:/)?$" }, { "page": "/checkout", "regex": "^/checkout(?:/)?$", "routeKeys": {}, "namedRegex": "^/checkout(?:/)?$" }, { "page": "/checkout/success", "regex": "^/checkout/success(?:/)?$", "routeKeys": {}, "namedRegex": "^/checkout/success(?:/)?$" }, { "page": "/compare", "regex": "^/compare(?:/)?$", "routeKeys": {}, "namedRegex": "^/compare(?:/)?$" }, { "page": "/debug-auth", "regex": "^/debug\\-auth(?:/)?$", "routeKeys": {}, "namedRegex": "^/debug\\-auth(?:/)?$" }, { "page": "/favicon.ico", "regex": "^/favicon\\.ico(?:/)?$", "routeKeys": {}, "namedRegex": "^/favicon\\.ico(?:/)?$" }, { "page": "/products", "regex": "^/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/products(?:/)?$" }, { "page": "/profile", "regex": "^/profile(?:/)?$", "routeKeys": {}, "namedRegex": "^/profile(?:/)?$" }, { "page": "/robots.txt", "regex": "^/robots\\.txt(?:/)?$", "routeKeys": {}, "namedRegex": "^/robots\\.txt(?:/)?$" }, { "page": "/sale", "regex": "^/sale(?:/)?$", "routeKeys": {}, "namedRegex": "^/sale(?:/)?$" }, { "page": "/search", "regex": "^/search(?:/)?$", "routeKeys": {}, "namedRegex": "^/search(?:/)?$" }, { "page": "/sitemap.xml", "regex": "^/sitemap\\.xml(?:/)?$", "routeKeys": {}, "namedRegex": "^/sitemap\\.xml(?:/)?$" }], "dynamic": [{ "page": "/admin/products/[id]/edit", "regex": "^/admin/products/([^/]+?)/edit(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/admin/products/(?<nxtPid>[^/]+?)/edit(?:/)?$" }, { "page": "/api/admin/brands/[id]", "regex": "^/api/admin/brands/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/brands/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/categories/[id]", "regex": "^/api/admin/categories/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/categories/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/products/[id]", "regex": "^/api/admin/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/products/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/users/[id]", "regex": "^/api/admin/users/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/users/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/images/r2/[...key]", "regex": "^/api/images/r2/(.+?)(?:/)?$", "routeKeys": { "nxtPkey": "nxtPkey" }, "namedRegex": "^/api/images/r2/(?<nxtPkey>.+?)(?:/)?$" }, { "page": "/api/orders/[id]", "regex": "^/api/orders/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/orders/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/orders/[id]/cancel", "regex": "^/api/orders/([^/]+?)/cancel(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/orders/(?<nxtPid>[^/]+?)/cancel(?:/)?$" }, { "page": "/api/products/[id]", "regex": "^/api/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/products/[id]/recommendations", "regex": "^/api/products/([^/]+?)/recommendations(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/recommendations(?:/)?$" }, { "page": "/api/products/[id]/reviews", "regex": "^/api/products/([^/]+?)/reviews(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/reviews(?:/)?$" }, { "page": "/api/products/[id]/stock", "regex": "^/api/products/([^/]+?)/stock(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/stock(?:/)?$" }, { "page": "/api/products/[id]/variant-stock", "regex": "^/api/products/([^/]+?)/variant\\-stock(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/variant\\-stock(?:/)?$" }, { "page": "/categories/[...slug]", "regex": "^/categories/(.+?)(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/categories/(?<nxtPslug>.+?)(?:/)?$" }, { "page": "/products/[slug]", "regex": "^/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/products/(?<nxtPslug>[^/]+?)(?:/)?$" }], "data": { "static": [], "dynamic": [] } }, "locales": [] };
+var BuildId = "8Br1uLeivFHOFnsNnMurS";
+var RoutesManifest = { "basePath": "", "rewrites": { "beforeFiles": [], "afterFiles": [], "fallback": [] }, "redirects": [{ "source": "/:path+/", "destination": "/:path+", "internal": true, "priority": true, "statusCode": 308, "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$" }], "routes": { "static": [{ "page": "/", "regex": "^/(?:/)?$", "routeKeys": {}, "namedRegex": "^/(?:/)?$" }, { "page": "/_global-error", "regex": "^/_global\\-error(?:/)?$", "routeKeys": {}, "namedRegex": "^/_global\\-error(?:/)?$" }, { "page": "/_not-found", "regex": "^/_not\\-found(?:/)?$", "routeKeys": {}, "namedRegex": "^/_not\\-found(?:/)?$" }, { "page": "/admin", "regex": "^/admin(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin(?:/)?$" }, { "page": "/admin/brands", "regex": "^/admin/brands(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/brands(?:/)?$" }, { "page": "/admin/categories", "regex": "^/admin/categories(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/categories(?:/)?$" }, { "page": "/admin/fix-images", "regex": "^/admin/fix\\-images(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/fix\\-images(?:/)?$" }, { "page": "/admin/footer", "regex": "^/admin/footer(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/footer(?:/)?$" }, { "page": "/admin/hero", "regex": "^/admin/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/hero(?:/)?$" }, { "page": "/admin/orders", "regex": "^/admin/orders(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/orders(?:/)?$" }, { "page": "/admin/products", "regex": "^/admin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/products(?:/)?$" }, { "page": "/admin/products/new", "regex": "^/admin/products/new(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/products/new(?:/)?$" }, { "page": "/admin/referral/analytics", "regex": "^/admin/referral/analytics(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/analytics(?:/)?$" }, { "page": "/admin/referral/network", "regex": "^/admin/referral/network(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/network(?:/)?$" }, { "page": "/admin/referral/top6", "regex": "^/admin/referral/top6(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/referral/top6(?:/)?$" }, { "page": "/admin/seed", "regex": "^/admin/seed(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/seed(?:/)?$" }, { "page": "/admin/settings", "regex": "^/admin/settings(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/settings(?:/)?$" }, { "page": "/admin/setup-hero", "regex": "^/admin/setup\\-hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/setup\\-hero(?:/)?$" }, { "page": "/admin/spin", "regex": "^/admin/spin(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/spin(?:/)?$" }, { "page": "/admin/types", "regex": "^/admin/types(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/types(?:/)?$" }, { "page": "/admin/users", "regex": "^/admin/users(?:/)?$", "routeKeys": {}, "namedRegex": "^/admin/users(?:/)?$" }, { "page": "/api/admin/brands", "regex": "^/api/admin/brands(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/brands(?:/)?$" }, { "page": "/api/admin/fix-image-urls", "regex": "^/api/admin/fix\\-image\\-urls(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/fix\\-image\\-urls(?:/)?$" }, { "page": "/api/admin/hero", "regex": "^/api/admin/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/hero(?:/)?$" }, { "page": "/api/admin/orders", "regex": "^/api/admin/orders(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/orders(?:/)?$" }, { "page": "/api/admin/products", "regex": "^/api/admin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/products(?:/)?$" }, { "page": "/api/admin/products/bulk", "regex": "^/api/admin/products/bulk(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/products/bulk(?:/)?$" }, { "page": "/api/admin/referral-analytics", "regex": "^/api/admin/referral\\-analytics(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/referral\\-analytics(?:/)?$" }, { "page": "/api/admin/referral-network", "regex": "^/api/admin/referral\\-network(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/referral\\-network(?:/)?$" }, { "page": "/api/admin/spin/products", "regex": "^/api/admin/spin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/spin/products(?:/)?$" }, { "page": "/api/admin/spin/statistics", "regex": "^/api/admin/spin/statistics(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/spin/statistics(?:/)?$" }, { "page": "/api/admin/top6", "regex": "^/api/admin/top6(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/top6(?:/)?$" }, { "page": "/api/admin/users", "regex": "^/api/admin/users(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/users(?:/)?$" }, { "page": "/api/admin/users/search", "regex": "^/api/admin/users/search(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/admin/users/search(?:/)?$" }, { "page": "/api/auth/otp/send", "regex": "^/api/auth/otp/send(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/otp/send(?:/)?$" }, { "page": "/api/auth/otp/verify", "regex": "^/api/auth/otp/verify(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/otp/verify(?:/)?$" }, { "page": "/api/auth/reset-password", "regex": "^/api/auth/reset\\-password(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/auth/reset\\-password(?:/)?$" }, { "page": "/api/cart", "regex": "^/api/cart(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/cart(?:/)?$" }, { "page": "/api/coins/purchase", "regex": "^/api/coins/purchase(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/coins/purchase(?:/)?$" }, { "page": "/api/coins/transactions", "regex": "^/api/coins/transactions(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/coins/transactions(?:/)?$" }, { "page": "/api/hero", "regex": "^/api/hero(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/hero(?:/)?$" }, { "page": "/api/images/upload", "regex": "^/api/images/upload(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/images/upload(?:/)?$" }, { "page": "/api/orders", "regex": "^/api/orders(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/orders(?:/)?$" }, { "page": "/api/promo/validate", "regex": "^/api/promo/validate(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/promo/validate(?:/)?$" }, { "page": "/api/qpay/check", "regex": "^/api/qpay/check(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/qpay/check(?:/)?$" }, { "page": "/api/qpay/confirm", "regex": "^/api/qpay/confirm(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/qpay/confirm(?:/)?$" }, { "page": "/api/referral/create-code", "regex": "^/api/referral/create\\-code(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/create\\-code(?:/)?$" }, { "page": "/api/referral/stats", "regex": "^/api/referral/stats(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/stats(?:/)?$" }, { "page": "/api/referral/validate", "regex": "^/api/referral/validate(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/referral/validate(?:/)?$" }, { "page": "/api/search/autocomplete", "regex": "^/api/search/autocomplete(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/search/autocomplete(?:/)?$" }, { "page": "/api/spin/eligibility", "regex": "^/api/spin/eligibility(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/eligibility(?:/)?$" }, { "page": "/api/spin/history", "regex": "^/api/spin/history(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/history(?:/)?$" }, { "page": "/api/spin/play", "regex": "^/api/spin/play(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/play(?:/)?$" }, { "page": "/api/spin/products", "regex": "^/api/spin/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/spin/products(?:/)?$" }, { "page": "/api/wishlist", "regex": "^/api/wishlist(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/wishlist(?:/)?$" }, { "page": "/api/ws/referral", "regex": "^/api/ws/referral(?:/)?$", "routeKeys": {}, "namedRegex": "^/api/ws/referral(?:/)?$" }, { "page": "/auth/callback", "regex": "^/auth/callback(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/callback(?:/)?$" }, { "page": "/auth/forgot-password", "regex": "^/auth/forgot\\-password(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/forgot\\-password(?:/)?$" }, { "page": "/auth/login", "regex": "^/auth/login(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/login(?:/)?$" }, { "page": "/auth/signup", "regex": "^/auth/signup(?:/)?$", "routeKeys": {}, "namedRegex": "^/auth/signup(?:/)?$" }, { "page": "/cart", "regex": "^/cart(?:/)?$", "routeKeys": {}, "namedRegex": "^/cart(?:/)?$" }, { "page": "/categories", "regex": "^/categories(?:/)?$", "routeKeys": {}, "namedRegex": "^/categories(?:/)?$" }, { "page": "/checkout", "regex": "^/checkout(?:/)?$", "routeKeys": {}, "namedRegex": "^/checkout(?:/)?$" }, { "page": "/checkout/success", "regex": "^/checkout/success(?:/)?$", "routeKeys": {}, "namedRegex": "^/checkout/success(?:/)?$" }, { "page": "/compare", "regex": "^/compare(?:/)?$", "routeKeys": {}, "namedRegex": "^/compare(?:/)?$" }, { "page": "/debug-auth", "regex": "^/debug\\-auth(?:/)?$", "routeKeys": {}, "namedRegex": "^/debug\\-auth(?:/)?$" }, { "page": "/favicon.ico", "regex": "^/favicon\\.ico(?:/)?$", "routeKeys": {}, "namedRegex": "^/favicon\\.ico(?:/)?$" }, { "page": "/products", "regex": "^/products(?:/)?$", "routeKeys": {}, "namedRegex": "^/products(?:/)?$" }, { "page": "/profile", "regex": "^/profile(?:/)?$", "routeKeys": {}, "namedRegex": "^/profile(?:/)?$" }, { "page": "/robots.txt", "regex": "^/robots\\.txt(?:/)?$", "routeKeys": {}, "namedRegex": "^/robots\\.txt(?:/)?$" }, { "page": "/sale", "regex": "^/sale(?:/)?$", "routeKeys": {}, "namedRegex": "^/sale(?:/)?$" }, { "page": "/search", "regex": "^/search(?:/)?$", "routeKeys": {}, "namedRegex": "^/search(?:/)?$" }, { "page": "/sitemap.xml", "regex": "^/sitemap\\.xml(?:/)?$", "routeKeys": {}, "namedRegex": "^/sitemap\\.xml(?:/)?$" }], "dynamic": [{ "page": "/admin/products/[id]/edit", "regex": "^/admin/products/([^/]+?)/edit(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/admin/products/(?<nxtPid>[^/]+?)/edit(?:/)?$" }, { "page": "/api/admin/brands/[id]", "regex": "^/api/admin/brands/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/brands/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/categories/[id]", "regex": "^/api/admin/categories/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/categories/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/orders/[id]", "regex": "^/api/admin/orders/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/orders/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/products/[id]", "regex": "^/api/admin/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/products/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/admin/users/[id]", "regex": "^/api/admin/users/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/admin/users/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/images/r2/[...key]", "regex": "^/api/images/r2/(.+?)(?:/)?$", "routeKeys": { "nxtPkey": "nxtPkey" }, "namedRegex": "^/api/images/r2/(?<nxtPkey>.+?)(?:/)?$" }, { "page": "/api/orders/[id]", "regex": "^/api/orders/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/orders/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/orders/[id]/cancel", "regex": "^/api/orders/([^/]+?)/cancel(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/orders/(?<nxtPid>[^/]+?)/cancel(?:/)?$" }, { "page": "/api/products/[id]", "regex": "^/api/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)(?:/)?$" }, { "page": "/api/products/[id]/recommendations", "regex": "^/api/products/([^/]+?)/recommendations(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/recommendations(?:/)?$" }, { "page": "/api/products/[id]/reviews", "regex": "^/api/products/([^/]+?)/reviews(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/reviews(?:/)?$" }, { "page": "/api/products/[id]/stock", "regex": "^/api/products/([^/]+?)/stock(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/stock(?:/)?$" }, { "page": "/api/products/[id]/variant-stock", "regex": "^/api/products/([^/]+?)/variant\\-stock(?:/)?$", "routeKeys": { "nxtPid": "nxtPid" }, "namedRegex": "^/api/products/(?<nxtPid>[^/]+?)/variant\\-stock(?:/)?$" }, { "page": "/categories/[...slug]", "regex": "^/categories/(.+?)(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/categories/(?<nxtPslug>.+?)(?:/)?$" }, { "page": "/products/[slug]", "regex": "^/products/([^/]+?)(?:/)?$", "routeKeys": { "nxtPslug": "nxtPslug" }, "namedRegex": "^/products/(?<nxtPslug>[^/]+?)(?:/)?$" }], "data": { "static": [], "dynamic": [] } }, "locales": [] };
 var ConfigHeaders = [{ "source": "/:path*", "headers": [{ "key": "X-Frame-Options", "value": "DENY" }, { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }, { "key": "Content-Security-Policy-Report-Only", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-ancestors 'none';" }], "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$" }];
-var PrerenderManifest = { "version": 4, "routes": { "/_global-error": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/_global-error", "dataRoute": "/_global-error.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/_not-found": { "initialStatus": 404, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/_not-found", "dataRoute": "/_not-found.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/brands": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/brands", "dataRoute": "/admin/brands.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/categories": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/categories", "dataRoute": "/admin/categories.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/fix-images": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/fix-images", "dataRoute": "/admin/fix-images.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/footer": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/footer", "dataRoute": "/admin/footer.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/hero": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/hero", "dataRoute": "/admin/hero.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/products/new": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/products/new", "dataRoute": "/admin/products/new.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/analytics": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/analytics", "dataRoute": "/admin/referral/analytics.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/network": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/network", "dataRoute": "/admin/referral/network.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/top6": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/top6", "dataRoute": "/admin/referral/top6.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/seed": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/seed", "dataRoute": "/admin/seed.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/settings": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/settings", "dataRoute": "/admin/settings.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/setup-hero": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/setup-hero", "dataRoute": "/admin/setup-hero.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/spin": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/spin", "dataRoute": "/admin/spin.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/users": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/users", "dataRoute": "/admin/users.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/forgot-password": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/forgot-password", "dataRoute": "/auth/forgot-password.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/login": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/login", "dataRoute": "/auth/login.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/signup": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/signup", "dataRoute": "/auth/signup.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/debug-auth": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/debug-auth", "dataRoute": "/debug-auth.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/favicon.ico": { "initialHeaders": { "cache-control": "public, max-age=0, must-revalidate", "content-type": "image/x-icon", "x-next-cache-tags": "_N_T_/layout,_N_T_/favicon.ico/layout,_N_T_/favicon.ico/route,_N_T_/favicon.ico" }, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/favicon.ico", "dataRoute": null, "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/robots.txt": { "initialHeaders": { "cache-control": "public, max-age=0, must-revalidate", "content-type": "text/plain", "x-next-cache-tags": "_N_T_/layout,_N_T_/robots.txt/layout,_N_T_/robots.txt/route,_N_T_/robots.txt" }, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/robots.txt", "dataRoute": null, "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] } }, "dynamicRoutes": {}, "notFoundRoutes": [], "preview": { "previewModeId": "73bfc4895274448ceb3c37d12173614c", "previewModeSigningKey": "e54fb382b11e6af9708571e68ab51a256b0b9ed4919ee0124ae93a61d47e0a06", "previewModeEncryptionKey": "14b26ca7f218651f8a148cc4125aa17f434a8cd3968000e2846fff339b22b85d" } };
-var MiddlewareManifest = { "version": 3, "middleware": { "/": { "files": ["server/edge/chunks/[root-of-the-server]__f1390a54._.js", "server/edge/chunks/_0727c437._.js", "server/edge/chunks/node_modules_@sentry_f05d8265._.js", "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_b0bc9966.js", "server/edge/chunks/[root-of-the-server]__2112c9b3._.js", "server/edge/chunks/[root-of-the-server]__4d77b799._.js", "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_851fa7d3.js"], "name": "middleware", "page": "/", "matchers": [{ "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$", "originalSource": "/admin/:path*" }, { "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/profile(\\\\.json)?[\\/#\\?]?$", "originalSource": "/profile" }, { "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/debug-auth(\\\\.json)?[\\/#\\?]?$", "originalSource": "/debug-auth" }], "wasm": [], "assets": [], "env": { "__NEXT_BUILD_ID": "pOe13NbNoEdFeFhaafO5Y", "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "3+SJUqkGiavFl05zcqrICGMZVX56EB3lAmkuzBQS1nY=", "__NEXT_PREVIEW_MODE_ID": "73bfc4895274448ceb3c37d12173614c", "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "14b26ca7f218651f8a148cc4125aa17f434a8cd3968000e2846fff339b22b85d", "__NEXT_PREVIEW_MODE_SIGNING_KEY": "e54fb382b11e6af9708571e68ab51a256b0b9ed4919ee0124ae93a61d47e0a06" } } }, "sortedMiddleware": ["/"], "functions": {} };
-var AppPathRoutesManifest = { "/_global-error/page": "/_global-error", "/_not-found/page": "/_not-found", "/admin/brands/page": "/admin/brands", "/admin/categories/page": "/admin/categories", "/admin/fix-images/page": "/admin/fix-images", "/admin/footer/page": "/admin/footer", "/admin/hero/page": "/admin/hero", "/admin/orders/page": "/admin/orders", "/admin/page": "/admin", "/admin/products/[id]/edit/page": "/admin/products/[id]/edit", "/admin/products/new/page": "/admin/products/new", "/admin/products/page": "/admin/products", "/admin/referral/analytics/page": "/admin/referral/analytics", "/admin/referral/network/page": "/admin/referral/network", "/admin/referral/top6/page": "/admin/referral/top6", "/admin/seed/page": "/admin/seed", "/admin/settings/page": "/admin/settings", "/admin/setup-hero/page": "/admin/setup-hero", "/admin/spin/page": "/admin/spin", "/admin/users/page": "/admin/users", "/api/admin/brands/[id]/route": "/api/admin/brands/[id]", "/api/admin/brands/route": "/api/admin/brands", "/api/admin/categories/[id]/route": "/api/admin/categories/[id]", "/api/admin/fix-image-urls/route": "/api/admin/fix-image-urls", "/api/admin/hero/route": "/api/admin/hero", "/api/admin/products/[id]/route": "/api/admin/products/[id]", "/api/admin/products/bulk/route": "/api/admin/products/bulk", "/api/admin/products/route": "/api/admin/products", "/api/admin/referral-analytics/route": "/api/admin/referral-analytics", "/api/admin/referral-network/route": "/api/admin/referral-network", "/api/admin/spin/products/route": "/api/admin/spin/products", "/api/admin/spin/statistics/route": "/api/admin/spin/statistics", "/api/admin/top6/route": "/api/admin/top6", "/api/admin/users/[id]/route": "/api/admin/users/[id]", "/api/admin/users/route": "/api/admin/users", "/api/admin/users/search/route": "/api/admin/users/search", "/api/auth/otp/send/route": "/api/auth/otp/send", "/api/auth/otp/verify/route": "/api/auth/otp/verify", "/api/auth/reset-password/route": "/api/auth/reset-password", "/api/cart/route": "/api/cart", "/api/coins/purchase/route": "/api/coins/purchase", "/api/coins/transactions/route": "/api/coins/transactions", "/api/hero/route": "/api/hero", "/api/images/r2/[...key]/route": "/api/images/r2/[...key]", "/api/images/upload/route": "/api/images/upload", "/api/orders/[id]/cancel/route": "/api/orders/[id]/cancel", "/api/orders/[id]/route": "/api/orders/[id]", "/api/orders/route": "/api/orders", "/api/products/[id]/recommendations/route": "/api/products/[id]/recommendations", "/api/products/[id]/reviews/route": "/api/products/[id]/reviews", "/api/products/[id]/route": "/api/products/[id]", "/api/products/[id]/stock/route": "/api/products/[id]/stock", "/api/products/[id]/variant-stock/route": "/api/products/[id]/variant-stock", "/api/promo/validate/route": "/api/promo/validate", "/api/qpay/check/route": "/api/qpay/check", "/api/qpay/confirm/route": "/api/qpay/confirm", "/api/referral/create-code/route": "/api/referral/create-code", "/api/referral/stats/route": "/api/referral/stats", "/api/referral/validate/route": "/api/referral/validate", "/api/search/autocomplete/route": "/api/search/autocomplete", "/api/spin/eligibility/route": "/api/spin/eligibility", "/api/spin/history/route": "/api/spin/history", "/api/spin/play/route": "/api/spin/play", "/api/spin/products/route": "/api/spin/products", "/api/wishlist/route": "/api/wishlist", "/api/ws/referral/route": "/api/ws/referral", "/auth/callback/route": "/auth/callback", "/auth/forgot-password/page": "/auth/forgot-password", "/auth/login/page": "/auth/login", "/auth/signup/page": "/auth/signup", "/cart/page": "/cart", "/categories/[...slug]/page": "/categories/[...slug]", "/categories/page": "/categories", "/checkout/page": "/checkout", "/checkout/success/page": "/checkout/success", "/compare/page": "/compare", "/debug-auth/page": "/debug-auth", "/favicon.ico/route": "/favicon.ico", "/page": "/", "/products/[slug]/page": "/products/[slug]", "/products/page": "/products", "/profile/page": "/profile", "/robots.txt/route": "/robots.txt", "/sale/page": "/sale", "/search/page": "/search", "/sitemap.xml/route": "/sitemap.xml" };
+var PrerenderManifest = { "version": 4, "routes": { "/_global-error": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/_global-error", "dataRoute": "/_global-error.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/_not-found": { "initialStatus": 404, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/_not-found", "dataRoute": "/_not-found.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/brands": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/brands", "dataRoute": "/admin/brands.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/categories": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/categories", "dataRoute": "/admin/categories.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/fix-images": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/fix-images", "dataRoute": "/admin/fix-images.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/footer": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/footer", "dataRoute": "/admin/footer.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/hero": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/hero", "dataRoute": "/admin/hero.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/orders": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/orders", "dataRoute": "/admin/orders.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/products/new": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/products/new", "dataRoute": "/admin/products/new.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/analytics": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/analytics", "dataRoute": "/admin/referral/analytics.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/network": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/network", "dataRoute": "/admin/referral/network.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/referral/top6": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/referral/top6", "dataRoute": "/admin/referral/top6.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/seed": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/seed", "dataRoute": "/admin/seed.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/settings": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/settings", "dataRoute": "/admin/settings.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/setup-hero": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/setup-hero", "dataRoute": "/admin/setup-hero.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/spin": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/spin", "dataRoute": "/admin/spin.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/types": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/types", "dataRoute": "/admin/types.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/admin/users": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/admin/users", "dataRoute": "/admin/users.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/forgot-password": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/forgot-password", "dataRoute": "/auth/forgot-password.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/login": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/login", "dataRoute": "/auth/login.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/auth/signup": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/auth/signup", "dataRoute": "/auth/signup.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/cart": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/cart", "dataRoute": "/cart.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/categories": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": 300, "initialExpireSeconds": 31536e3, "srcRoute": "/categories", "dataRoute": "/categories.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/checkout": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/checkout", "dataRoute": "/checkout.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/checkout/success": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/checkout/success", "dataRoute": "/checkout/success.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/compare": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/compare", "dataRoute": "/compare.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/debug-auth": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/debug-auth", "dataRoute": "/debug-auth.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/favicon.ico": { "initialHeaders": { "cache-control": "public, max-age=0, must-revalidate", "content-type": "image/x-icon", "x-next-cache-tags": "_N_T_/layout,_N_T_/favicon.ico/layout,_N_T_/favicon.ico/route,_N_T_/favicon.ico" }, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/favicon.ico", "dataRoute": null, "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": 300, "initialExpireSeconds": 31536e3, "srcRoute": "/", "dataRoute": "/index.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/profile": { "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/profile", "dataRoute": "/profile.rsc", "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] }, "/robots.txt": { "initialHeaders": { "cache-control": "public, max-age=0, must-revalidate", "content-type": "text/plain", "x-next-cache-tags": "_N_T_/layout,_N_T_/robots.txt/layout,_N_T_/robots.txt/route,_N_T_/robots.txt" }, "experimentalBypassFor": [{ "type": "header", "key": "next-action" }, { "type": "header", "key": "content-type", "value": "multipart/form-data;.*" }], "initialRevalidateSeconds": false, "srcRoute": "/robots.txt", "dataRoute": null, "allowHeader": ["host", "x-matched-path", "x-prerender-revalidate", "x-prerender-revalidate-if-generated", "x-next-revalidated-tags", "x-next-revalidate-tag-token"] } }, "dynamicRoutes": {}, "notFoundRoutes": [], "preview": { "previewModeId": "86ebe101269fac28030cc4b8e717e2f3", "previewModeSigningKey": "b3d6df6740cb856e6428d582b775f7978323d121f3f70b460ade61947000e1f3", "previewModeEncryptionKey": "ffacd6d4f49bf5e366279fb68aa63a88b3263c00d1b465b5a39a104dfcfcd821" } };
+var MiddlewareManifest = { "version": 3, "middleware": { "/": { "files": ["server/edge/chunks/[root-of-the-server]__f1390a54._.js", "server/edge/chunks/_0727c437._.js", "server/edge/chunks/node_modules_@sentry_f05d8265._.js", "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_b0bc9966.js", "server/edge/chunks/[root-of-the-server]__2112c9b3._.js", "server/edge/chunks/[root-of-the-server]__4d77b799._.js", "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_851fa7d3.js"], "name": "middleware", "page": "/", "matchers": [{ "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$", "originalSource": "/admin/:path*" }, { "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/debug-auth(\\\\.json)?[\\/#\\?]?$", "originalSource": "/debug-auth" }], "wasm": [], "assets": [], "env": { "__NEXT_BUILD_ID": "8Br1uLeivFHOFnsNnMurS", "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "gwtuEtSoIA8RQvt5tsHjk/rr5Te4suA216Qty5u28WM=", "__NEXT_PREVIEW_MODE_ID": "86ebe101269fac28030cc4b8e717e2f3", "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "ffacd6d4f49bf5e366279fb68aa63a88b3263c00d1b465b5a39a104dfcfcd821", "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b3d6df6740cb856e6428d582b775f7978323d121f3f70b460ade61947000e1f3" } } }, "sortedMiddleware": ["/"], "functions": {} };
+var AppPathRoutesManifest = { "/_global-error/page": "/_global-error", "/_not-found/page": "/_not-found", "/admin/brands/page": "/admin/brands", "/admin/categories/page": "/admin/categories", "/admin/fix-images/page": "/admin/fix-images", "/admin/footer/page": "/admin/footer", "/admin/hero/page": "/admin/hero", "/admin/orders/page": "/admin/orders", "/admin/page": "/admin", "/admin/products/[id]/edit/page": "/admin/products/[id]/edit", "/admin/products/new/page": "/admin/products/new", "/admin/products/page": "/admin/products", "/admin/referral/analytics/page": "/admin/referral/analytics", "/admin/referral/network/page": "/admin/referral/network", "/admin/referral/top6/page": "/admin/referral/top6", "/admin/seed/page": "/admin/seed", "/admin/settings/page": "/admin/settings", "/admin/setup-hero/page": "/admin/setup-hero", "/admin/spin/page": "/admin/spin", "/admin/types/page": "/admin/types", "/admin/users/page": "/admin/users", "/api/admin/brands/[id]/route": "/api/admin/brands/[id]", "/api/admin/brands/route": "/api/admin/brands", "/api/admin/categories/[id]/route": "/api/admin/categories/[id]", "/api/admin/fix-image-urls/route": "/api/admin/fix-image-urls", "/api/admin/hero/route": "/api/admin/hero", "/api/admin/orders/[id]/route": "/api/admin/orders/[id]", "/api/admin/orders/route": "/api/admin/orders", "/api/admin/products/[id]/route": "/api/admin/products/[id]", "/api/admin/products/bulk/route": "/api/admin/products/bulk", "/api/admin/products/route": "/api/admin/products", "/api/admin/referral-analytics/route": "/api/admin/referral-analytics", "/api/admin/referral-network/route": "/api/admin/referral-network", "/api/admin/spin/products/route": "/api/admin/spin/products", "/api/admin/spin/statistics/route": "/api/admin/spin/statistics", "/api/admin/top6/route": "/api/admin/top6", "/api/admin/users/[id]/route": "/api/admin/users/[id]", "/api/admin/users/route": "/api/admin/users", "/api/admin/users/search/route": "/api/admin/users/search", "/api/auth/otp/send/route": "/api/auth/otp/send", "/api/auth/otp/verify/route": "/api/auth/otp/verify", "/api/auth/reset-password/route": "/api/auth/reset-password", "/api/cart/route": "/api/cart", "/api/coins/purchase/route": "/api/coins/purchase", "/api/coins/transactions/route": "/api/coins/transactions", "/api/hero/route": "/api/hero", "/api/images/r2/[...key]/route": "/api/images/r2/[...key]", "/api/images/upload/route": "/api/images/upload", "/api/orders/[id]/cancel/route": "/api/orders/[id]/cancel", "/api/orders/[id]/route": "/api/orders/[id]", "/api/orders/route": "/api/orders", "/api/products/[id]/recommendations/route": "/api/products/[id]/recommendations", "/api/products/[id]/reviews/route": "/api/products/[id]/reviews", "/api/products/[id]/route": "/api/products/[id]", "/api/products/[id]/stock/route": "/api/products/[id]/stock", "/api/products/[id]/variant-stock/route": "/api/products/[id]/variant-stock", "/api/promo/validate/route": "/api/promo/validate", "/api/qpay/check/route": "/api/qpay/check", "/api/qpay/confirm/route": "/api/qpay/confirm", "/api/referral/create-code/route": "/api/referral/create-code", "/api/referral/stats/route": "/api/referral/stats", "/api/referral/validate/route": "/api/referral/validate", "/api/search/autocomplete/route": "/api/search/autocomplete", "/api/spin/eligibility/route": "/api/spin/eligibility", "/api/spin/history/route": "/api/spin/history", "/api/spin/play/route": "/api/spin/play", "/api/spin/products/route": "/api/spin/products", "/api/wishlist/route": "/api/wishlist", "/api/ws/referral/route": "/api/ws/referral", "/auth/callback/route": "/auth/callback", "/auth/forgot-password/page": "/auth/forgot-password", "/auth/login/page": "/auth/login", "/auth/signup/page": "/auth/signup", "/cart/page": "/cart", "/categories/[...slug]/page": "/categories/[...slug]", "/categories/page": "/categories", "/checkout/page": "/checkout", "/checkout/success/page": "/checkout/success", "/compare/page": "/compare", "/debug-auth/page": "/debug-auth", "/favicon.ico/route": "/favicon.ico", "/page": "/", "/products/[slug]/page": "/products/[slug]", "/products/page": "/products", "/profile/page": "/profile", "/robots.txt/route": "/robots.txt", "/sale/page": "/sale", "/search/page": "/search", "/sitemap.xml/route": "/sitemap.xml" };
 var FunctionsConfigManifest = { "version": 1, "functions": {} };
 var PagesManifest = { "/404": "pages/404.html", "/500": "pages/500.html" };
 process.env.NEXT_BUILD_ID = BuildId;

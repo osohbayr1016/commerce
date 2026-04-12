@@ -12,6 +12,7 @@ import { getAvailabilityStatusLabel } from "@/lib/availability-status";
 import CartAnimation from "./CartAnimation";
 import FireworkAnimation from "./FireworkAnimation";
 import VariantSelector from "@/components/Products/VariantSelector";
+import StickyAddToCart from "./StickyAddToCart";
 
 interface ProductInfoProps {
   product: ProductDetail;
@@ -34,6 +35,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined,
   );
+  const isOutOfStock = product.stock !== undefined && product.stock === 0;
   const hasColors = (product.colors?.length ?? 0) > 0;
   const needsSize =
     product.productType !== "beauty" &&
@@ -93,6 +95,19 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   return (
     <div className="space-y-6">
+      {isOutOfStock && (
+        <div
+          className="rounded-lg border border-amber-200 bg-amber-50 p-4"
+          role="alert"
+        >
+          <p className="font-semibold text-amber-800">
+            {t("products.productOutOfStock")}
+          </p>
+          <p className="mt-1 text-sm text-amber-700">
+            {t("products.productOutOfStockDescription")}
+          </p>
+        </div>
+      )}
       <div>
         {product.brand && (
           <p className="text-sm text-gray-500">brand {product.brand}</p>
@@ -100,7 +115,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mt-2">
           {displayName}
         </h1>
-        {product.availabilityStatus && (
+        {product.availabilityStatus && !isOutOfStock && (
           <span
             className={`inline-block mt-2 rounded-full px-2.5 py-1 text-sm font-medium ${
               product.availabilityStatus === "in_stock"
@@ -172,25 +187,42 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         />
         <button
           ref={addToCartButtonRef}
-          onClick={() => handleCartAction(false)}
-          disabled={!canAddToCart}
+          onClick={() => !isOutOfStock && handleCartAction(false)}
+          disabled={!canAddToCart || isOutOfStock}
           className={`flex-1 rounded-lg px-6 py-3 text-white text-base font-medium transition-all duration-500 ${
-            !canAddToCart
+            isOutOfStock || !canAddToCart
               ? "bg-gray-400 cursor-not-allowed"
               : showSuccess
                 ? "bg-green-600 hover:bg-green-700 scale-105"
                 : "bg-gray-900 hover:bg-gray-800"
           }`}
         >
-          {showSuccess ? t("toast.success") || "Ажилттай" : "Сагслах"}
+          {isOutOfStock
+            ? t("products.outOfStock")
+            : showSuccess
+              ? t("toast.success") || "Ажилттай"
+              : t("products.addToCart")}
         </button>
         <button
-          onClick={() => handleCartAction(true)}
-          className="flex-1 rounded-lg border border-gray-900 px-6 py-3 text-gray-900 text-base font-medium hover:bg-gray-50"
+          onClick={() => !isOutOfStock && handleCartAction(true)}
+          disabled={isOutOfStock}
+          className={`flex-1 rounded-lg border px-6 py-3 text-base font-medium ${
+            isOutOfStock
+              ? "border-gray-300 text-gray-400 cursor-not-allowed"
+              : "border-gray-900 text-gray-900 hover:bg-gray-50"
+          }`}
         >
-          Захиалах
+          {t("checkout.title")}
         </button>
       </div>
+
+      <StickyAddToCart
+        productName={displayName}
+        price={product.price}
+        image={product.images?.[0]}
+        disabled={!canAddToCart || isOutOfStock}
+        onAddToCart={() => !isOutOfStock && handleCartAction(false)}
+      />
     </div>
   );
 }

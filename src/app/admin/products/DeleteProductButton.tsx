@@ -43,8 +43,11 @@ export default function DeleteProductButton({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Delete failed");
+
+      // Explicitly restore body overflow before closing modal/navigating
+      // to prevent the "blank gray screen" caused by overflow:hidden persisting
+      document.body.style.overflow = "";
       setConfirmOpen(false);
-      router.push("/admin/products");
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Устгахад алдаа гарлаа");

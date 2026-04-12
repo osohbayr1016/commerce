@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProductDetail } from "@/data/mockProductDetail";
 import { Product } from "@/data/mockProducts";
 import { notFound } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from "next";
 
 export const revalidate = 300;
 
@@ -21,6 +22,59 @@ interface ProductPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata(
+  { params }: ProductPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const uuidMatch = slug.match(
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+  );
+  const numericMatch = slug.match(/\d+$/);
+  const lookupId = uuidMatch?.[0] || numericMatch?.[0];
+
+  const filter = lookupId
+    ? `id.eq.${lookupId},sku.eq.${lookupId},sku.eq.#${lookupId}`
+    : `sku.eq.${slug},sku.eq.#${slug}`;
+
+  const { data: dbProduct } = await supabase
+    .from("products")
+    .select("title, name_en, description_en, images")
+    .or(filter)
+    .single();
+
+  if (!dbProduct) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+
+  const title = dbProduct.name_en || dbProduct.title || "Luxury Product";
+  const desc = dbProduct.description_en || "Experience premium quality with our carefully curated collection.";
+  const image = Array.isArray(dbProduct.images) && dbProduct.images.length > 0 
+    ? dbProduct.images[0] 
+    : undefined;
+
+  return {
+    title: `${title} | Your Luxury Brand`,
+    description: desc,
+    openGraph: {
+      title,
+      description: desc,
+      images: image ? [image] : [],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: desc,
+      images: image ? [image] : [],
+    },
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -89,6 +143,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       dbProduct.availability_status === "in_stock"
         ? dbProduct.availability_status
         : undefined,
+    stock: typeof dbProduct.stock === "number" ? dbProduct.stock : undefined,
   };
 
   const [relatedProductsResult, reviewStatsResult] = await Promise.all([

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient as createClient } from "@/lib/supabase/public";
 import { ensureR2PublicUrl } from "@/lib/cloudflare/r2-client";
 
 export interface HeroBanner {

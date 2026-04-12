@@ -35,7 +35,10 @@ bucket_name = "commerceq"
 NEXT_PUBLIC_SITE_URL = "https://maayaauvuu.com"
 R2_PUBLIC_URL = "https://pub-4cd9628710df4d9285813065e654a9c7.r2.dev"
 R2_BUCKET_NAME = "commerceq"
-
+QPAY_BASE_URL = "https://merchant.qpay.mn/v2"
+QPAY_CLIENT_ID = "MAAYAA_UVUU"
+QPAY_CLIENT_SECRET = "brGVZMiC"
+QPAY_INVOICE_CODE = "MAAYAA_UVUU_INVOICE"
 # Environment Variables Configuration
 # 
 # CRITICAL: Set these environment variables in Cloudflare Dashboard for deployment

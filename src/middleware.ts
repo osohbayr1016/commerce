@@ -62,7 +62,7 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const authRequiredPaths = ["/profile"];
+  const authRequiredPaths: string[] = [];
   if (authRequiredPaths.some((path) => request.nextUrl.pathname.startsWith(path))) {
     if (!session) {
       const redirectUrl = new URL("/auth/login", request.url);
@@ -100,5 +100,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/profile", "/debug-auth"],
+  matcher: ["/admin/:path*", "/debug-auth"],
 };
