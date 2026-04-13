@@ -87,7 +87,7 @@ export async function POST(request: Request) {
 
     // Handle coin payment (only for logged-in users)
     if (payload.paymentMethod === "coins" && payload.coinPayment) {
-      if (isGuest) {
+      if (!user) {
         return apiError("Зочин монетоор төлбөр төлөх боломжгүй", 400);
       }
 
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
       if (
         payload.paymentMethod === "coins" &&
         payload.coinPayment &&
-        !isGuest
+        user
       ) {
         await adminClient.rpc("update_coin_balance", {
           p_user_id: user.id,
@@ -176,7 +176,7 @@ export async function POST(request: Request) {
     }
 
     // Update transaction with order_id if paid with coins
-    if (paymentMethod === "coins" && payload.coinPayment) {
+    if (paymentMethod === "coins" && payload.coinPayment && user) {
       await adminClient
         .from("coin_transactions")
         .update({ order_id: order.id })
