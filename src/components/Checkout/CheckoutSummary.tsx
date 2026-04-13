@@ -120,12 +120,12 @@ export default function CheckoutSummary({
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Хөнгөлөлт</span>
-          <span className="text-gray-900">0 ₮</span>
+          <span className="text-gray-900">{discount > 0 ? `-${formatPrice(discount)}` : '0'} ₮</span>
         </div>
         <div className="flex justify-between pt-3 border-t border-gray-200">
           <span className="font-semibold text-gray-900">Нийт үнэ</span>
           <span className="text-xl font-bold text-gray-900">
-            {formatPrice(subtotal)} ₮
+            {formatPrice(finalTotal)} ₮
           </span>
         </div>
       </div>

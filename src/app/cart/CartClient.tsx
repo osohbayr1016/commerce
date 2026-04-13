@@ -88,8 +88,8 @@ export default function CartClient() {
                 <CartItemRow
                   key={item.id}
                   item={item}
-                  onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
-                  onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
+                  onIncrease={() => updateQuantity(item.id, item.quantity + 1, item.size)}
+                  onDecrease={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                   onRemove={() => removeItem(item.id, item.size)}
                 />
               ))}

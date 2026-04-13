@@ -6,10 +6,12 @@ import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/Checkout/ProductImage";
 import { getSizeLabel } from "@/lib/product-types";
 
+import { useState } from "react";
+
 interface CartItemRowProps {
   item: CartItem;
-  onIncrease: () => void;
-  onDecrease: () => void;
+  onIncrease: () => Promise<any> | void;
+  onDecrease: () => Promise<any> | void;
   onRemove: () => void;
 }
 
@@ -19,6 +21,22 @@ export default function CartItemRow({
   onDecrease,
   onRemove,
 }: CartItemRowProps) {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleIncrease = async () => {
+    setError(null);
+    const res = await onIncrease();
+    if (res?.error) {
+      setError(res.error);
+      setTimeout(() => setError(null), 3000); // Clear after 3 seconds
+    }
+  };
+
+  const handleDecrease = async () => {
+    setError(null);
+    await onDecrease();
+  };
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 border border-gray-200 rounded-lg p-4">
       <Link
@@ -58,28 +76,35 @@ export default function CartItemRow({
         <span className="text-xs text-gray-500 whitespace-nowrap">
           Тоо ширхэг
         </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onDecrease}
-            className="w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm font-medium"
-            aria-label="Тоо ширхэг багасгах"
-          >
-            −
-          </button>
-          <span className="w-10 text-center text-base font-semibold text-gray-900">
-            {item.quantity}
-          </span>
-          <button
-            onClick={onIncrease}
-            className="w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm font-medium"
-            aria-label="Тоо ширхэг нэмэх"
-          >
-            +
-          </button>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDecrease}
+              className="w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm font-medium"
+              aria-label="Тоо ширхэг багасгах"
+            >
+              −
+            </button>
+            <span className="w-10 text-center text-base font-semibold text-gray-900">
+              {item.quantity}
+            </span>
+            <button
+              onClick={handleIncrease}
+              className="w-8 h-8 rounded-full border border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm font-medium"
+              aria-label="Тоо ширхэг нэмэх"
+            >
+              +
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 text-center">
+            {item.quantity} × {formatPrice(item.price)} ₮
+          </p>
+          {error && (
+            <p className="text-[11px] text-red-500 font-medium text-center w-full max-w-[120px] leading-tight">
+              {error}
+            </p>
+          )}
         </div>
-        <p className="text-xs text-gray-500 text-center">
-          {item.quantity} × {formatPrice(item.price)} ₮
-        </p>
       </div>
 
       <div className="flex flex-col items-end gap-2">

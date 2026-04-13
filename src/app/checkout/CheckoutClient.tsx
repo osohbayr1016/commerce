@@ -44,7 +44,11 @@ export default function CheckoutClient() {
   const referralDiscountAmount = Math.floor(
     (subtotal * referralDiscountPercent) / 100,
   );
-  const finalTotal = subtotal - promoDiscount - referralDiscountAmount;
+  
+  // Apply 5% member discount
+  const memberDiscountAmount = user ? Math.floor(subtotal * 0.05) : 0;
+  
+  const finalTotal = subtotal - promoDiscount - referralDiscountAmount - memberDiscountAmount;
 
   const handleSuccess = (orderId: string, paymentMethod: string) => {
     clearCart();
@@ -100,7 +104,7 @@ export default function CheckoutClient() {
                 <CheckoutSummary
                   items={items}
                   subtotal={subtotal}
-                  discount={promoDiscount + referralDiscountAmount}
+                  discount={promoDiscount + referralDiscountAmount + memberDiscountAmount}
                   total={finalTotal}
                 />
               </div>

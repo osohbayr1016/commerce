@@ -43,7 +43,7 @@ interface CartStore {
     item: CartItem,
     quantity?: number
   ) => Promise<{ ok: boolean; error?: string }>;
-  updateQuantity: (id: string, quantity: number) => Promise<void>;
+  updateQuantity: (id: string, quantity: number, size?: number) => Promise<{ ok: boolean; error?: string } | void>;
   removeItem: (id: string, size?: number) => void;
   clearCart: () => void;
   
@@ -152,33 +152,38 @@ export const useCartStore = create<CartStore>()(
         return { ok: true };
       },
 
-      updateQuantity: async (id, quantity) => {
+      updateQuantity: async (id, quantity, size) => {
         const { items, userId } = get();
         const finalQuantity = Math.max(1, quantity);
-        const item = items.find((i) => i.id === id);
+        const item = items.find((i) => i.id === id && i.size === size);
 
         try {
-          const response = await fetch(`/api/products/${id}/stock`);
+          const stockUrl =
+            item?.size != null
+              ? `/api/products/${id}/variant-stock?size=${item.size}`
+              : `/api/products/${id}/stock`;
+          const response = await fetch(stockUrl);
+          
           if (response.ok) {
             const stockData = await response.json();
             if (stockData.stock < finalQuantity) {
               const adjustedQuantity = Math.min(stockData.stock, finalQuantity);
               set((state) => ({
                 items: state.items.map((i) =>
-                  i.id === id ? { ...i, quantity: adjustedQuantity } : i
+                  i.id === id && i.size === size ? { ...i, quantity: adjustedQuantity } : i
                 ),
               }));
               if (item && userId) {
                 updateItemInServerCart(id, adjustedQuantity, item.size).catch(() => {});
               }
-              return;
+              return { ok: false, error: "Барааны үлдэгдэл хүрэлцэхгүй байна" };
             }
           }
         } catch (err) {}
 
         set((state) => ({
           items: state.items.map((i) =>
-            i.id === id ? { ...i, quantity: finalQuantity } : i
+            i.id === id && i.size === size ? { ...i, quantity: finalQuantity } : i
           ),
         }));
 

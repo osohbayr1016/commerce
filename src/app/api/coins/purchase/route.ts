@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { apiError } from '@/lib/api-errors';
 import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
+import { createQpayInvoice } from '@/lib/qpay';
 
 const COIN_PRICE_MNT = 1000; // 1 coin = 1000 MNT
 
@@ -30,39 +31,25 @@ export async function POST(request: NextRequest) {
     const totalPrice = coinAmount * COIN_PRICE_MNT;
 
     // In a real application, you would integrate with a payment gateway here
-    // For now, we'll simulate a successful payment
+    // For now, we'll simulate a successful payment -> Changed to QPAY implementation
     
-    // Update coin balance using the function
-    const { error: updateError } = await supabase.rpc('update_coin_balance', {
-      p_user_id: user.id,
-      p_amount: coinAmount,
-      p_transaction_type: 'purchase',
-      p_description: `Худалдан авсан: ${coinAmount} монет (₮${totalPrice.toLocaleString()})`,
-    });
+    try {
+      const qpayInvoice = await createQpayInvoice({
+        amount: totalPrice,
+        senderInvoiceNo: `COIN_${user.id}_${Date.now()}`,
+        description: `Монет авах: ${coinAmount} ширхэг`,
+      });
 
-    if (updateError) {
-      console.error('Error updating coin balance:', updateError);
-      return apiError('Монет нэмэхэд алдаа гарлаа', 500);
+      return NextResponse.json({
+        success: true,
+        qpay: qpayInvoice,
+        coinAmount,
+        totalPrice,
+      });
+    } catch (qpayError) {
+      console.error("QPay invoice error:", qpayError);
+      return apiError("QPay нэхэмжлэл үүсгэхэд алдаа гарлаа", 502);
     }
-
-    // Fetch updated profile
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('coin_balance')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError) {
-      return apiError('Мэдээллийг татахад алдаа гарлаа', 500);
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: `${coinAmount} монет амжилттай нэмэгдлээ!`,
-      newBalance: profile.coin_balance,
-      purchasedCoins: coinAmount,
-      paidAmount: totalPrice,
-    });
 
   } catch (error) {
     console.error('Error in coin purchase:', error);

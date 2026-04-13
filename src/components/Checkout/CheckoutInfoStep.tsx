@@ -154,13 +154,13 @@ export default function CheckoutInfoStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          what3words хаяг
+          Google Maps Link
         </label>
         <input
           name="address"
           value={form.address}
           onChange={onChange}
-          placeholder="///далай.бармат.юкинсэх т.м"
+          placeholder="https://maps.google.com/..."
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
           required
         />

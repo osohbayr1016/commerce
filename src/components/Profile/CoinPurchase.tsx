@@ -4,6 +4,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CoinTransaction } from "@/types";
+import QpayDialog from "../Checkout/QpayDialog";
+import type { QpayInvoiceResponse } from "@/lib/qpay";
 
 const COIN_PRICE_MNT = 1000;
 const PRESET_AMOUNTS = [100, 500, 1000, 10000, 20000];
@@ -17,6 +19,12 @@ export default function CoinPurchase() {
   const [success, setSuccess] = useState<string>("");
   const [transactions, setTransactions] = useState<CoinTransaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
+
+  // Qpay state
+  const [showQpay, setShowQpay] = useState(false);
+  const [qpayData, setQpayData] = useState<QpayInvoiceResponse | null>(null);
+  const [checkingQpay, setCheckingQpay] = useState(false);
+  const [qpayError, setQpayError] = useState("");
 
   useEffect(() => {
     fetchTransactions();
@@ -54,15 +62,9 @@ export default function CoinPurchase() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        setSuccess(data.message);
-        setCoinAmount(100);
-        setCustomAmount("");
-
-        // Reload page to refresh coin balance everywhere
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+      if (response.ok && data.qpay) {
+        setQpayData(data.qpay);
+        setShowQpay(true);
       } else {
         setError(data.error || "Алдаа гарлаа");
       }
@@ -70,6 +72,45 @@ export default function CoinPurchase() {
       setError("Сүлжээний алдаа гарлаа");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCheckPayment = async () => {
+    if (!qpayData) return;
+    setCheckingQpay(true);
+    setQpayError("");
+
+    try {
+      const response = await fetch("/api/coins/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          invoiceId: qpayData.invoice_id,
+          coinAmount,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.status === "paid" || data.status === "already_paid") {
+          setShowQpay(false);
+          setSuccess(`${coinAmount} монет амжилттай нэмэгдлээ!`);
+          setCoinAmount(100);
+          setCustomAmount("");
+          
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          setQpayError("Төлбөр хийгдээгүй байна.");
+        }
+      } else {
+        setQpayError(data.error || "Шалгахад алдаа гарлаа.");
+      }
+    } catch (err) {
+      setQpayError("Шалгахад алдаа гарлаа. Дахин оролдоно уу.");
+    } finally {
+      setCheckingQpay(false);
     }
   };
 
@@ -219,6 +260,15 @@ export default function CoinPurchase() {
           </div>
         )}
       </div>
+
+      <QpayDialog
+        open={showQpay}
+        data={qpayData}
+        onClose={() => setShowQpay(false)}
+        onPaid={handleCheckPayment}
+        checking={checkingQpay}
+        errorMessage={qpayError}
+      />
     </div>
   );
 }

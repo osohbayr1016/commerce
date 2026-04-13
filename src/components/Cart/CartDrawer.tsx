@@ -111,8 +111,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <CartItemRow
                   key={`${item.id}-${item.size || "default"}`}
                   item={item}
-                  onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
-                  onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
+                  onIncrease={() => updateQuantity(item.id, item.quantity + 1, item.size)}
+                  onDecrease={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                   onRemove={() => removeItem(item.id, item.size)}
                 />
               ))}

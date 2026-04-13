@@ -61,14 +61,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const totalAmount = Math.round(
+    const isGuest = !user;
+
+    // For guests, we must ensure their email was verified via OTP
+    if (isGuest) {
+      const { data: verification } = await adminClient
+        .from("verification_codes")
+        .select("verified")
+        .eq("email", customer.email)
+        .single();
+        
+      if (!verification || !verification.verified) {
+        return apiError("И-мэйл хаягаа баталгаажуулна уу", 401);
+      }
+    }
+
+    let totalAmount = Math.round(
       payload.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
     );
 
-    const isGuest = !user;
-
-    if (isGuest) {
-      return apiError("Захиалга хийхийн тулд нэвтэрч орно уу", 401);
+    // Apply 5% member discount
+    if (!isGuest) {
+      totalAmount = totalAmount - Math.floor(totalAmount * 0.05);
     }
 
     // Handle coin payment (only for logged-in users)
@@ -116,7 +130,7 @@ export async function POST(request: Request) {
     const { data: order, error: orderError } = await adminClient
       .from("orders")
       .insert({
-        user_id: user.id,
+        user_id: user?.id ?? null,
         total_amount: totalAmount,
         status: "pending",
         earned_xp: 0,
@@ -151,6 +165,14 @@ export async function POST(request: Request) {
         });
       }
       return apiError("Order create failed", 500);
+    }
+
+    // Unverify guest email after successful order creation to require OTP for future orders
+    if (isGuest) {
+      await adminClient
+        .from("verification_codes")
+        .update({ verified: false })
+        .eq("email", customer.email);
     }
 
     // Update transaction with order_id if paid with coins
