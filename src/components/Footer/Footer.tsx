@@ -71,7 +71,7 @@ export default async function Footer() {
   ];
 
   return (
-    <footer className="bg-white border-t border-gray-200 mt-12">
+    <footer className="bg-[#ebd5b3] border-t border-[#e3ccaa] mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="py-4 text-center text-sm text-gray-500 border-b border-gray-100">
           Secure payment • Authentic Italian products • Worldwide shipping

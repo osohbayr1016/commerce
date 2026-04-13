@@ -55,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
         
         {/* Image Area with Quick View Overlay */}
-        <div className="relative mb-3 group/image block overflow-hidden rounded-md">
+        <div className="relative mb-5 group/image block overflow-hidden bg-[#fafafa]">
           <Link href={`/products/${slug}`} className="block relative">
             <ProductCardImage
               images={product.images}
@@ -77,38 +77,38 @@ export default function ProductCard({ product }: ProductCardProps) {
             ) : null}
           </Link>
 
-          {/* Quick View Button overlay (Desktop) */}
-          <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 z-20 hidden md:block">
+          {/* Add to Cart Button overlay (Desktop) */}
+          <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover/image:translate-y-0 transition-transform duration-300 z-20 hidden md:block">
             <button
               onClick={(e) => {
                 e.preventDefault();
                 setIsQuickViewOpen(true);
               }}
-              className="w-full bg-white/90 backdrop-blur text-gray-900 py-2.5 rounded-lg text-sm font-semibold shadow-lg hover:bg-white transition-colors"
+              className="w-full bg-black text-white py-3.5 text-xs uppercase tracking-[0.1em] font-medium hover:bg-gray-800 transition-colors"
             >
-              Quick View
+              ADD TO CART
             </button>
           </div>
         </div>
 
         {/* Text Details */}
-        <Link href={`/products/${slug}`} className="flex-1 min-w-0">
-          <p className="text-xs uppercase text-gray-500 tracking-wide mb-1">
+        <Link href={`/products/${slug}`} className="flex-1 min-w-0 text-center flex flex-col items-center">
+          <h3 className="text-sm font-bold text-black uppercase tracking-[0.1em] mb-1.5">
             {product.brand}
-          </p>
-          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
-            {displayName}
           </h3>
-          <div className="flex items-center gap-2">
+          <p className="text-[13px] text-gray-500 mb-2.5 font-medium">
+            {displayName}
+          </p>
+          <div className="flex items-center justify-center gap-3">
             <span
-              className={`text-sm font-semibold ${
-                product.discount ? "text-red-600" : "text-gray-900"
+              className={`text-[15px] font-medium ${
+                product.discount ? "text-red-600" : "text-black"
               }`}
             >
               {formatPrice(product.price)} ₮
             </span>
             {product.originalPrice > product.price && (
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-[14px] text-gray-400 line-through">
                 {formatPrice(product.originalPrice)} ₮
               </span>
             )}

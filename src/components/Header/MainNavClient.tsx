@@ -56,8 +56,8 @@ export default function MainNavClient({
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white border-b transition-all duration-300 ${
-        isScrolled ? "border-gray-100 shadow-sm" : "border-gray-200"
+      className={`sticky top-0 z-50 bg-[#ebd5b3] border-b transition-all duration-300 ${
+        isScrolled ? "border-[#dcc096] shadow-sm" : "border-[#e3ccaa]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
