@@ -294,30 +294,19 @@ export default function ProductForm({
             <label className="block text-base font-semibold text-black mb-2">
               Брэнд *
             </label>
-            {brands.length > 0 ? (
-              <select
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
-                <option value="">Сонгоно уу</option>
-                {brands.map((b) => (
-                  <option key={b.id} value={b.name}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <div className="px-4 py-3 border border-gray-300 rounded-lg text-gray-500 bg-gray-50">
-                Брэнд байхгүй. Админ → Брэнд хэсгээс нэмнэ үү.
-              </div>
-            )}
+            <input
+              type="text"
+              name="brand"
+              value={formData.brand}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              required
+            />
           </div>
 
           <div>
             <label className="block text-base font-semibold text-black mb-2">
-              SKU *
+              Барааны Код *
             </label>
             <input
               type="text"
@@ -383,28 +372,10 @@ export default function ProductForm({
           </label>
           <div className="flex gap-2 flex-wrap items-center">
             <input
-              type="text"
-              value={colorInput}
+              type="color"
+              value={colorInput || "#000000"}
               onChange={(e) => setColorInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const v = colorInput.trim();
-                  if (v && !colors.includes(v)) {
-                    setColors((c) => [...c, v]);
-                    setColorSizeStocks((prev) => ({
-                      ...prev,
-                      [v]:
-                        productType === "other"
-                          ? { 0: 0 }
-                          : ({} as Record<number, number>),
-                    }));
-                    setColorInput("");
-                  }
-                }
-              }}
-              placeholder="Өнгөний нэр бичиж нэмнэ"
-              className="flex-1 min-w-[180px] px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-14 h-14 p-1 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
             <button
               type="button"

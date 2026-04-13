@@ -21,7 +21,7 @@ export default function ProductFormNameSection({
 }: ProductFormNameSectionProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {LANGUAGES.map((lang) => (
+      {(["en", "mn"] as const).map((lang) => (
         <div key={lang}>
           <label className="block text-base font-semibold text-black mb-2">
             {LABELS[lang]}

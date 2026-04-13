@@ -21,7 +21,7 @@ export default function ProductFormDescriptionSection({
 }: ProductFormDescriptionSectionProps) {
   return (
     <div className="space-y-4">
-      {LANGUAGES.map((lang) => (
+      {(["en", "mn"] as const).map((lang) => (
         <div key={lang}>
           <label className="block text-base font-semibold text-black mb-2">
             {LABELS[lang]}
