@@ -3,7 +3,7 @@
 import { CartItem } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-type PaymentMethod = "qpay" | "bank" | "coins";
+type PaymentMethod = "qpay" | "coins";
 
 interface CheckoutPaymentStepProps {
   items: CartItem[];
@@ -66,49 +66,6 @@ export default function CheckoutPaymentStep({
           </div>
         </div>
 
-        <div
-          onClick={() => onChangeMethod("bank")}
-          className={`flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-            paymentMethod === "bank"
-              ? "border-gray-900 bg-gray-50"
-              : "border-gray-200 hover:border-gray-300"
-          }`}
-        >
-          <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-500">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-              />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <div className="font-medium text-gray-900">
-              {t("checkout.bankTransfer")}
-            </div>
-            <div className="text-sm text-gray-500">
-              {t("checkout.bankTransferDescription")}
-            </div>
-          </div>
-          <div
-            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-              paymentMethod === "bank"
-                ? "border-gray-900 bg-gray-900"
-                : "border-gray-300"
-            }`}
-          >
-            {paymentMethod === "bank" && (
-              <div className="w-2 h-2 rounded-full bg-white" />
-            )}
-          </div>
-        </div>
 
         <div
           onClick={() => hasEnoughCoins && onChangeMethod("coins")}

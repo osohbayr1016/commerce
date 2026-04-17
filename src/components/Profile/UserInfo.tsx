@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/types";
 
 export default function UserInfo() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -14,6 +14,15 @@ export default function UserInfo() {
     full_name: profile?.full_name || "",
     phone_number: profile?.phone_number || "",
   });
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || "",
+        phone_number: profile.phone_number || "",
+      });
+    }
+  }, [profile]);
 
   const supabase = createClient();
 
@@ -23,21 +32,37 @@ export default function UserInfo() {
     setMessage("");
 
     try {
-      const { error } = await supabase
+      if (!user?.id) throw new Error("Хэрэглэгч нэвтрээгүй байна");
+
+      const { data, error } = await supabase
         .from("profiles")
         .update({
           full_name: formData.full_name,
           phone_number: formData.phone_number,
         })
-        .eq("id", user?.id);
+        .eq("id", user.id)
+        .select();
 
       if (error) throw error;
+      if (!data || data.length === 0) {
+         throw new Error("Профайл шинэчлэгдсэнгүй");
+      }
 
+      // Зэрэгцээд user meta_data-г шинэчлэх оролдлого хийх (алдаа гарвал profile table шинэчлэгдсэн тул алгасаж болно)
+      await supabase.auth.updateUser({
+        data: {
+          full_name: formData.full_name,
+          phone_number: formData.phone_number,
+        }
+      });
+
+      await refreshProfile();
       setMessage("Мэдээлэл амжилттай шинэчлэгдлээ!");
-      setEditing(false);
+      
       setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+        setEditing(false);
+        setMessage("");
+      }, 2000);
     } catch (error) {
       setMessage(`Алдаа: ${getErrorMessage(error)}`);
     } finally {

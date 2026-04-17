@@ -19,7 +19,7 @@ export function useCheckoutForm({
   const { profile, user } = useAuth();
   const [currentStep, setCurrentStep] = useState<"info" | "payment">("info");
   const [form, setForm] = useState<CheckoutFormValues>(defaultValues);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("qpay");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [isVerified, setIsVerified] = useState(false);

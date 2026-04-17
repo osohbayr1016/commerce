@@ -34,10 +34,13 @@ export async function POST(request: NextRequest) {
     // For now, we'll simulate a successful payment -> Changed to QPAY implementation
     
     try {
+      // QPay senderInvoiceNo max length is 32 chars
+      const shortId = `CN${Date.now().toString(36).toUpperCase()}`;
       const qpayInvoice = await createQpayInvoice({
         amount: totalPrice,
-        senderInvoiceNo: `COIN_${user.id}_${Date.now()}`,
+        senderInvoiceNo: shortId,
         description: `Монет авах: ${coinAmount} ширхэг`,
+        callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "https://maayaauvuu.com"}/api/coins/qpay-callback`,
       });
 
       return NextResponse.json({
@@ -47,8 +50,9 @@ export async function POST(request: NextRequest) {
         totalPrice,
       });
     } catch (qpayError) {
-      console.error("QPay invoice error:", qpayError);
-      return apiError("QPay нэхэмжлэл үүсгэхэд алдаа гарлаа", 502);
+      const msg = qpayError instanceof Error ? qpayError.message : String(qpayError);
+      console.error("QPay invoice error:", msg);
+      return apiError(`QPay нэхэмжлэл үүсгэхэд алдаа гарлаа: ${msg}`, 502);
     }
 
   } catch (error) {

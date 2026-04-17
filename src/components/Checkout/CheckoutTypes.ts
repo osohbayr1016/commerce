@@ -1,6 +1,6 @@
 import { CartItem } from "@/contexts/CartContext";
 
-export type PaymentMethod = "qpay" | "bank" | "coins";
+export type PaymentMethod = "qpay" | "coins";
 
 export interface CheckoutFormValues {
   fullName: string;

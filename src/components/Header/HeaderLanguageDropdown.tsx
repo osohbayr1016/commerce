@@ -7,9 +7,6 @@ import { Language } from "@/i18n/translations";
 const LANGUAGES: { code: Language; label: string }[] = [
   { code: "en", label: "English" },
   { code: "mn", label: "Монгол" },
-  { code: "ru", label: "Русский" },
-  { code: "zh", label: "中文" },
-  { code: "it", label: "Italiano" },
 ];
 
 export default function HeaderLanguageDropdown() {

@@ -23,7 +23,7 @@ interface CheckoutFormProps {
   onSuccess: (orderId: string, paymentMethod: PaymentMethod) => void;
 }
 
-type PaymentMethod = "qpay" | "bank" | "coins";
+type PaymentMethod = "qpay" | "coins";
 
 const COIN_PRICE_MNT = 1000; // 1 coin = 1000 MNT
 
