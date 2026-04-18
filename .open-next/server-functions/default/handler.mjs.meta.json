@@ -3606,8 +3606,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js": {
-      "bytes": 32856,
+    ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js": {
+      "bytes": 313,
       "imports": [],
       "format": "cjs"
     },
@@ -3616,8 +3616,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js": {
-      "bytes": 313,
+    ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js": {
+      "bytes": 32856,
       "imports": [],
       "format": "cjs"
     },
@@ -3626,28 +3626,13 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js": {
-      "bytes": 23781,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js": {
-      "bytes": 25186,
-      "imports": [],
-      "format": "cjs"
-    },
     ".open-next/server-functions/default/.next/server/app/compare/page_client-reference-manifest.js": {
       "bytes": 23832,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js": {
-      "bytes": 25501,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js": {
-      "bytes": 26662,
+    ".open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js": {
+      "bytes": 23781,
       "imports": [],
       "format": "cjs"
     },
@@ -3661,38 +3646,18 @@
       "imports": [],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js": {
+      "bytes": 25501,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js": {
+      "bytes": 26662,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/products/[slug]/page_client-reference-manifest.js": {
       "bytes": 42004,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js": {
-      "bytes": 36564,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js": {
-      "bytes": 22264,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js": {
-      "bytes": 22309,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js": {
-      "bytes": 22268,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js": {
-      "bytes": 316,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js": {
-      "bytes": 25708,
       "imports": [],
       "format": "cjs"
     },
@@ -3716,6 +3681,31 @@
       "imports": [],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js": {
+      "bytes": 22268,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js": {
+      "bytes": 22264,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js": {
+      "bytes": 22309,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js": {
+      "bytes": 316,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js": {
+      "bytes": 25708,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/admin/users/page_client-reference-manifest.js": {
       "bytes": 25209,
       "imports": [],
@@ -3728,6 +3718,11 @@
     },
     ".open-next/server-functions/default/.next/server/app/admin/spin/page_client-reference-manifest.js": {
       "bytes": 25221,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js": {
+      "bytes": 25186,
       "imports": [],
       "format": "cjs"
     },
@@ -3751,11 +3746,6 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js": {
-      "bytes": 25145,
-      "imports": [],
-      "format": "cjs"
-    },
     ".open-next/server-functions/default/.next/server/app/admin/orders/page_client-reference-manifest.js": {
       "bytes": 25238,
       "imports": [],
@@ -3771,8 +3761,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js": {
-      "bytes": 25260,
+    ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js": {
+      "bytes": 25145,
       "imports": [],
       "format": "cjs"
     },
@@ -3781,13 +3771,13 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/ws/referral/route_client-reference-manifest.js": {
-      "bytes": 318,
+    ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js": {
+      "bytes": 25260,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js": {
-      "bytes": 326,
+    ".open-next/server-functions/default/.next/server/app/api/ws/referral/route_client-reference-manifest.js": {
+      "bytes": 318,
       "imports": [],
       "format": "cjs"
     },
@@ -3811,6 +3801,16 @@
       "imports": [],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js": {
+      "bytes": 319,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js": {
+      "bytes": 317,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/api/referral/validate/route_client-reference-manifest.js": {
       "bytes": 324,
       "imports": [],
@@ -3826,13 +3826,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js": {
-      "bytes": 319,
-      "imports": [],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js": {
-      "bytes": 317,
+    ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js": {
+      "bytes": 326,
       "imports": [],
       "format": "cjs"
     },
@@ -3921,8 +3916,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js": {
-      "bytes": 25387,
+    ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js": {
+      "bytes": 36564,
       "imports": [],
       "format": "cjs"
     },
@@ -3941,13 +3936,13 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/products/[id]/variant-stock/route_client-reference-manifest.js": {
-      "bytes": 334,
+    ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js": {
+      "bytes": 25387,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js": {
-      "bytes": 326,
+    ".open-next/server-functions/default/.next/server/app/api/products/[id]/variant-stock/route_client-reference-manifest.js": {
+      "bytes": 334,
       "imports": [],
       "format": "cjs"
     },
@@ -3956,17 +3951,22 @@
       "imports": [],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js": {
+      "bytes": 326,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/api/products/[id]/recommendations/route_client-reference-manifest.js": {
       "bytes": 336,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js": {
       "bytes": 325,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js": {
       "bytes": 325,
       "imports": [],
       "format": "cjs"
@@ -3976,13 +3976,13 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js": {
-      "bytes": 320,
+    ".open-next/server-functions/default/.next/server/app/api/admin/users/search/route_client-reference-manifest.js": {
+      "bytes": 325,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/admin/users/search/route_client-reference-manifest.js": {
-      "bytes": 325,
+    ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js": {
+      "bytes": 320,
       "imports": [],
       "format": "cjs"
     },
@@ -3991,22 +3991,17 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js": {
-      "bytes": 328,
-      "imports": [],
-      "format": "cjs"
-    },
     ".open-next/server-functions/default/.next/server/app/api/admin/spin/products/route_client-reference-manifest.js": {
       "bytes": 326,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js": {
-      "bytes": 326,
+    ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js": {
+      "bytes": 328,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js": {
       "bytes": 326,
       "imports": [],
       "format": "cjs"
@@ -4023,6 +4018,11 @@
     },
     ".open-next/server-functions/default/.next/server/app/api/admin/brands/[id]/route_client-reference-manifest.js": {
       "bytes": 324,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js": {
+      "bytes": 326,
       "imports": [],
       "format": "cjs"
     },
@@ -4075,9 +4075,9 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/sale/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/profile/page_client-reference-manifest.js",
@@ -4085,9 +4085,9 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/profile/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/debug-auth/page_client-reference-manifest.js",
@@ -4095,29 +4095,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/debug-auth/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js"
-        },
-        {
           "path": ".open-next/server-functions/default/.next/server/app/compare/page_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/compare/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/_not-found/page_client-reference-manifest.js",
@@ -4130,39 +4115,19 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/_global-error/page_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/products/[slug]/page_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/products/[slug]/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/wishlist/route_client-reference-manifest.js",
@@ -4185,6 +4150,31 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/cart/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/admin/users/page_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/users/page_client-reference-manifest.js"
@@ -4198,6 +4188,11 @@
           "path": ".open-next/server-functions/default/.next/server/app/admin/spin/page_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/spin/page_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/admin/setup-hero/page_client-reference-manifest.js",
@@ -4220,11 +4215,6 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/products/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js"
-        },
-        {
           "path": ".open-next/server-functions/default/.next/server/app/admin/orders/page_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/orders/page_client-reference-manifest.js"
@@ -4240,9 +4230,9 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/fix-images/page_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/admin/brands/page_client-reference-manifest.js",
@@ -4250,14 +4240,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/brands/page_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/ws/referral/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/ws/referral/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/spin/products/route_client-reference-manifest.js",
@@ -4280,6 +4270,16 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/spin/eligibility/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/referral/validate/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/referral/validate/route_client-reference-manifest.js"
@@ -4295,14 +4295,9 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/referral/create-code/route_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/promo/validate/route_client-reference-manifest.js",
@@ -4390,9 +4385,9 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/brands/route_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js",
+          "path": ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js",
           "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js"
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/admin/referral/top6/page_client-reference-manifest.js",
@@ -4410,14 +4405,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/referral/analytics/page_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/products/[id]/variant-stock/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/products/[id]/variant-stock/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/products/[id]/reviews/route_client-reference-manifest.js",
@@ -4425,14 +4420,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/products/[id]/reviews/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/products/[id]/recommendations/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/products/[id]/recommendations/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js",
@@ -4440,14 +4435,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/auth/otp/verify/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/auth/otp/verify/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/users/search/route_client-reference-manifest.js",
@@ -4455,14 +4450,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/users/search/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/users/[id]/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/users/[id]/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/spin/products/route_client-reference-manifest.js",
@@ -4470,14 +4465,14 @@
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/spin/products/route_client-reference-manifest.js"
         },
         {
+          "path": ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js"
+        },
+        {
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/orders/[id]/route_client-reference-manifest.js",
@@ -4493,6 +4488,11 @@
           "path": ".open-next/server-functions/default/.next/server/app/api/admin/brands/[id]/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/brands/[id]/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/twissu/Desktop/Personal/e-commerce/my-ecommerce/.open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/admin/products/[id]/edit/page_client-reference-manifest.js",
@@ -11464,7 +11464,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__884c0a8a._.js": {
-      "bytes": 11710,
+      "bytes": 11881,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -11952,7 +11952,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__db28ef61._.js": {
-      "bytes": 9043,
+      "bytes": 9279,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -12584,7 +12584,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/src_182fd254._.js": {
-      "bytes": 26026,
+      "bytes": 25935,
       "imports": [],
       "format": "cjs"
     },
@@ -13126,7 +13126,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/src_app_checkout_CheckoutWithErrorBoundary_tsx_998fa2bc._.js": {
-      "bytes": 25285,
+      "bytes": 24189,
       "imports": [],
       "format": "cjs"
     },
@@ -13773,7 +13773,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/src_components_Profile_ProfilePageContent_tsx_47649607._.js": {
-      "bytes": 51725,
+      "bytes": 52085,
       "imports": [],
       "format": "cjs"
     },
@@ -22614,26 +22614,29 @@
         ".open-next/server-functions/default/.next/server/app/sale/page_client-reference-manifest.js": {
           "bytesInOutput": 24338
         },
-        ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js": {
-          "bytesInOutput": 31656
+        ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js": {
+          "bytesInOutput": 462
         },
         ".open-next/server-functions/default/.next/server/app/profile/page_client-reference-manifest.js": {
           "bytesInOutput": 24303
         },
-        ".open-next/server-functions/default/.next/server/app/robots.txt/route_client-reference-manifest.js": {
-          "bytesInOutput": 462
+        ".open-next/server-functions/default/.next/server/app/products/page_client-reference-manifest.js": {
+          "bytesInOutput": 31656
         },
         ".open-next/server-functions/default/.next/server/app/debug-auth/page_client-reference-manifest.js": {
           "bytesInOutput": 21025
         },
+        ".open-next/server-functions/default/.next/server/app/compare/page_client-reference-manifest.js": {
+          "bytesInOutput": 22823
+        },
         ".open-next/server-functions/default/.next/server/app/cart/page_client-reference-manifest.js": {
           "bytesInOutput": 22769
         },
-        ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js": {
-          "bytesInOutput": 24132
+        ".open-next/server-functions/default/.next/server/app/_not-found/page_client-reference-manifest.js": {
+          "bytesInOutput": 19615
         },
-        ".open-next/server-functions/default/.next/server/app/compare/page_client-reference-manifest.js": {
-          "bytesInOutput": 22823
+        ".open-next/server-functions/default/.next/server/app/_global-error/page_client-reference-manifest.js": {
+          "bytesInOutput": 5072
         },
         ".open-next/server-functions/default/.next/server/app/checkout/page_client-reference-manifest.js": {
           "bytesInOutput": 24439
@@ -22641,32 +22644,8 @@
         ".open-next/server-functions/default/.next/server/app/admin/page_client-reference-manifest.js": {
           "bytesInOutput": 25549
         },
-        ".open-next/server-functions/default/.next/server/app/_not-found/page_client-reference-manifest.js": {
-          "bytesInOutput": 19616
-        },
-        ".open-next/server-functions/default/.next/server/app/_global-error/page_client-reference-manifest.js": {
-          "bytesInOutput": 5072
-        },
         ".open-next/server-functions/default/.next/server/app/products/[slug]/page_client-reference-manifest.js": {
           "bytesInOutput": 40558
-        },
-        ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js": {
-          "bytesInOutput": 35274
-        },
-        ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js": {
-          "bytesInOutput": 21307
-        },
-        ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js": {
-          "bytesInOutput": 21362
-        },
-        ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js": {
-          "bytesInOutput": 21312
-        },
-        ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js": {
-          "bytesInOutput": 468
-        },
-        ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js": {
-          "bytesInOutput": 24647
         },
         ".open-next/server-functions/default/.next/server/app/api/wishlist/route_client-reference-manifest.js": {
           "bytesInOutput": 466
@@ -22680,6 +22659,21 @@
         ".open-next/server-functions/default/.next/server/app/api/cart/route_client-reference-manifest.js": {
           "bytesInOutput": 458
         },
+        ".open-next/server-functions/default/.next/server/app/auth/signup/page_client-reference-manifest.js": {
+          "bytesInOutput": 21312
+        },
+        ".open-next/server-functions/default/.next/server/app/auth/login/page_client-reference-manifest.js": {
+          "bytesInOutput": 21307
+        },
+        ".open-next/server-functions/default/.next/server/app/auth/forgot-password/page_client-reference-manifest.js": {
+          "bytesInOutput": 21362
+        },
+        ".open-next/server-functions/default/.next/server/app/auth/callback/route_client-reference-manifest.js": {
+          "bytesInOutput": 468
+        },
+        ".open-next/server-functions/default/.next/server/app/checkout/success/page_client-reference-manifest.js": {
+          "bytesInOutput": 24647
+        },
         ".open-next/server-functions/default/.next/server/app/admin/users/page_client-reference-manifest.js": {
           "bytesInOutput": 24150
         },
@@ -22688,6 +22682,9 @@
         },
         ".open-next/server-functions/default/.next/server/app/admin/spin/page_client-reference-manifest.js": {
           "bytesInOutput": 24161
+        },
+        ".open-next/server-functions/default/.next/server/app/categories/page_client-reference-manifest.js": {
+          "bytesInOutput": 24133
         },
         ".open-next/server-functions/default/.next/server/app/admin/setup-hero/page_client-reference-manifest.js": {
           "bytesInOutput": 24152
@@ -22701,9 +22698,6 @@
         ".open-next/server-functions/default/.next/server/app/admin/products/page_client-reference-manifest.js": {
           "bytesInOutput": 25601
         },
-        ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js": {
-          "bytesInOutput": 24085
-        },
         ".open-next/server-functions/default/.next/server/app/admin/orders/page_client-reference-manifest.js": {
           "bytesInOutput": 24180
         },
@@ -22713,20 +22707,20 @@
         ".open-next/server-functions/default/.next/server/app/admin/fix-images/page_client-reference-manifest.js": {
           "bytesInOutput": 24152
         },
-        ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js": {
-          "bytesInOutput": 24206
+        ".open-next/server-functions/default/.next/server/app/admin/hero/page_client-reference-manifest.js": {
+          "bytesInOutput": 24085
         },
         ".open-next/server-functions/default/.next/server/app/admin/brands/page_client-reference-manifest.js": {
           "bytesInOutput": 24124
         },
+        ".open-next/server-functions/default/.next/server/app/admin/categories/page_client-reference-manifest.js": {
+          "bytesInOutput": 24206
+        },
         ".open-next/server-functions/default/.next/server/app/api/ws/referral/route_client-reference-manifest.js": {
           "bytesInOutput": 472
         },
-        ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js": {
-          "bytesInOutput": 488
-        },
         ".open-next/server-functions/default/.next/server/app/api/spin/products/route_client-reference-manifest.js": {
-          "bytesInOutput": 477
+          "bytesInOutput": 476
         },
         ".open-next/server-functions/default/.next/server/app/api/spin/play/route_client-reference-manifest.js": {
           "bytesInOutput": 469
@@ -22737,6 +22731,12 @@
         ".open-next/server-functions/default/.next/server/app/api/spin/eligibility/route_client-reference-manifest.js": {
           "bytesInOutput": 483
         },
+        ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js": {
+          "bytesInOutput": 475
+        },
+        ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js": {
+          "bytesInOutput": 471
+        },
         ".open-next/server-functions/default/.next/server/app/api/referral/validate/route_client-reference-manifest.js": {
           "bytesInOutput": 485
         },
@@ -22746,11 +22746,8 @@
         ".open-next/server-functions/default/.next/server/app/api/referral/create-code/route_client-reference-manifest.js": {
           "bytesInOutput": 491
         },
-        ".open-next/server-functions/default/.next/server/app/api/qpay/confirm/route_client-reference-manifest.js": {
-          "bytesInOutput": 475
-        },
-        ".open-next/server-functions/default/.next/server/app/api/qpay/check/route_client-reference-manifest.js": {
-          "bytesInOutput": 471
+        ".open-next/server-functions/default/.next/server/app/api/search/autocomplete/route_client-reference-manifest.js": {
+          "bytesInOutput": 489
         },
         ".open-next/server-functions/default/.next/server/app/api/promo/validate/route_client-reference-manifest.js": {
           "bytesInOutput": 479
@@ -22803,8 +22800,8 @@
         ".open-next/server-functions/default/.next/server/app/api/admin/brands/route_client-reference-manifest.js": {
           "bytesInOutput": 475
         },
-        ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js": {
-          "bytesInOutput": 24335
+        ".open-next/server-functions/default/.next/server/app/categories/[...slug]/page_client-reference-manifest.js": {
+          "bytesInOutput": 35274
         },
         ".open-next/server-functions/default/.next/server/app/admin/referral/top6/page_client-reference-manifest.js": {
           "bytesInOutput": 24173
@@ -22815,46 +22812,46 @@
         ".open-next/server-functions/default/.next/server/app/admin/referral/analytics/page_client-reference-manifest.js": {
           "bytesInOutput": 24211
         },
+        ".open-next/server-functions/default/.next/server/app/admin/products/new/page_client-reference-manifest.js": {
+          "bytesInOutput": 24335
+        },
         ".open-next/server-functions/default/.next/server/app/api/products/[id]/variant-stock/route_client-reference-manifest.js": {
           "bytesInOutput": 505
-        },
-        ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js": {
-          "bytesInOutput": 489
         },
         ".open-next/server-functions/default/.next/server/app/api/products/[id]/reviews/route_client-reference-manifest.js": {
           "bytesInOutput": 493
         },
+        ".open-next/server-functions/default/.next/server/app/api/products/[id]/stock/route_client-reference-manifest.js": {
+          "bytesInOutput": 489
+        },
         ".open-next/server-functions/default/.next/server/app/api/products/[id]/recommendations/route_client-reference-manifest.js": {
           "bytesInOutput": 509
         },
-        ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js": {
           "bytesInOutput": 487
         },
-        ".open-next/server-functions/default/.next/server/app/api/images/r2/[...key]/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/.next/server/app/api/orders/[id]/cancel/route_client-reference-manifest.js": {
           "bytesInOutput": 487
         },
         ".open-next/server-functions/default/.next/server/app/api/auth/otp/verify/route_client-reference-manifest.js": {
           "bytesInOutput": 481
         },
-        ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js": {
-          "bytesInOutput": 477
-        },
         ".open-next/server-functions/default/.next/server/app/api/admin/users/search/route_client-reference-manifest.js": {
           "bytesInOutput": 487
+        },
+        ".open-next/server-functions/default/.next/server/app/api/auth/otp/send/route_client-reference-manifest.js": {
+          "bytesInOutput": 477
         },
         ".open-next/server-functions/default/.next/server/app/api/admin/users/[id]/route_client-reference-manifest.js": {
           "bytesInOutput": 483
         },
-        ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js": {
-          "bytesInOutput": 493
-        },
         ".open-next/server-functions/default/.next/server/app/api/admin/spin/products/route_client-reference-manifest.js": {
           "bytesInOutput": 489
         },
-        ".open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js": {
-          "bytesInOutput": 489
+        ".open-next/server-functions/default/.next/server/app/api/admin/spin/statistics/route_client-reference-manifest.js": {
+          "bytesInOutput": 493
         },
-        ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/.next/server/app/api/admin/products/bulk/route_client-reference-manifest.js": {
           "bytesInOutput": 489
         },
         ".open-next/server-functions/default/.next/server/app/api/admin/orders/[id]/route_client-reference-manifest.js": {
@@ -22865,6 +22862,9 @@
         },
         ".open-next/server-functions/default/.next/server/app/api/admin/brands/[id]/route_client-reference-manifest.js": {
           "bytesInOutput": 485
+        },
+        ".open-next/server-functions/default/.next/server/app/api/admin/products/[id]/route_client-reference-manifest.js": {
+          "bytesInOutput": 489
         },
         ".open-next/server-functions/default/.next/server/app/admin/products/[id]/edit/page_client-reference-manifest.js": {
           "bytesInOutput": 24359
@@ -24058,7 +24058,7 @@
           "bytesInOutput": 286
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__884c0a8a._.js": {
-          "bytesInOutput": 12363
+          "bytesInOutput": 12540
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_coins_purchase_route_actions_d66d501b.js": {
           "bytesInOutput": 288
@@ -24139,7 +24139,7 @@
           "bytesInOutput": 312
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__db28ef61._.js": {
-          "bytesInOutput": 9184
+          "bytesInOutput": 9743
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_promo_validate_route_actions_64526466.js": {
           "bytesInOutput": 288
@@ -24274,7 +24274,7 @@
           "bytesInOutput": 261
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_182fd254._.js": {
-          "bytesInOutput": 27018
+          "bytesInOutput": 26893
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_app_cart_loading_tsx_c4a15145._.js": {
           "bytesInOutput": 1740
@@ -24355,7 +24355,7 @@
           "bytesInOutput": 5636
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_app_checkout_CheckoutWithErrorBoundary_tsx_998fa2bc._.js": {
-          "bytesInOutput": 28273
+          "bytesInOutput": 27171
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_app_checkout_error_tsx_6fc69dea._.js": {
           "bytesInOutput": 1178
@@ -24481,7 +24481,7 @@
           "bytesInOutput": 1445
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_components_Profile_ProfilePageContent_tsx_47649607._.js": {
-          "bytesInOutput": 57813
+          "bytesInOutput": 58372
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_components_d17ac7e8._.js": {
           "bytesInOutput": 1949
@@ -24952,7 +24952,7 @@
           "bytesInOutput": 83826
         }
       },
-      "bytes": 13216215
+      "bytes": 13216283
     }
   }
 }
