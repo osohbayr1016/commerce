@@ -37,27 +37,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError) {
-      console.error("[upload] auth error:", authError.message);
-      return NextResponse.json(
-        {
-          error: "Authentication failed",
-          ...(isDevelopment && { details: authError.message }),
-        },
-        { status: 401 },
-      );
+    let isBot = false;
+    const authHeader = request.headers.get("Authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      if (token === process.env.BOT_API_KEY && process.env.BOT_API_KEY) {
+        isBot = true;
+      }
     }
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please log in to upload images." },
-        { status: 401 },
-      );
+    if (!isBot) {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError) {
+        console.error("[upload] auth error:", authError.message);
+        return NextResponse.json(
+          {
+            error: "Authentication failed",
+            ...(isDevelopment && { details: authError.message }),
+          },
+          { status: 401 },
+        );
+      }
+
+      if (!user) {
+        return NextResponse.json(
+          { error: "Unauthorized. Please log in to upload images." },
+          { status: 401 },
+        );
+      }
     }
 
     let formData: FormData;

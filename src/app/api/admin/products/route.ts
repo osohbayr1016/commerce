@@ -2,7 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-async function requireAdmin() {
+async function requireAdmin(req?: NextRequest) {
+  let isBot = false;
+  if (req) {
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      if (token === process.env.BOT_API_KEY && process.env.BOT_API_KEY) {
+        isBot = true;
+      }
+    }
+  }
+
+  if (isBot) {
+    try {
+      return { adminClient: createAdminClient() };
+    } catch (e) {
+      console.error("Admin client init failed:", e);
+      return {
+        error: NextResponse.json({ error: "Тохиргооны алдаа" }, { status: 503 }),
+      };
+    }
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -124,7 +146,7 @@ export function pickProductPayload(
 
 export async function POST(req: NextRequest) {
   try {
-    const auth = await requireAdmin();
+    const auth = await requireAdmin(req);
     if (auth.error) return auth.error;
     const body = await req.json().catch(() => ({}));
     const { sizeStocks, colorSizeStocks } = body;
