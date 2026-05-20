@@ -78,15 +78,16 @@ export default function SeedDataPage() {
           price: product.price,
           original_price: product.originalPrice,
           discount: product.discount || 0,
-          stock: Math.floor(Math.random() * 50) + 10,
-          sizes: [35, 36, 37, 38, 39, 40],
+          stock: product.stock !== undefined ? product.stock : Math.floor(Math.random() * 50) + 10,
+          sizes: product.category === 'boots' ? [35, 36, 37, 38, 39, 40] : [34, 36, 38, 40],
           description: `${product.nameMn} - ${product.brand}`,
-          subcategory: product.category === 'boots' ? 'Гутал' : 'Цүнх',
+          subcategory: product.category === 'boots' ? 'Гутал' : product.category === 'bag' ? 'Цүнх' : 'Хувцас',
           category_id: product.category === 'boots' ? femaleCat?.id : accessoryCat?.id,
           brand_color: product.brandColor,
           image_color: product.imageColor,
           has_financing: true,
           title: product.nameEn,
+          images: product.images || [],
         }));
 
       if (productsToInsert.length === 0) {

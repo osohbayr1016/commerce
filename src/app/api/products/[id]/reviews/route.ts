@@ -53,7 +53,7 @@ export async function GET(
 
   const avgRating =
     avgData && avgData.length > 0
-      ? avgData.reduce((sum, r) => sum + r.rating, 0) / avgData.length
+      ? avgData.reduce((sum: number, r: any) => sum + r.rating, 0) / avgData.length
       : 0;
 
   return NextResponse.json({

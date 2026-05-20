@@ -36,6 +36,9 @@ export default function HeroCarousel({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (initialBanners && initialBanners.length > 0) {
+      return;
+    }
     const url =
       typeof window !== "undefined"
         ? `${window.location.origin}/api/hero`
@@ -60,7 +63,7 @@ export default function HeroCarousel({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialBanners]);
 
   const scrollToIndex = useCallback(
     (index: number) => {

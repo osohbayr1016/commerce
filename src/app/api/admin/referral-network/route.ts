@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
       }
 
       const networks = await Promise.all(
-        (top6Members || []).map(async (member) => ({
+        (top6Members || []).map(async (member: any) => ({
           top6Member: member,
           network: await buildNetworkTree(supabase, member.id, 0, 3),
         }))
@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
 
     // Filter to only users who have no referrer
     const rootUserIds = await Promise.all(
-      (rootUsers || []).map(async (u) => {
+      (rootUsers || []).map(async (u: any) => {
         const { data: hasReferrer } = await supabase
           .from('referrals')
           .select('id')

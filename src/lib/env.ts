@@ -30,22 +30,43 @@ function getEnvVar(key: string, fallback?: string): string {
 }
 
 export const env = {
-  supabase: {
-    url: getEnvVar(
-      "NEXT_PUBLIC_SUPABASE_URL",
-      "https://placeholder.supabase.co"
-    ),
-    anonKey: getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY", "placeholder-key"),
+  get supabase() {
+    return {
+      get url() {
+        return getEnvVar(
+          "NEXT_PUBLIC_SUPABASE_URL",
+          "https://placeholder.supabase.co"
+        );
+      },
+      get anonKey() {
+        return getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY", "placeholder-key");
+      },
+    };
   },
-  site: {
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://maayaauvuu.com",
+  get site() {
+    return {
+      get url() {
+        return process.env.NEXT_PUBLIC_SITE_URL || "https://maayaauvuu.com";
+      },
+    };
   },
-  qpay: {
-    baseUrl:
-      process.env.QPAY_BASE_URL ||
-      "https://merchant-sandbox.qpay.mn/v2",
-    clientId: getEnvVar("QPAY_CLIENT_ID"),
-    clientSecret: getEnvVar("QPAY_CLIENT_SECRET"),
-    invoiceCode: getEnvVar("QPAY_INVOICE_CODE"),
+  get qpay() {
+    return {
+      get baseUrl() {
+        return (
+          process.env.QPAY_BASE_URL ||
+          "https://merchant-sandbox.qpay.mn/v2"
+        );
+      },
+      get clientId() {
+        return getEnvVar("QPAY_CLIENT_ID");
+      },
+      get clientSecret() {
+        return getEnvVar("QPAY_CLIENT_SECRET");
+      },
+      get invoiceCode() {
+        return getEnvVar("QPAY_INVOICE_CODE");
+      },
+    };
   },
 } as const;

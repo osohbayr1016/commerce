@@ -56,7 +56,7 @@ export default function MainNavClient({
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-[#ebd5b3] border-b transition-all duration-300 ${
+      className={`sticky top-0 z-50 glass-header border-b transition-all duration-300 ${
         isScrolled ? "border-[#dcc096] shadow-sm" : "border-[#e3ccaa]"
       }`}
     >
@@ -106,7 +106,7 @@ export default function MainNavClient({
                   <Link
                     key={item.slug}
                     href={`/categories/${item.slug}`}
-                    className="hover:text-gray-600 transition-colors whitespace-nowrap"
+                    className="luxury-underline hover:text-gray-900 transition-colors whitespace-nowrap"
                   >
                     {t(item.key)}
                   </Link>
@@ -127,7 +127,7 @@ export default function MainNavClient({
                     <Link
                       key={cat.id}
                       href={`/categories/${cat.slug}`}
-                      className="hover:text-gray-600 transition-colors whitespace-nowrap"
+                      className="luxury-underline hover:text-gray-900 transition-colors whitespace-nowrap"
                     >
                       {getLabel(cat)}
                     </Link>

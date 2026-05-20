@@ -18,6 +18,7 @@ const nextConfig = {
 
   // Image optimization
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -38,6 +39,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "maayaauvuu.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

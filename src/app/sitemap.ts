@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(100);
 
   const productUrls =
-    products?.map((product) => ({
+    products?.map((product: any) => ({
       url: `${baseUrl}/products/${product.id}`,
       lastModified: product.updated_at
         ? new Date(product.updated_at)
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })) || [];
 
   const categoryUrls =
-    categories?.map((category) => ({
+    categories?.map((category: any) => ({
       url: `${baseUrl}/categories/${(category as { path?: string }).path ?? category.slug}`,
       lastModified: category.updated_at
         ? new Date(category.updated_at)

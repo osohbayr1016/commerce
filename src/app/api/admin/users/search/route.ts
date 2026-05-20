@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     try {
       const admin = createAdminClient();
       enriched = await Promise.all(
-        list.map(async (r) => {
+        list.map(async (r: any) => {
           try {
             const { data } = await admin.auth.admin.getUserById(r.id);
             const email = data?.user?.email ?? null;
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
         }),
       );
     } catch {
-      enriched = list.map((r) => ({ ...r, email: null }));
+      enriched = list.map((r: any) => ({ ...r, email: null }));
     }
 
     return NextResponse.json({

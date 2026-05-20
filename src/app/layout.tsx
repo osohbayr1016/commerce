@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
@@ -11,6 +11,10 @@ import MobileBottomNav from "@/components/Navigation/MobileBottomNav";
 import { ModalProvider } from "@/hooks/useModal";
 import { SpinModalProvider } from "@/contexts/SpinModalContext";
 import CartDrawerDynamic from "@/components/Cart/CartDrawerDynamic";
+import TopLoader from "@/components/ui/TopLoader";
+import IntroPreloader from "@/components/ui/IntroPreloader";
+import SpeculationRules from "@/components/ui/SpeculationRules";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,8 +28,8 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
   display: "swap",
 });
@@ -40,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${plusJakarta.variable} antialiased font-sans`}
       >
         <LanguageProvider>
           <AuthProvider>
@@ -48,6 +52,11 @@ export default function RootLayout({
               <ToastProvider>
                 <ComparisonProvider>
                   <SpinModalProvider>
+                    <Suspense fallback={null}>
+                      <TopLoader />
+                    </Suspense>
+                    <IntroPreloader />
+                    <SpeculationRules />
                     <div className="min-h-screen pb-16 md:pb-0">{children}</div>
                     <MobileBottomNav />
                     <ModalProvider />

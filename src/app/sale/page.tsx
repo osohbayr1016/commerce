@@ -20,7 +20,7 @@ export default async function SalePage() {
     dbProducts = [];
   }
 
-  const products: Product[] = (dbProducts || []).map((p) => ({
+  const products: Product[] = (dbProducts || []).map((p: any) => ({
     id: p.id,
     brand: p.brand || "",
     nameEn: p.name_en || p.title || "",

@@ -15,7 +15,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [stock, setStock] = useState<number | null>(null);
+  const [stock, setStock] = useState<number | null>(product.stock ?? null);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const { t, language } = useLanguage();
 
@@ -25,17 +25,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("mn-MN").format(price);
-
-  useEffect(() => {
-    if (product.id) {
-      fetch(`/api/products/${product.id}/stock`)
-        .then((res) => (res.ok ? res.json() : { stock: null }))
-        .then((data) => {
-          if (data && typeof data.stock === "number") setStock(data.stock);
-        })
-        .catch(() => {});
-    }
-  }, [product.id]);
 
   const isOutOfStock = stock !== null && stock === 0;
   const isLowStock = stock !== null && stock > 0 && stock < 5;
@@ -99,7 +88,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <p className="text-[13px] text-gray-500 mb-2.5 font-medium">
             {displayName}
           </p>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex flex-col items-center justify-center gap-1">
             <span
               className={`text-[15px] font-medium ${
                 product.discount ? "text-red-600" : "text-black"

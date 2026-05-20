@@ -1,17 +1,25 @@
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 import {
   DynamicSalesChart,
   DynamicProductPerformanceChart,
 } from "@/components/admin/DynamicAnalyticsCharts";
 import { getAnalyticsData } from "@/lib/analytics";
+import QuickActions from "@/components/admin/QuickActions";
 
-export const revalidate = 300;
+// We force dynamic behavior because we consume searchParams dynamically
+export const dynamic = "force-dynamic";
 
-export default async function AdminDashboard() {
-  const supabase = await createClient();
+interface PageProps {
+  searchParams: Promise<{ period?: string }>;
+}
 
-  const analytics = await getAnalyticsData("month");
+export default async function AdminDashboard({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const period = (params?.period === "week" || params?.period === "year" ? params.period : "month") as "week" | "month" | "year";
+  
+  // Dynamic server-side data fetch based on current selected period parameter
+  const analytics = await getAnalyticsData(period);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("mn-MN", {
@@ -28,19 +36,21 @@ export default async function AdminDashboard() {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      pending: "bg-yellow-100 text-yellow-800",
-      processing: "bg-blue-100 text-blue-800",
-      shipped: "bg-purple-100 text-purple-800",
-      delivered: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800",
+      pending: "bg-amber-50 text-amber-800 border-amber-200/50",
+      processing: "bg-blue-50 text-blue-800 border-blue-200/50",
+      confirmed: "bg-neutral-900 text-neutral-100 border-neutral-800",
+      shipped: "bg-purple-50 text-purple-800 border-purple-200/50",
+      delivered: "bg-emerald-50 text-emerald-800 border-emerald-200/50",
+      cancelled: "bg-red-50 text-red-800 border-red-200/50",
     };
-    return colors[status] || "bg-gray-100 text-gray-800";
+    return colors[status] || "bg-gray-50 text-gray-800 border-gray-200";
   };
 
   const getStatusText = (status: string) => {
     const texts: Record<string, string> = {
       pending: "Хүлээгдэж буй",
       processing: "Боловсруулж буй",
+      confirmed: "Баталгаажсан",
       shipped: "Илгээсэн",
       delivered: "Хүргэгдсэн",
       cancelled: "Цуцалсан",
@@ -48,234 +58,297 @@ export default async function AdminDashboard() {
     return texts[status] || status;
   };
 
+  const timeframes = [
+    { key: "week", label: "7 хоног" },
+    { key: "month", label: "30 хоног" },
+    { key: "year", label: "12 сар" },
+  ];
+
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
-          Хянах самбар
-        </h1>
-        <p className="text-sm sm:text-base text-gray-600">
-          Борлуулалт болон гүйцэтгэлийн мэдээлэл
-        </p>
+    <div className="space-y-8 font-sans">
+      {/* Dashboard Top Header & Timeframe Controllers */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-neutral-200/60 pb-6">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 font-heading">
+            Хянах самбар
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+            Борлуулалт, захиалгын гүйцэтгэл болон системийн мэдээлэл
+          </p>
+        </div>
+
+        {/* Premium Segmented Timeframe Controls */}
+        <div className="flex bg-neutral-100/80 border border-neutral-200 p-1 rounded-xl shrink-0 self-start sm:self-auto shadow-xs">
+          {timeframes.map((tf) => {
+            const isSelected = period === tf.key;
+            return (
+              <Link
+                key={tf.key}
+                href={`/admin?period=${tf.key}`}
+                className={`px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                  isSelected
+                    ? "bg-white text-neutral-900 shadow-xs border border-neutral-200/30"
+                    : "text-neutral-500 hover:text-neutral-800"
+                }`}
+              >
+                {tf.label}
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
+      {/* 6 Premium Stripe-Style Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Metric Card 1: Revenue */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
               Нийт орлого
-            </p>
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.revenueGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.revenueGrowth)}
             </span>
           </div>
           <p
-            className="text-xl sm:text-2xl font-semibold text-gray-900 truncate"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono"
             title={formatCurrency(analytics.overview.totalRevenue)}
           >
             {formatCurrency(analytics.overview.totalRevenue)}
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
+        {/* Metric Card 2: Orders */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
               Нийт захиалга
-            </p>
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.ordersGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.ordersGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate">
+          <p className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono">
             {analytics.overview.totalOrders}
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
+        {/* Metric Card 3: Avg Basket */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
               Дундаж захиалга
-            </p>
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.avgOrderGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.avgOrderGrowth)}
             </span>
           </div>
           <p
-            className="text-xl sm:text-2xl font-semibold text-gray-900 truncate"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono"
             title={formatCurrency(analytics.overview.avgOrderValue)}
           >
             {formatCurrency(analytics.overview.avgOrderValue)}
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
+        {/* Metric Card 4: Users */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
               Нийт хэрэглэгч
-            </p>
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.usersGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.usersGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate">
+          <p className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono">
             {analytics.overview.totalUsers}
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
-              Нийт бүтээгдэхүүн
-            </p>
+        {/* Metric Card 5: Catalog */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+              Бүтээгдэхүүн
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.productsGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.productsGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate">
+          <p className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono">
             {analytics.overview.totalProducts}
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
-            <p className="text-xs sm:text-sm text-gray-600 truncate">
-              Хөрвүүлэлтийн хувь
-            </p>
+        {/* Metric Card 6: Conversion */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs relative overflow-hidden group hover:border-neutral-300 transition-all">
+          <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+              Хөрвүүлэлт
+            </span>
             <span
-              className={`text-xs font-medium px-2 py-1 rounded shrink-0 ${
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
                 analytics.overview.conversionGrowth >= 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/40"
+                  : "bg-red-50 text-red-700 border-red-200/40"
               }`}
             >
               {formatPercent(analytics.overview.conversionGrowth)}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-semibold text-gray-900 truncate">
-            {analytics.overview.conversionRate.toFixed(1)}%
+          <p className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 truncate font-heading font-mono">
+            {analytics.overview.conversionRate.toFixed(2)}%
           </p>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400/20 group-hover:bg-amber-400/50 transition-colors"></div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+      {/* Interactive Admin Tool Kit */}
+      <QuickActions recentOrders={analytics.recentOrders} />
+
+      {/* Performance & Sales Charts Visuals */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
         <DynamicSalesChart data={analytics.salesChart} />
         <DynamicProductPerformanceChart
           data={analytics.categoryPerformance.slice(0, 5)}
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
-            Топ бүтээгдэхүүн
-          </h2>
-          <div className="space-y-3 min-w-0 overflow-auto">
+      {/* detailed logs and leaderboard cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-w-0">
+        {/* Top Product Standings */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs min-w-0 lg:col-span-5 flex flex-col">
+          <div className="flex items-center justify-between border-b border-neutral-100 pb-4 mb-4">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+              Топ бүтээгдэхүүн
+            </h3>
+            <span className="text-[10px] font-semibold text-neutral-500 uppercase">Борлуулалт</span>
+          </div>
+          <div className="flex-1 overflow-y-auto space-y-4 pr-1">
             {analytics.topProducts.slice(0, 5).map((product, index) => (
               <div
                 key={product.id}
-                className="flex items-center justify-between gap-3 pb-3 border-b border-gray-100 last:border-0 min-w-0"
+                className="flex items-center justify-between gap-3 pb-3.5 border-b border-neutral-50 last:border-0 last:pb-0"
               >
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                  <span className="text-base sm:text-lg font-semibold text-gray-400 w-6 shrink-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <span className="text-xs font-bold font-mono text-neutral-400 w-5 text-center shrink-0">
                     {index + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                    <p className="font-semibold text-neutral-800 text-xs sm:text-sm truncate">
                       {product.name}
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {product.sales} борлуулалт
+                    <p className="text-[11px] text-neutral-500 mt-0.5">
+                      {product.sales} ширхэг
                     </p>
                   </div>
                 </div>
-                <p className="font-semibold text-gray-900 text-sm sm:text-base shrink-0 whitespace-nowrap">
+                <p className="font-bold text-neutral-900 text-xs sm:text-sm font-mono shrink-0 whitespace-nowrap">
                   {formatCurrency(product.revenue)}
                 </p>
               </div>
             ))}
+            {analytics.topProducts.length === 0 && (
+              <p className="text-xs text-neutral-500 text-center py-6">Мэдээлэл байхгүй байна.</p>
+            )}
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 min-w-0 overflow-hidden">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
-            Сүүлийн захиалгууд
-          </h2>
-          <div className="space-y-3 min-w-0 overflow-auto">
-            {analytics.recentOrders.map((order) => {
+        {/* Stripe-like Recent Sales Ledger */}
+        <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs min-w-0 lg:col-span-7 flex flex-col">
+          <div className="flex items-center justify-between border-b border-neutral-100 pb-4 mb-4">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+              Сүүлийн захиалгууд
+            </h3>
+            <Link
+              href="/admin/orders"
+              className="text-[10px] font-bold text-amber-600 hover:text-amber-700 tracking-wider uppercase"
+            >
+              Бүх захиалга →
+            </Link>
+          </div>
+          <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+            {analytics.recentOrders.slice(0, 6).map((order) => {
               const thumbnails = (order.items || [])
                 .map((item) => item.product?.images?.[0])
                 .filter(Boolean) as string[];
               return (
                 <div
                   key={order.id}
-                  className="flex items-center gap-3 pb-3 border-b border-gray-100 last:border-0 min-w-0"
+                  className="flex items-center gap-3 pb-3.5 border-b border-neutral-50 last:border-0 last:pb-0"
                 >
                   <div className="flex shrink-0 gap-1">
                     {thumbnails.length > 0 ? (
-                      thumbnails.slice(0, 3).map((src, i) => (
+                      thumbnails.slice(0, 2).map((src, i) => (
                         <div
                           key={`${order.id}-${i}`}
-                          className="relative w-10 h-10 rounded-md border border-gray-200 overflow-hidden bg-gray-50"
+                          className="relative w-8 h-8 rounded-lg border border-neutral-200 overflow-hidden bg-neutral-50"
                         >
                           <Image
                             src={src}
                             alt=""
                             fill
                             className="object-cover"
-                            sizes="40px"
+                            sizes="32px"
                           />
                         </div>
                       ))
                     ) : (
-                      <div className="w-10 h-10 rounded-md border border-gray-200 bg-gray-100 flex items-center justify-center text-gray-400 text-xs">
+                      <div className="w-8 h-8 rounded-lg border border-neutral-200 bg-neutral-50 flex items-center justify-center text-neutral-400 text-xs">
                         —
                       </div>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                    <p className="font-semibold text-neutral-800 text-xs sm:text-sm truncate">
                       {order.user_name}
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {new Date(order.created_at).toLocaleDateString("mn-MN")}
+                    <p className="text-[10px] text-neutral-400 font-mono mt-0.5">
+                      #{order.id.slice(0, 8).toUpperCase()} • {new Date(order.created_at).toLocaleDateString("mn-MN")}
                     </p>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="font-semibold text-gray-900 text-sm sm:text-base whitespace-nowrap">
+                  <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                    <p className="font-bold text-neutral-900 text-xs sm:text-sm font-mono whitespace-nowrap">
                       {formatCurrency(order.total_amount)}
                     </p>
                     <span
-                      className={`text-xs font-medium px-2 py-1 rounded ${getStatusColor(order.status)}`}
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border tracking-wide uppercase ${getStatusColor(order.status)}`}
                     >
                       {getStatusText(order.status)}
                     </span>
@@ -283,110 +356,66 @@ export default async function AdminDashboard() {
                 </div>
               );
             })}
+            {analytics.recentOrders.length === 0 && (
+              <p className="text-xs text-neutral-500 text-center py-6">Захиалга байхгүй байна.</p>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
+      {/* Command Shortcut Portal Grid */}
+      <div className="bg-white border border-neutral-200/80 rounded-xl p-6 shadow-xs">
+        <h3 className="text-sm font-semibold text-neutral-900 uppercase tracking-widest mb-4">
           Шуурхай холбоосууд
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <a
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
             href="/admin/products"
-            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50/50 hover:border-neutral-300 transition-all group"
           >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Бүтээгдэхүүн нэмэх
+            <h3 className="font-semibold text-neutral-800 group-hover:text-amber-600 transition-colors text-xs sm:text-sm">
+              📦 Бүтээгдэхүүн нэмэх
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Шинэ бүтээгдэхүүн үүсгэх
+            <p className="text-[11px] sm:text-xs text-neutral-500 mt-1">
+              Шинэ бүтээгдэхүүн үүсгэх ба удирдах
             </p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/categories"
-            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50/50 hover:border-neutral-300 transition-all group"
           >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Ангилал удирдах
+            <h3 className="font-semibold text-neutral-800 group-hover:text-amber-600 transition-colors text-xs sm:text-sm">
+              🏷️ Ангилал удирдах
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Male, Female, Accessory, Perfume болон дэд ангилал
+            <p className="text-[11px] sm:text-xs text-neutral-500 mt-1">
+              Male, Female, Accessory, Perfume ангилал
             </p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/orders"
-            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50/50 hover:border-neutral-300 transition-all group"
           >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Захиалга харах
+            <h3 className="font-semibold text-neutral-800 group-hover:text-amber-600 transition-colors text-xs sm:text-sm">
+              🛒 Захиалга харах
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Захиалгуудыг удирдах
+            <p className="text-[11px] sm:text-xs text-neutral-500 mt-1">
+              Гүйлгээний бүх захиалгыг удирдах
             </p>
-          </a>
+          </Link>
 
-          <a
-            href="/admin/referral/top6"
-            className="p-4 border border-yellow-200 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
-          >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Top 6 удирдах
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Referral Top 6 гишүүд
-            </p>
-          </a>
-
-          <a
-            href="/admin/referral/analytics"
-            className="p-4 border border-purple-200 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
-          >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Referral Analytics
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Referral мэдээлэл харах
-            </p>
-          </a>
-
-          <a
-            href="/admin/referral/network"
-            className="p-4 border border-green-200 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
-          >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Referral Network
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Сүлжээний бүтэц харах
-            </p>
-          </a>
-
-          <a
-            href="/admin/spin"
-            className="p-4 border border-orange-200 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
-          >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              🎰 Spin Wheel
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Spin бүтээгдэхүүн удирдах
-            </p>
-          </a>
-
-          <a
+          <Link
             href="/admin/settings"
-            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50/50 hover:border-neutral-300 transition-all group"
           >
-            <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
-              Тохиргоо
+            <h3 className="font-semibold text-neutral-800 group-hover:text-amber-600 transition-colors text-xs sm:text-sm">
+              ⚙️ Систем Тохиргоо
             </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
-              Вэбсайтын тохиргоо засах
+            <p className="text-[11px] sm:text-xs text-neutral-500 mt-1">
+              Вэбсайт ба платформын ерөнхий тохиргоо засах
             </p>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

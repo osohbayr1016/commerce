@@ -19,7 +19,7 @@ export default function AddToCartButton({ product, slug }: AddToCartButtonProps)
   const { showToast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
-  const [stock, setStock] = useState<number | null>(null);
+  const [stock, setStock] = useState<number | null>(product.stock ?? null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -36,12 +36,6 @@ export default function AddToCartButton({ product, slug }: AddToCartButtonProps)
       
     }
   };
-
-  useEffect(() => {
-    if (product.id) {
-      fetchStock();
-    }
-  }, [product.id]);
 
   const handleAdd = async () => {
     // Removed auth check

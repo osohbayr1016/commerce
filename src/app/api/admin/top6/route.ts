@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 
     // Get additional stats for each member
     const membersWithStats = await Promise.all(
-      (top6Members || []).map(async (member) => {
+      (top6Members || []).map(async (member: any) => {
         // Get total discount events
         const { count: discountEventsCount } = await supabase
           .from('discount_events')

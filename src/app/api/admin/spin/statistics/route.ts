@@ -71,14 +71,14 @@ export async function GET(req: NextRequest) {
 
     const list = rows || [];
     const totalSpins = list.length;
-    const totalRevenueMnt = list.reduce((s, r) => s + (r.amount_paid ?? 0), 0);
-    const uniqueUserIds = new Set(list.map((r) => r.user_id));
+    const totalRevenueMnt = list.reduce((s: number, r: any) => s + (r.amount_paid ?? 0), 0);
+    const uniqueUserIds = new Set(list.map((r: any) => r.user_id));
     const uniqueUsers = uniqueUserIds.size;
     const avgSpinsPerUser =
       uniqueUsers > 0 ? Math.round((totalSpins / uniqueUsers) * 100) / 100 : 0;
 
     const byProduct: Record<string, { count: number }> = {};
-    list.forEach((r) => {
+    list.forEach((r: any) => {
       if (r.product_id) {
         byProduct[r.product_id] = byProduct[r.product_id] || { count: 0 };
         byProduct[r.product_id].count += 1;
@@ -101,9 +101,9 @@ export async function GET(req: NextRequest) {
         .from("products")
         .select("id, name_en, name_mn, images")
         .in("id", topProductIds);
-      const productMap = new Map((products || []).map((p) => [p.id, p]));
-      mostWonProducts = topProductIds.map((id) => {
-        const p = productMap.get(id);
+      const productMap = new Map((products || []).map((p: any) => [p.id, p]));
+      mostWonProducts = topProductIds.map((id: string) => {
+        const p = productMap.get(id) as any;
         const count = byProduct[id]?.count ?? 0;
         const winPercentage =
           totalSpins > 0 ? Math.round((count / totalSpins) * 10000) / 100 : 0;

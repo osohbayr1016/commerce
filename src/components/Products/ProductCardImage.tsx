@@ -39,7 +39,7 @@ export default function ProductCardImage({
         alt={alt}
         fill
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        className="object-cover"
+        className="object-cover hover-premium-zoom"
         loading="lazy"
       />
       {hasSecondImage && secondary && (
@@ -48,7 +48,7 @@ export default function ProductCardImage({
           alt={alt}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className={`object-cover absolute inset-0 transition-opacity duration-300 ${
+          className={`object-cover absolute inset-0 transition-opacity duration-300 hover-premium-zoom ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
           loading="lazy"

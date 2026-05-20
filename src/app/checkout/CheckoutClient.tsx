@@ -63,29 +63,56 @@ export default function CheckoutClient() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <main className="flex-1 py-8 md:py-12">
+    <div className="min-h-screen flex flex-col bg-gray-50/50">
+      <main className="flex-1 py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <BackButton />
+          {/* Header Area */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex items-center gap-4">
+              <BackButton />
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                  Захиалга баталгаажуулах
+                </h1>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  Төлбөр тооцоо аюулгүй, нууцлалтай хамгаалагдсан
+                </p>
+              </div>
+            </div>
           </div>
+
           {items.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
-              <p className="text-gray-600">{t("cart.emptyCart")}</p>
+            <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center max-w-lg mx-auto shadow-sm">
+              <span className="text-4xl mb-4 block">🛒</span>
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Таны сагс хоосон байна</h2>
+              <p className="text-gray-500 text-sm mb-6">{t("cart.emptyCart")}</p>
+              <button
+                onClick={() => router.push("/")}
+                className="px-6 py-2.5 bg-black text-white text-xs font-semibold uppercase tracking-wider rounded-lg hover:bg-gray-800 transition-all duration-200"
+              >
+                Дэлгүүр хэсэх
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 order-2 lg:order-1">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Form Section */}
+              <div className="lg:col-span-2 order-2 lg:order-1 space-y-6">
                 <CheckoutForm
                   items={items}
                   defaultValues={defaultValues}
                   onSuccess={handleSuccess}
                 />
               </div>
-              <div className="lg:col-span-1 order-1 lg:order-2 space-y-4">
-                <section className="rounded-lg border border-gray-200 bg-white p-4 space-y-4">
-                  <h2 className="text-sm font-semibold text-gray-900 tracking-wide">
-                    {t("checkout.discountAndLoyalty")}
+
+              {/* Sidebar Section */}
+              <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
+                {/* Discount and loyalty selectors */}
+                <section className="rounded-2xl border border-gray-200 bg-white p-5 space-y-5 shadow-sm">
+                  <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0h4a2 2 0 012 2v11a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2h4z" />
+                    </svg>
+                    Хөнгөлөлт & Урамшуулал
                   </h2>
                   <PromoCodeInput
                     orderAmount={subtotal}
@@ -101,6 +128,7 @@ export default function CheckoutClient() {
                     }
                   />
                 </section>
+
                 <CheckoutSummary
                   items={items}
                   subtotal={subtotal}

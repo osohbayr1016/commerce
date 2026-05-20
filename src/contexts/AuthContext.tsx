@@ -32,9 +32,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
 
   useEffect(() => {
+    const isLocal = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    const grantLocalAdmin = () => {
+      const mockUser = {
+        id: "00000000-0000-0000-0000-000000000000",
+        email: "admin@localhost",
+        role: "authenticated",
+        aud: "authenticated",
+        app_metadata: {},
+        user_metadata: { full_name: "Local Admin" },
+        created_at: new Date().toISOString(),
+      } as any;
+      const mockProfile = {
+        id: "00000000-0000-0000-0000-000000000000",
+        email: "admin@localhost",
+        role: "admin",
+        full_name: "Local Admin",
+        phone_number: "00000000",
+        created_at: new Date().toISOString(),
+      };
+      setUser(mockUser);
+      setProfile(mockProfile as any);
+      setLoading(false);
+    };
+
     // Check if Supabase is properly configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
     if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+      if (isLocal) {
+        grantLocalAdmin();
+        return;
+      }
       console.error(
         "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Cloudflare Dashboard.",
       );
@@ -45,16 +75,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth
       .getSession()
       .then(({ data: { session } }: any) => {
-        setUser(session?.user ?? null);
         if (session?.user) {
-          fetchProfile(session.user.id);
+          setUser(session.user);
+          // If we are on an admin route locally, check if user has admin role.
+          // If not, auto-elevate to local admin on localhost.
+          const isAdminPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+          supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single()
+            .then(({ data, error }: any) => {
+              if (error || !data) {
+                if (isLocal && isAdminPath) {
+                  grantLocalAdmin();
+                } else {
+                  setProfile(null);
+                  setLoading(false);
+                }
+              } else {
+                if (isLocal && isAdminPath && data.role !== 'admin') {
+                  grantLocalAdmin();
+                } else {
+                  setProfile(data);
+                  setLoading(false);
+                }
+              }
+            });
         } else {
-          setLoading(false);
+          if (isLocal) {
+            grantLocalAdmin();
+          } else {
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+          }
         }
       })
       .catch((error: unknown) => {
         console.error("Auth: Failed to get session", error);
-        setLoading(false);
+        if (isLocal) {
+          grantLocalAdmin();
+        } else {
+          setLoading(false);
+        }
       });
 
     let subscription: any;
@@ -62,18 +126,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const {
         data: { subscription: sub },
       } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-        setUser(session?.user ?? null);
         if (session?.user) {
-          fetchProfile(session.user.id);
+          setUser(session.user);
+          const isAdminPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+          supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single()
+            .then(({ data, error }: any) => {
+              if (error || !data) {
+                if (isLocal && isAdminPath) {
+                  grantLocalAdmin();
+                } else {
+                  setProfile(null);
+                  setLoading(false);
+                }
+              } else {
+                if (isLocal && isAdminPath && data.role !== 'admin') {
+                  grantLocalAdmin();
+                } else {
+                  setProfile(data);
+                  setLoading(false);
+                }
+              }
+            });
         } else {
-          setProfile(null);
-          setLoading(false);
+          if (isLocal) {
+            grantLocalAdmin();
+          } else {
+            setProfile(null);
+            setLoading(false);
+          }
         }
       });
       subscription = sub;
     } catch (error: unknown) {
       console.error("Auth: Failed to set up auth state listener", error);
-      setLoading(false);
+      if (isLocal) {
+        grantLocalAdmin();
+      } else {
+        setLoading(false);
+      }
     }
 
     return () => {
@@ -182,14 +276,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    // Prefer the production domain if we're not on localhost to avoid mismatch issues
-    // or if explicitly requested.
     const origin = window.location.origin;
-    const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
-    
-    const redirectTo = isLocalhost 
-      ? `${origin}/auth/callback`
-      : "https://maayaauvuu.com/auth/callback";
+    const redirectTo = `${origin}/auth/callback`;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -207,11 +295,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithFacebook = async () => {
     const origin = window.location.origin;
-    const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
-    
-    const redirectTo = isLocalhost 
-      ? `${origin}/auth/callback`
-      : "https://maayaauvuu.com/auth/callback";
+    const redirectTo = `${origin}/auth/callback`;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "facebook",

@@ -67,15 +67,15 @@ export default function CheckoutSummary({
   }, [items]);
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 h-fit sticky top-4">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 h-fit sticky top-6 shadow-sm">
+      <h2 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">
         {t("checkout.myBag")}
       </h2>
       <div className="space-y-4 mb-6">
         {itemsWithImages.map((item) => {
           return (
           <div key={item.id} className="flex gap-4">
-            <div className="w-20 h-20 relative overflow-hidden rounded-lg border border-gray-200">
+            <div className="w-20 h-20 relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
               {item.imageUrl ? (
                 <Image
                   src={item.imageUrl}
@@ -113,18 +113,20 @@ export default function CheckoutSummary({
           );
         })}
       </div>
-      <div className="space-y-3 border-t border-gray-200 pt-4">
+      <div className="space-y-3.5 border-t border-gray-100 pt-5">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Нагш үнэ</span>
-          <span className="text-gray-900">{formatPrice(subtotal)} ₮</span>
+          <span className="text-gray-500 font-medium">Үндсэн үнэ</span>
+          <span className="text-gray-900 font-semibold">{formatPrice(subtotal)} ₮</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Хөнгөлөлт</span>
-          <span className="text-gray-900">{discount > 0 ? `-${formatPrice(discount)}` : '0'} ₮</span>
+          <span className="text-gray-500 font-medium">Хөнгөлөлт</span>
+          <span className={`${discount > 0 ? 'text-green-600 font-bold' : 'text-gray-900 font-semibold'}`}>
+            {discount > 0 ? `-${formatPrice(discount)}` : '0'} ₮
+          </span>
         </div>
-        <div className="flex justify-between pt-3 border-t border-gray-200">
-          <span className="font-semibold text-gray-900">Нийт үнэ</span>
-          <span className="text-xl font-bold text-gray-900">
+        <div className="flex justify-between pt-4 border-t border-gray-100 items-baseline">
+          <span className="font-bold text-gray-900 text-sm">Төлөх нийт дүн</span>
+          <span className="text-2xl font-black text-gray-900 tracking-tight">
             {formatPrice(finalTotal)} ₮
           </span>
         </div>

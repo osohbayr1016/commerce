@@ -166,7 +166,7 @@ export async function PATCH(request: Request) {
           throw new Error('Failed to fetch products');
         }
 
-        const updates = products.map(p => ({
+        const updates = products.map((p: { id: string; price: number }) => ({
           id: p.id,
           price: Math.max(0, (p.price || 0) + value)
         }));

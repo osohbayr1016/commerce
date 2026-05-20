@@ -138,7 +138,7 @@ export async function POST(request: Request) {
         .eq("size", sizeNum)
         .eq("is_active", true);
       availableStock =
-        (variants ?? []).reduce((sum, v) => sum + (v.stock ?? 0), 0) || 0;
+        (variants ?? []).reduce((sum: number, v: any) => sum + (v.stock ?? 0), 0) || 0;
     }
     if (availableStock === 0) {
       const { data: product } = await supabase

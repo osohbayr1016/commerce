@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 body {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-plus-jakarta), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .font-heading {
-  font-family: var(--font-playfair), ui-serif, Georgia, serif;
+  font-family: var(--font-plus-jakarta), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Remove arrows from number inputs */
@@ -34,12 +34,12 @@ input[type="number"] {
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    rgb(229 231 235) 0%,
-    rgb(243 244 246) 50%,
-    rgb(229 231 235) 100%
+    rgba(244, 241, 234, 0.7) 0%,
+    rgba(251, 249, 245, 0.9) 50%,
+    rgba(244, 241, 234, 0.7) 100%
   );
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+  animation: skeleton-shimmer 1.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 }
 
 /* Admin sidebar slide animation */
@@ -88,4 +88,40 @@ input[type="number"] {
 
 .profile-animate-in {
   animation: profile-fade-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Glassmorphism visual enhancements */
+.glass-header {
+  background: rgba(235, 213, 179, 0.88);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+}
+
+/* Premium smooth zoom for images */
+.hover-premium-zoom {
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.hover-premium-zoom:hover {
+  transform: scale(1.04);
+}
+
+/* Elegant gold underline transition */
+.luxury-underline {
+  position: relative;
+}
+.luxury-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background: linear-gradient(90deg, #fcd34d, #f59e0b, #fcd34d);
+  transform-origin: bottom right;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.luxury-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }

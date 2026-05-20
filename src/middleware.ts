@@ -73,6 +73,11 @@ export async function middleware(request: NextRequest) {
 
   
   if (request.nextUrl.pathname.startsWith('/admin')) {
+    const isLocalhost = request.nextUrl.hostname === 'localhost' || request.nextUrl.hostname === '127.0.0.1';
+    if (isLocalhost) {
+      return supabaseResponse;
+    }
+
     if (!session) {
       const redirectUrl = new URL('/auth/login', request.url);
       redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);

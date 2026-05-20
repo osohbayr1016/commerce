@@ -43,16 +43,6 @@ interface RateLimitEntry {
 // For production, use Redis or similar distributed cache
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
-// Cleanup old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitStore.entries()) {
-    if (entry.resetAt < now) {
-      rateLimitStore.delete(key);
-    }
-  }
-}, 5 * 60 * 1000);
-
 /**
  * Get client IP address from request
  */
@@ -110,6 +100,15 @@ export function checkRateLimit(
   
   const now = Date.now();
   const windowMs = config.windowSeconds * 1000;
+
+  // On-demand probabilistic cleanup of expired entries (10% chance per check)
+  if (Math.random() < 0.1) {
+    for (const [k, entry] of rateLimitStore.entries()) {
+      if (entry.resetAt < now) {
+        rateLimitStore.delete(k);
+      }
+    }
+  }
   
   const entry = rateLimitStore.get(key);
   

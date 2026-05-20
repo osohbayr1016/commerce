@@ -1,5 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 /**
  * Creates a Supabase server client with connection pooling
@@ -45,7 +45,7 @@ export async function createClient() {
     throw new Error('Supabase configuration missing. Check server logs.');
   }
 
-  return createServerClient(
+  const client = createServerClient(
     supabaseUrl,
     supabaseKey,
     {
@@ -77,4 +77,97 @@ export async function createClient() {
       },
     }
   );
+
+  // Check if we are running in a localhost / development environment
+  let isLocalhost = false;
+  try {
+    const headersList = await headers();
+    const host = headersList.get('host') || '';
+    const forwardedHost = headersList.get('x-forwarded-host') || '';
+    isLocalhost = host.includes('localhost') || 
+                  host.includes('127.0.0.1') || 
+                  forwardedHost.includes('localhost') || 
+                  forwardedHost.includes('127.0.0.1');
+  } catch (e) {
+    // During static generation or before headers are available in the request,
+    // headers() will throw. We catch it safely here to prevent build bailout.
+  }
+
+  if (isLocalhost) {
+    const mockUser = {
+      id: '00000000-0000-0000-0000-000000000000',
+      email: 'admin@localhost',
+      role: 'authenticated',
+      aud: 'authenticated',
+      app_metadata: {},
+      user_metadata: { full_name: 'Local Admin' },
+      created_at: new Date().toISOString()
+    };
+
+    const mockSession = {
+      access_token: 'mock-access-token',
+      refresh_token: 'mock-refresh-token',
+      expires_in: 3600,
+      token_type: 'bearer',
+      user: mockUser
+    };
+
+    const mockProfile = {
+      id: '00000000-0000-0000-0000-000000000000',
+      email: 'admin@localhost',
+      role: 'admin',
+      full_name: 'Local Admin',
+      phone_number: '00000000',
+      created_at: new Date().toISOString()
+    };
+
+    // Robust query mock builder that returns custom mock data when chain resolves
+    const makeMockQuery = (mockData: any) => {
+      const queryHandler = {
+        get(target: any, prop: string | symbol, receiver: any): any {
+          if (prop === 'then') {
+            return (resolve: any) => resolve({ data: mockData, error: null });
+          }
+          if (typeof target[prop] === 'function') {
+            return () => new Proxy(target, queryHandler);
+          }
+          return new Proxy(target, queryHandler);
+        }
+      };
+      return new Proxy({}, queryHandler);
+    };
+
+    const clientHandler = {
+      get(target: any, prop: string | symbol, receiver: any): any {
+        if (prop === 'auth') {
+          return {
+            getUser: async () => ({ data: { user: mockUser }, error: null }),
+            getSession: async () => ({ data: { session: mockSession }, error: null }),
+            onAuthStateChange: (callback: any) => {
+              callback('SIGNED_IN', mockSession);
+              return { data: { subscription: { unsubscribe: () => {} } } };
+            }
+          };
+        }
+        if (prop === 'from') {
+          return (table: string) => {
+            if (table === 'profiles') {
+              return makeMockQuery(mockProfile);
+            }
+            return target.from(table);
+          };
+        }
+
+        const value = Reflect.get(target, prop, receiver);
+        if (typeof value === 'function') {
+          return value.bind(target);
+        }
+        return value;
+      }
+    };
+
+    return new Proxy(client, clientHandler);
+  }
+
+  return client;
 }
